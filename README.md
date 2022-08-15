@@ -1,5 +1,5 @@
 # Laravel Cart
-A simple implementation of a cart for use in Laravel applications
+A simple implementation of a cart for use in Laravel applications. Very much a WIP!
 
 ## Products
 Your product models should use the trait `isProduct` as well as implement `Product`.
