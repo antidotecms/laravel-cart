@@ -4,7 +4,7 @@ namespace Antidote\LaravelCart\Concerns;
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
  */
-trait isProduct
+trait IsProduct
 {
     /**
      * @throws Exception
