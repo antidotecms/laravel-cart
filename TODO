@@ -1,0 +1,4 @@
+1. Make option to store carts in session or in database
+2. Make option to store cartitems in session or in database
+3. Allow prefix for cart table/ability to publish migration?
+4. Allow acces for administrators to access cart - rather than auth users? Maybe not needed.

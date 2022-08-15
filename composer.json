@@ -1,0 +1,39 @@
+{
+    "name": "antidote/laravel-cart",
+    "description": "Simple package to provide cart functionality",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Antidote\\LaravelCart\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tim Smith",
+            "email": "tim.smith@titan21.co.uk"
+        }
+    ],
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Antidote\\LaravelCart\\ServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.5",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php ./vendor/bin/testbench package:discover --ansi"
+        ]
+    }
+}
