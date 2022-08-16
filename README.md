@@ -18,6 +18,20 @@ class MyProduct implements Product
     ...
 }
 ```
+Products can also be "Variable" when the price is determined by factors at run time:
+```
+use Antidote\LaravelCart\Contracts\VariableProduct
+use Antidote\LaravelCart\Concerns\IsProduct;
+use Illuminate\Database\Eloquent\Model;
+
+class Product extends Model implements VariableProduct
+{
+    use IsProduct;
+
+    protected $fillable = [
+        'name'
+    ];
+```
 
 By default, the cart will use the `name` and `price` attributes on your
 model. If you do not have these attributes, then you can override `getName`
@@ -50,6 +64,15 @@ public function getPrice() : int
     return $this->width * $this->height * 100;
 }
 ```
+For variable products, when the dynamic factors are only available at run time, `getPrice` requires
+a 'specification':
+```
+public function getPrice(array $specification) : int
+{
+    return $specification['width'] * $specification['height'] * 100;
+}
+```
+
 
 ## Cart
 Your user models should use the `HasCart` trait which will create a cart automatically
@@ -60,6 +83,7 @@ for a user when accessed for the first time.
 ```
 $user->cart->add($product); //add a product
 $user->cart->add($product, 2); //add 2 products
+$user->cart->add($variable_product, 1, ['width' => 10, 'height' => 2]); // add a variable product
 
 $user->cart->remove($product_id); //remove a product by id irrespective of quantity
 $user->cart->remove($product_id); //remove one product by id

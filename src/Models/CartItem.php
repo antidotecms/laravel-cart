@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use \Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
@@ -11,7 +12,12 @@ class CartItem extends Model
         'product_id',
         'product_type',
         'cart_id',
-        'quantity'
+        'quantity',
+        'specification'
+    ];
+
+    protected $casts = [
+        'specification' => 'array'
     ];
 
     public function product()

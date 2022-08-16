@@ -2,8 +2,10 @@
 
 namespace Antidote\LaravelCart\Models;
 
+use Antidote\LaravelCart\Contracts\VariableProduct;
 use Illuminate\Database\Eloquent\Model;
 use Antidote\LaravelCart\Contracts\Product;
+use PhpParser\Node\Expr\Variable;
 
 class Cart extends Model
 {
@@ -17,14 +19,15 @@ class Cart extends Model
         return $this->hasMany(CartItem::class);
     }
 
-    public function add(Product $product, int $quantity = 1)
+    public function add(Product | VariableProduct $product, int $quantity = 1, $specification = null)
     {
         $cartitem = CartItem::updateOrCreate([
                 'product_id' => $product->getKey(),
                 'product_type' => get_class($product)
             ],[
                 'cart_id' => $this->getKey(),
-                'quantity' => $quantity
+                'quantity' => $quantity,
+                'specification' => $specification
         ]);
 
         $this->cartitems()->save($cartitem);
@@ -79,7 +82,14 @@ class Cart extends Model
 
         $this->cartitems->each(function($cartitem) use (&$subtotal)
         {
-            $subtotal += $cartitem->product->getPrice() * $cartitem->quantity;
+            if(is_a($cartitem->product, VariableProduct::class))
+            {
+                $subtotal += $cartitem->product->getPrice($cartitem->specification) * $cartitem->quantity;
+            }
+            else
+            {
+                $subtotal += $cartitem->product->getPrice() * $cartitem->quantity;
+            }
         });
 
         return $subtotal;

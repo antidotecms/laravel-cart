@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Tests\Fixtures\app\Models\ComplexProduct;
 use Tests\Fixtures\app\Models\Customer;
 use Tests\Fixtures\app\Models\SimpleProduct;
+use Tests\Fixtures\app\Models\VariableProduct;
 use Tests\TestCase;
 
 class CartTest extends TestCase
@@ -238,5 +239,36 @@ class CartTest extends TestCase
 
         $this->assertTrue($customer->cart->isInCart(ComplexProduct::class, $complex->id));
         $this->assertFalse($customer->cart->isInCart(SimpleProduct::class, $product->id));
+    }
+
+    /**
+     * @test
+     */
+    public function a_customer_can_add_a_product_with_specifications()
+    {
+        $customer = Customer::create([
+            'name' => 'Customer Smith',
+            'email' => 'customer@titan21.co.uk',
+            'password' => Hash::make('password')
+        ]);
+
+        $variable = VariableProduct::create([
+            'name' => 'A variable product'
+        ]);
+
+        $specification = [
+            'width' => 10,
+            'height' => 10
+        ];
+
+        $this->assertEquals(100, $variable->getPrice($specification));
+
+        $customer->cart->add($variable, 1, [
+            'width' => 10,
+            'height' => 10
+        ]);
+
+        $this->assertTrue($customer->cart->isInCart(VariableProduct::class, $variable->id));
+        $this->assertEquals(100, $customer->cart->getSubtotal());
     }
 }
