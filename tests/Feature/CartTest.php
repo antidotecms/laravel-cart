@@ -96,9 +96,6 @@ class CartTest extends TestCase
     /**
      * @test
      */
-    /**
-     * @test
-     */
     public function a_customer_can_remove_a_product_by_product_id_with_a_quantity()
     {
         $customer = Customer::create([
