@@ -19,7 +19,10 @@
         "laravel": {
             "providers": [
                 "Antidote\\LaravelCart\\ServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "cart": "Antidote\\LaravelCart\\Facades\\Cart"
+            }
         }
     },
     "require-dev": {
@@ -35,5 +38,8 @@
         "post-autoload-dump": [
             "@php ./vendor/bin/testbench package:discover --ansi"
         ]
+    },
+    "require": {
+        "spatie/data-transfer-object": "^3.8"
     }
 }

@@ -23,15 +23,13 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     private function bindings()
     {
-        $this->app
-            ->bind(Cart::class, function($app) {
+        $this->app->bind(Cart::class, function($app) {
                 return auth()->check() ? auth()->user()->cart : null;
             });
-//            ->when(PercentageDiscount::class)
-//            ->needs(Cart::class)
-//            ->give(function() {
-//                return auth()->user()->cart;
-//            });
+
+        $this->app->bind('cart', function ($app) {
+            return new \Antidote\LaravelCart\Domain\Cart();
+        });
 
     }
 }

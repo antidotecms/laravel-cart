@@ -2,7 +2,8 @@
 
 namespace Tests\Feature;
 
-use Antidote\LaravelCart\Models\Cart;
+use Antidote\LaravelCart\DataTransferObjects\CartItem;
+use Antidote\LaravelCart\Facades\Cart;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\Fixtures\app\Models\ComplexProduct;
@@ -267,5 +268,29 @@ class CartTest extends TestCase
 
         $this->assertTrue($customer->cart->isInCart(VariableProduct::class, $variable->id));
         $this->assertEquals(100, $customer->cart->getSubtotal());
+    }
+
+    /**
+     * @test
+     */
+    public function a_customer_can_add_a_product_as_a_guest()
+    {
+        $product = SimpleProduct::create([
+            'name' => 'A Simple Product',
+            'price' => '2000'
+        ]);
+
+        Cart::add($product);
+
+        $this->assertEquals(1, Cart::cartitems()->count());
+
+        $product_data = new CartItem([
+            'product_id' => $product->id,
+            'product_type' => SimpleProduct::class,
+            'quantity' => 1,
+            'specification' => null
+        ]);
+
+        $this->assertEquals($product_data, Cart::cartitems()->first());
     }
 }

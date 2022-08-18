@@ -23,11 +23,11 @@ class Cart extends Model
     {
         $cartitem = CartItem::updateOrCreate([
                 'product_id' => $product->getKey(),
-                'product_type' => get_class($product)
+                'product_type' => get_class($product),
+                'specification' => $specification
             ],[
                 'cart_id' => $this->getKey(),
                 'quantity' => $quantity,
-                'specification' => $specification
         ]);
 
         $this->cartitems()->save($cartitem);
@@ -59,7 +59,6 @@ class Cart extends Model
                 $cartitem->save();
             }
         }
-
     }
 
     private function removeAll($product_id)
