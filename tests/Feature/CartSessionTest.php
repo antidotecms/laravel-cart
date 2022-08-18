@@ -6,6 +6,7 @@ use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Facades\Cart;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use PHPUnit\Framework\MockObject\InvalidMethodNameException;
 use Tests\Fixtures\app\Models\ComplexProduct;
 use Tests\Fixtures\app\Models\Customer;
 use Tests\Fixtures\app\Models\SimpleProduct;
@@ -219,5 +220,15 @@ class CartSessionTest extends TestCase
 
         $this->assertTrue(Cart::isInCart(VariableProduct::class, $variable->id));
         $this->assertEquals(100, Cart::getSubtotal());
+    }
+
+    /**
+     * @test
+     */
+    public function the_facade_will_throw_an_error_if_they_method_does_not_exist()
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        Cart::nonExistantMethod();
     }
 }

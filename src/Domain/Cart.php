@@ -7,11 +7,19 @@ use Antidote\LaravelCart\Contracts\Shopper;
 use Antidote\LaravelCart\Contracts\VariableProduct;
 use Antidote\LaravelCart\Models\CartAdjustment;
 use Illuminate\Support\Collection;
+use PHPUnit\Framework\MockObject\InvalidMethodNameException;
+use function PHPUnit\Framework\throwException;
 
 class Cart
 {
     public function __call($method, $arguments) : mixed
     {
+        if(!method_exists($this, $method)) {
+            throw new \BadMethodCallException();
+            return null;
+        }
+
+        //@todo throw invalid method exception if method doesnt exist
         return auth()->user() && class_implements(auth()->user(), Shopper::class) ?
             auth()->user()->$method(...$arguments) :
             $this->$method(...$arguments);
