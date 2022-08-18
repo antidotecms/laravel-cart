@@ -76,10 +76,55 @@ class CartSessionTest extends TestCase
 
         $this->assertEquals(1, Cart::cartitems()->count());
 
-        Cart::remove($product->id);
+        Cart::remove($product);
         //$customer->refresh();
 
         $this->assertEquals(0, Cart::cartitems()->count());
+    }
+
+    /**
+     * @test
+     */
+    public function customer_can_remove_a_product_with_its_specification()
+    {
+        $variable_product = VariableProduct::create([
+            'name' => 'A variable product'
+        ]);
+
+        $variable_product2 = VariableProduct::create([
+            'name' => 'Another variable product'
+        ]);
+
+        Cart::add($variable_product, 1, [
+            'width' => 10,
+            'height' => 10
+        ]);
+
+        Cart::add($variable_product2, 1, [
+            'width' => 10,
+            'height' => 20
+        ]);
+
+        $this->assertEquals(2, Cart::cartitems()->count());
+
+        Cart::remove($variable_product, 1, [
+            'width' => 10,
+            'height' => 10
+        ]);
+
+        $this->assertEquals(1, Cart::cartitems()->count());
+
+        $expected_product = new CartItem([
+            'product_id' => $variable_product2->id,
+            'product_type' => VariableProduct::class,
+            'quantity' => 1,
+            'specification' => [
+                'width' => 10,
+                'height' => 20
+            ]
+        ]);
+
+        $this->assertEquals($expected_product, Cart::cartitems()->first());
     }
 
     /**
@@ -99,7 +144,7 @@ class CartSessionTest extends TestCase
         $this->assertEquals(1, Cart::cartitems()->count());
         $this->assertEquals(5, Cart::cartitems()->first()->quantity);
 
-        Cart::remove($product->id, 2);
+        Cart::remove($product, 2);
         //$customer->refresh();
 
         $this->assertEquals(1, Cart::cartitems()->count());

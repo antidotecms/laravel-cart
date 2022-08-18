@@ -7,6 +7,7 @@ use Antidote\LaravelCart\Contracts\Shopper;
 use Antidote\LaravelCart\Contracts\VariableProduct;
 use Antidote\LaravelCart\Models\CartAdjustment;
 use Illuminate\Support\Collection;
+use Nette\DeprecatedException;
 use PHPUnit\Framework\MockObject\InvalidMethodNameException;
 use function PHPUnit\Framework\throwException;
 
@@ -74,34 +75,32 @@ class Cart
      * @param $quantity number of products to remove. If null, all specified products are removed.
      * @return void
      */
-    private function remove($product_id, $quantity = null) : void
+    private function remove($product, $quantity = null, $specification = null) : void
     {
         $cart_items = $this->cartitems();
 
-        if(!$quantity)
-        {
-            $this->removeAll($product_id);
-        }
-        else
-        {
-            $cart_items = $cart_items->each(function($cart_item) use ($product_id, $quantity) {
-                if($cart_item->product_id == $product_id)
+            $cart_items->transform(function($cart_item) use ($product, $quantity, $specification) {
+
+                if(is_a($product, $cart_item->product_type))
                 {
-                    $cart_item->quantity = $cart_item->quantity - $quantity;
+                    if ($cart_item->product_id == $product->id && !$specification)
+                    {
+                        $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
+                    }
+                    elseif ($cart_item->product_id == $product->id && $specification && $cart_item->specification == $specification)
+                    {
+                        $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
+                    }
                 }
+
+                return $cart_item;
             });
 
-            session()->put('cart_items', $cart_items->toArray());
-        }
-    }
+            $cart_items = $cart_items->reject(function($cart_item) {
+                 return $cart_item->quantity == 0;
+            });
+//        }
 
-    private function removeAll($product_id)
-    {
-        $cart_items = $this->cartitems();
-        //$cart_items->where('product_id', $product_id)->delete();
-        $cart_items = $this->cartitems()->reject(function($cart_item) use ($product_id) {
-            return $cart_item->product_id == $product_id;
-        });
         session()->put('cart_items', $cart_items->toArray());
     }
 
