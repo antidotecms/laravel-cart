@@ -81,20 +81,24 @@ for a user when accessed for the first time.
 ### Common Cart Methods
 
 ```
-$user->cart->add($product); //add a product
-$user->cart->add($product, 2); //add 2 products
-$user->cart->add($variable_product, 1, ['width' => 10, 'height' => 2]); // add a variable product
 
-$user->cart->remove($product_id); //remove a product by id irrespective of quantity
-$user->cart->remove($product_id); //remove one product by id
-$user->cart->remove($product_id, 2); //remove two products by id
+use Antidote\LaravelCart\Facades\Cart;
 
-$user->cart->clear(); //empty the cart
+Cart::add($product); //add a product
+Cart::add($product, 2); //add 2 products
+Cart::($variable_product, 1, ['width' => 10, 'height' => 2]); // add a variable product
 
-$user->cart->getSubtotal(); //return the subtotal of the cart
-$user->cart->getTotal(); //returns the total of the cart including any adjustments
+Cart::remove($product); //remove a product by id irrespective of quantity. If a varaible product, it will remove irrespective of specification
+Cart::remove($product); //remove one product by id
+Cart::remove($product, 2); //remove two products by id
+Cart::remove($variable_product, 1, $specification); //remove a product by a specification
 
-$user->cart->isInCart(BookProduct::class, 23); //determine if a particular product is in the cart
+Cart::clear(); //empty the cart
+
+Cart::getSubtotal(); //return the subtotal of the cart
+Cart::getTotal(); //returns the total of the cart including any adjustments
+
+Cart::isInCart(BookProduct::class, 23); //determine if a particular product type with id 23  is in the cart
 ```
 
 ## Discounts
