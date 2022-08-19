@@ -2,16 +2,14 @@
 A simple implementation of a cart for use in Laravel applications. Very much a WIP!
 
 ## Products
-Your product models should use the trait `isProduct` as well as implement `Product`.
-
-The relationship between a cart item and a product is polymorphic so continue to add
-this trait if you have more than one model representing your products.
+Your product models should use the trait `isProduct` or `isVariableProduct` as well as implement `Product` or `VariableProduct`.
 
 ```
 use \Anitidote\LaravelCart\Contracts\Product;
 use \Anitidote\LaravelCart\Concerns\IsProduct;
+use Illuminate\Database\Eloquent\Model;
 
-class MyProduct implements Product
+class MyProduct extends Model implements Product
 {
     use isProduct;
 
@@ -26,21 +24,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model implements VariableProduct
 {
-    use IsProduct;
+    use IsVariableProduct;
 
-    protected $fillable = [
-        'name'
-    ];
+    ...
+}
 ```
 
 By default, the cart will use the `name` and `price` attributes on your
-model. If you do not have these attributes, then you can override `getName`
-and `getPrice` in your model.
+model. If you do not have these attributes or wish to modify them, you can
+override `getName` and `getPrice` in your model.
 
 ```
 use \Anitidote\LaravelCart;
 
-class MyProduct implements Product
+class MyProduct extends Model implements Product
 {
     use isProduct;
 
@@ -56,23 +53,27 @@ class MyProduct implements Product
 }
 ```
 
-`getPrice` can be useful if you need to set prices based on some dynamic factor.
-
 ```
-public function getPrice() : int
+use \Anitidote\LaravelCart;
+
+class MyProduct extends Model implements VariableProduct
 {
-    return $this->width * $this->height * 100;
+    use isVariableProduct;
+
+    public function getPrice(array $specification) : int
+    {
+        return match($specification['color']) {
+            'blue' => '100',
+            'red' => 80'
+        };
+    }
+    
+    public function getName(array $specification) : string
+    {
+        return 'A {$specification['color'] sweater';
+    }
 }
 ```
-For variable products, when the dynamic factors are only available at run time, `getPrice` requires
-a 'specification':
-```
-public function getPrice(array $specification) : int
-{
-    return $specification['width'] * $specification['height'] * 100;
-}
-```
-
 
 ## Cart
 Your user models should use the `HasCart` trait which will create a cart automatically
