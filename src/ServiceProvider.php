@@ -23,9 +23,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     private function bindings()
     {
-        $this->app->bind(Cart::class, function($app) {
-                return auth()->check() ? auth()->user()->cart : null;
-            });
+//        $this->app->bind(Cart::class, function($app) {
+//                return auth()->check() ? auth()->user()->cart : null;
+//            });
 
         $this->app->bind('cart', function ($app) {
             return new \Antidote\LaravelCart\Domain\Cart();

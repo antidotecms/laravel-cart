@@ -1,18 +1,15 @@
 <?php
 
-namespace Antidote\LaravelCart\Abstracts;
+namespace Antidote\LaravelCart\Contracts;
 
-use Antidote\LaravelCart\Models\Cart;
 use Antidote\LaravelCart\Models\CartAdjustment;
 
 abstract class Discount
 {
-    protected Cart $cart;
     protected CartAdjustment $adjustment;
 
-    public function __construct(Cart $cart, CartAdjustment $adjustment)
+    public function __construct(CartAdjustment $adjustment)
     {
-        $this->cart = $cart;
         $this->adjustment = $adjustment;
     }
 

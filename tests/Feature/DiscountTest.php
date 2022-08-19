@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Antidote\LaravelCart\Domain\Discount\PercentageDiscount;
-use Antidote\LaravelCart\Models\Cart;
+use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Models\CartAdjustment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -21,12 +21,6 @@ class DiscountTest extends TestCase
      */
     public function it_will_apply_a_discount()
     {
-        $customer = Customer::create([
-            'name' => 'Customer Smith',
-            'email' => 'customer@titan21.co.uk',
-            'password' => Hash::make('password')
-        ]);
-
         $product = SimpleProduct::create([
             'name' => 'A Simple Product',
             'price' => '2000'
@@ -41,10 +35,8 @@ class DiscountTest extends TestCase
             'active' => true
         ]);
 
-        $this->be($customer, 'web');
+        Cart::add($product);
 
-        auth()->user()->cart->add($product);
-
-        $this->assertEquals(1800, $customer->cart->getTotal());
+        $this->assertEquals(1800, Cart::getTotal());
     }
 }

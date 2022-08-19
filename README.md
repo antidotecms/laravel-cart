@@ -124,17 +124,18 @@ the currently `auth`'ed users `cart` and the `adjustment` details
 
 ```
 use Antidote\LaravelCart\Abstracts\Discount;
+use Antidote\LaravelCart\Facades\Cart;
 
 class SpecialDiscount implements Discount
 {
     public function amount(): int
     {
-        return $this->cart->getSubtotal() * ($this->adjustment->parameters['percentage']/100);
+        return Cart::getSubtotal() * ($this->adjustment->parameters['percentage']/100);
     }
 
     public function isValid(): bool
     {
-        $this->cart->isInCart(BookProduct::class, 23);
+        Cart::isInCart(BookProduct::class, 23);
     }
 }
 
