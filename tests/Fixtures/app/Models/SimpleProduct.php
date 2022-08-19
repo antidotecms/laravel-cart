@@ -12,6 +12,7 @@ class SimpleProduct extends Model implements Product
 
     protected $fillable = [
         'name',
-        'price'
+        'price',
+        'description'
     ];
 }

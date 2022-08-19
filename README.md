@@ -30,9 +30,11 @@ class Product extends Model implements VariableProduct
 }
 ```
 
-By default, the cart will use the `name` and `price` attributes on your
-model. If you do not have these attributes or wish to modify them, you can
-override `getName` and `getPrice` in your model.
+By default, the cart will use the `name`, `description` (intended as a short
+description of your product - useful for variable products or products that
+use a calculation in their pricing) and `price` attributes on your model.
+If you do not have these attributes or wish to modify them, you can
+override `getName`, `getDescription` and `getPrice` in your model.
 
 ```
 use \Anitidote\LaravelCart;
@@ -41,15 +43,21 @@ class MyProduct extends Model implements Product
 {
     use isProduct;
 
+    public function getName() : string
+    {
+        return $this->title;
+    }
+    
+    public function getDescription() : string
+    {
+        return $this->info;
+    }
+    
     public function getPrice() : int
     {
         return $this->amount;
     }
     
-    public function getName() : string
-    {
-        return $this->title;
-    }
 }
 ```
 
@@ -60,6 +68,16 @@ class MyProduct extends Model implements VariableProduct
 {
     use isVariableProduct;
 
+    public function getName(?array $specification) : string
+    {
+        return 'A {$specification['color']} sweater';
+    }
+    
+    public function getDescription(?array $specification) : string
+    {
+        return 'Made from {$specification['color']} wool';
+    }
+    
     public function getPrice(?array $specification) : int
     {
         return match($specification['color']) {
@@ -68,10 +86,6 @@ class MyProduct extends Model implements VariableProduct
         };
     }
     
-    public function getName(?array $specification) : string
-    {
-        return 'A {$specification['color'] sweater';
-    }
 }
 ```
 

@@ -20,6 +20,11 @@ class VariableProduct extends Model implements \Antidote\LaravelCart\Contracts\V
             $this->name;
     }
 
+    public function getDescription(?array $specification): string
+    {
+        return "width: {$specification['width']}, height: {$specification['height']}";
+    }
+
     public function getPrice(?array $specification = null) : int
     {
         return $specification ?

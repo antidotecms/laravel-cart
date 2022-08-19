@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Facades\Cart;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\MockObject\InvalidMethodNameException;
@@ -284,10 +285,12 @@ class CartTest extends TestCase
     {
         $simple_product = SimpleProduct::create([
             'name' => 'A Simple Product',
-            'price' => '100'
+            'price' => '100',
+            'description' => 'its really very simple'
         ]);
 
         $this->assertEquals('A Simple Product', $simple_product->getName());
+        $this->assertEquals('its really very simple', $simple_product->getDescription());
         $this->assertEquals(100, $simple_product->getPrice());
 
         $complex_product = ComplexProduct::create([
@@ -311,6 +314,7 @@ class CartTest extends TestCase
         $this->assertEquals('A Variable Product', $variable_product->getName());
         $this->assertEquals(120, $variable_product->getPrice());
         $this->assertEquals('A Variable Product with width of 20 and height of 10', $variable_product->getName($specification));
+        $this->assertEquals('width: 20, height: 10', $variable_product->getDescription($specification));
         $this->assertEquals(200, $variable_product->getPrice($specification));
     }
 }
