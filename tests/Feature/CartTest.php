@@ -308,6 +308,8 @@ class CartTest extends TestCase
             'name' => 'A Variable Product'
         ]);
 
+        $this->assertEquals('A Variable Product', $variable_product->getName());
+        $this->assertEquals(120, $variable_product->getPrice());
         $this->assertEquals('A Variable Product with width of 20 and height of 10', $variable_product->getName($specification));
         $this->assertEquals(200, $variable_product->getPrice($specification));
     }

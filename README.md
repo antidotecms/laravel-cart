@@ -60,7 +60,7 @@ class MyProduct extends Model implements VariableProduct
 {
     use isVariableProduct;
 
-    public function getPrice(array $specification) : int
+    public function getPrice(?array $specification) : int
     {
         return match($specification['color']) {
             'blue' => '100',
@@ -68,7 +68,7 @@ class MyProduct extends Model implements VariableProduct
         };
     }
     
-    public function getName(array $specification) : string
+    public function getName(?array $specification) : string
     {
         return 'A {$specification['color'] sweater';
     }

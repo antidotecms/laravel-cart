@@ -9,7 +9,7 @@ trait IsVariableProduct
     /**
      * @throws Exception
      */
-    public function getName(array $specification): string
+    public function getName(?array $specification = null): string
     {
         if(isset($this->name)) return $this->name;
 
@@ -19,7 +19,7 @@ trait IsVariableProduct
     /**
      * @throws Exception
      */
-    public function getPrice(array $specification): int
+    public function getPrice(?array $specification = null): int
     {
         if(isset($this->price)) return $this->price;
 

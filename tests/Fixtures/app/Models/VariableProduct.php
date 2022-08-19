@@ -13,13 +13,17 @@ class VariableProduct extends Model implements \Antidote\LaravelCart\Contracts\V
         'name'
     ];
 
-    public function getName(array $specification) : string
+    public function getName(?array $specification = null) : string
     {
-        return "{$this->name} with width of {$specification['width']} and height of {$specification['height']}";
+        return $specification ?
+            "{$this->name} with width of {$specification['width']} and height of {$specification['height']}" :
+            $this->name;
     }
 
-    public function getPrice(array $specification) : int
+    public function getPrice(?array $specification = null) : int
     {
-        return $specification['width'] * $specification['height'];
+        return $specification ?
+            $specification['width'] * $specification['height'] :
+            120;
     }
 }
