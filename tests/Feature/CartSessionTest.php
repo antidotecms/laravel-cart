@@ -276,4 +276,39 @@ class CartSessionTest extends TestCase
 
         Cart::nonExistantMethod();
     }
+
+    /**
+     * @test
+     */
+    public function products_will_return_the_correct_name_and_price()
+    {
+        $simple_product = SimpleProduct::create([
+            'name' => 'A Simple Product',
+            'price' => '100'
+        ]);
+
+        $this->assertEquals('A Simple Product', $simple_product->getName());
+        $this->assertEquals(100, $simple_product->getPrice());
+
+        $complex_product = ComplexProduct::create([
+            'name' => 'A Complex Product',
+            'width' => 20,
+            'height' => 10
+        ]);
+
+        $this->assertEquals('A Complex Product', $complex_product->getName());
+        $this->assertEquals(200, $complex_product->getPrice());
+
+        $specification = [
+            'width' => 20,
+            'height' => 10
+        ];
+
+        $variable_product = VariableProduct::create([
+            'name' => 'A Variable Product'
+        ]);
+
+        $this->assertEquals('A Variable Product with width of 20 and height of 10', $variable_product->getName($specification));
+        $this->assertEquals(200, $variable_product->getPrice($specification));
+    }
 }
