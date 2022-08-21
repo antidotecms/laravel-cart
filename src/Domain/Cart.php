@@ -2,67 +2,71 @@
 
 namespace Antidote\LaravelCart\Domain;
 
-use Antidote\LaravelCart\Contracts\Product;
-use Antidote\LaravelCart\Contracts\Shopper;
-use Antidote\LaravelCart\Contracts\VariableProduct;
 use Antidote\LaravelCart\Models\CartAdjustment;
 use Illuminate\Support\Collection;
-use Nette\DeprecatedException;
-use PHPUnit\Framework\MockObject\InvalidMethodNameException;
-use function PHPUnit\Framework\throwException;
 
 class Cart
 {
     public function __call($method, $arguments) : mixed
     {
-        if(!method_exists($this, $method)) {
-            throw new \BadMethodCallException();
-            return null;
-        }
+        method_exists($this, $method) ?: throw new \BadMethodCallException();
 
-        //@todo throw invalid method exception if method doesnt exist
-        return auth()->user() && class_implements(auth()->user(), Shopper::class) ?
-            auth()->user()->$method(...$arguments) :
-            $this->$method(...$arguments);
+        $allowedMethods = [
+            'add',
+            'items',
+            'clear',
+            'getDiscountTotal',
+            'getSubtotal',
+            'getTotal',
+            'isInCart',
+            'remove'
+        ];
+
+        in_array($method, $allowedMethods) ?: throw new \BadMethodCallException();
+
+        return $this->$method(...$arguments);
     }
 
-    private function cartitems() : Collection
+    private function items() : Collection
     {
         $cart_items = session()->get('cart_items') ?? [];
         $cart = new \Antidote\LaravelCart\DataTransferObjects\Cart(cart_items: $cart_items);
-        return $cart->cart_items;
+        return $cart->cart_items ?? collect([]);
     }
 
-    private function add(Product | VariableProduct $product, int $quantity = 1, $specification = null)
+    private function add($product, int $quantity = 1, $product_data = null)
     {
-        $cart_items = $this->cartitems();
+        //ensure the product has a product type
+        if(!$product->productDataType)
+        {
+            throw new \Exception('Product has no product data type associated');
+        }
+
+        $cart_items = $this->items();
 
         $items = $cart_items
-            ->where('product_id', '=', $product->id)
-            ->where('product_type', '=', get_class($product))
-            ->where('specification', '=', $specification);
+            ->where('product_id', '=', $product->id);
 
         if(!$items->count()) {
 
-                $cart_items->push([
-                    'product_id' => $product->id,
-                    'product_type' => get_class($product),
-                    'specification' => $specification,
-                    'quantity' => $quantity
-                ]);
+            $cart_items->push([
+                'product_id' => $product->id,
+                'quantity' => $quantity,
+                'product_data' => $product_data
+            ]);
+
         }
         else
         {
-            $cart_items = $cart_items->each(function($cart_item) use ($product, $quantity, $specification) {
+            $cart_items = $cart_items->each(function($cart_item) use ($product, $quantity, $product_data) {
 
                 if($cart_item->product_type == get_class($product) &&
                     $cart_item->product_id == $product->id &&
-                    $cart_item->specification == $specification) {
-                    $cart_item->quantity = $cart_item->quantity + $quantity;
+                    $cart_item->product_data == $product_data) {
+                        $cart_item->quantity = $cart_item->quantity + $quantity;
                 }
 
             });
-
         }
 
         $cart_items = $cart_items->toArray();
@@ -71,26 +75,23 @@ class Cart
     }
 
     /**
-     * @param $product_id id of the product
-     * @param $quantity number of products to remove. If null, all specified products are removed.
+     * @param $product mixed the product
+     * @param $quantity int of products to remove. If null, all specified products are removed.
      * @return void
      */
-    private function remove($product, $quantity = null, $specification = null) : void
+    private function remove($product, $quantity = null, $product_data = null) : void
     {
-        $cart_items = $this->cartitems();
+        $cart_items = $this->items();
 
-            $cart_items->transform(function($cart_item) use ($product, $quantity, $specification) {
+            $cart_items->transform(function($cart_item) use ($product, $quantity, $product_data) {
 
-                if(is_a($product, $cart_item->product_type))
+                if ($cart_item->product_id == $product->id && !$product_data)
                 {
-                    if ($cart_item->product_id == $product->id && !$specification)
-                    {
-                        $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
-                    }
-                    elseif ($cart_item->product_id == $product->id && $specification && $cart_item->specification == $specification)
-                    {
-                        $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
-                    }
+                    $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
+                }
+                elseif ($cart_item->product_id == $product->id && $product_data && $cart_item->specification == $product_data)
+                {
+                    $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
                 }
 
                 return $cart_item;
@@ -99,7 +100,6 @@ class Cart
             $cart_items = $cart_items->reject(function($cart_item) {
                  return $cart_item->quantity == 0;
             });
-//        }
 
         session()->put('cart_items', $cart_items->toArray());
     }
@@ -117,18 +117,9 @@ class Cart
     {
         $subtotal = 0;
 
-        //$cart_items = $this->cartitems();
-
-        $this->cartitems()->each(function($cart_item) use (&$subtotal)
+        $this->items()->each(function($cart_item) use (&$subtotal)
         {
-            if(is_a($cart_item->getProduct(), VariableProduct::class))
-            {
-                $subtotal += $cart_item->getProduct()->getPrice($cart_item->specification) * $cart_item->quantity;
-            }
-            else
-            {
-                $subtotal += $cart_item->getProduct()->getPrice() * $cart_item->quantity;
-            }
+            $subtotal += $cart_item->getProduct()->getPrice($cart_item->product_data ?? null) * $cart_item->quantity;
         });
 
         return $subtotal;
@@ -155,15 +146,11 @@ class Cart
         return $discount_total;
     }
 
-    private function isInCart($product_classname, $product_id) : bool
+    private function isInCart($product_id) : bool
     {
-        return $this->cartitems()
-            ->contains(function($cart_item) use ($product_id, $product_classname) {
-                return $cart_item->product_id == $product_id &&
-                    $cart_item->product_type == $product_classname;
+        return $this->items()
+            ->contains(function($cart_item) use ($product_id) {
+                return $cart_item->product_id == $product_id;
             });
-//            ->where('product_type', $product_classname)
-//            ->where('product_id', $product_id)
-//            ->exists();
     }
 }

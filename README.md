@@ -2,9 +2,12 @@
 A simple implementation of a cart for use in Laravel applications. Very much a WIP!
 
 ## Products
-Your product models should use the trait `isProduct` or `isVariableProduct` as well as implement `Product` or `VariableProduct`.
+Your product models should use the trait `Antidote\LaravelCart\Concerns\IsProduct` as well as implement
+`\Antidote\LaravelCart\Contracts\Product`.
 
 ```
+namespace \App\Models\Products;
+
 use \Anitidote\LaravelCart\Contracts\Product;
 use \Anitidote\LaravelCart\Concerns\IsProduct;
 use Illuminate\Database\Eloquent\Model;
@@ -16,24 +19,23 @@ class MyProduct extends Model implements Product
     ...
 }
 ```
-Products can also be "Variable" when the price is determined by factors at run time:
-```
-use Antidote\LaravelCart\Contracts\VariableProduct
-use Antidote\LaravelCart\Concerns\IsProduct;
-use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model implements VariableProduct
+Products are associated with a `ProductDataType` which encapsulates the nature of the product. For example, a
+`ClothesProductType` may need to store information about the colour and size of the product to be purchased.
+This association is done at run time so that only one `Product` model is needed without instead of many different Product 
+models for products that have different behaviours
+
+```
+namespace \App\Products\Models\ProductDataType;
+
+class ClothesDataType extends Model
 {
-    use IsVariableProduct;
+    use IsProductDataType;
 
-    ...
-}
 ```
 
-By default, the cart will use the `name`, `description` (intended as a short
-description of your product - useful for variable products or products that
-use a calculation in their pricing) and `price` attributes on your model.
-If you do not have these attributes or wish to modify them, you can
+By default, the products will get the `name`, `description` (intended as a short description of your product)
+and `price` attributes on your model. If you do not have these attributes or wish to modify them, you can
 override `getName`, `getDescription` and `getPrice` in your model.
 
 ```
@@ -43,17 +45,17 @@ class MyProduct extends Model implements Product
 {
     use isProduct;
 
-    public function getName() : string
+    public function getName(?array $product_data = null) : string
     {
         return $this->title;
     }
     
-    public function getDescription() : string
+    public function getDescription(?array $product_data = null) : string
     {
         return $this->info;
     }
     
-    public function getPrice() : int
+    public function getPrice(?array $product_data = null) : int
     {
         return $this->amount;
     }
@@ -61,52 +63,66 @@ class MyProduct extends Model implements Product
 }
 ```
 
+If you need to determine these dynamically, you can pass in `product_data` to allow customization any of the
+attributes.
+
 ```
-use \Anitidote\LaravelCart;
 
-class MyProduct extends Model implements VariableProduct
+class Product extends Model implments Product
 {
-    use isVariableProduct;
-
-    public function getName(?array $specification) : string
-    {
-        return 'A {$specification['color']} sweater';
-    }
-    
-    public function getDescription(?array $specification) : string
-    {
-        return 'Made from {$specification['color']} wool';
-    }
-    
-    public function getPrice(?array $specification) : int
-    {
-        return match($specification['color']) {
-            'blue' => '100',
-            'red' => 80'
-        };
-    }
-    
+    use IsProduct;
 }
+```
+```
+class AmazingSquaresProductDataType extends Model
+{
+    use IsProductType;
+    
+    public function getPrice(?array $product_data) : int
+    {
+        return $product_data['width'] * $product_data['height'];
+    }
+}
+```
+```
+$product_data = [
+    'width' => 100,
+    'height' => 100`
+];
+
+$product = $product->create();
+$amazing_squares_product_data_type = AmazingSquaresProductDataType::create();
+
+$product->productDataType->associate($amazing_squares_product_data_type);
+$product->save();
+
+$price = $product->getPrice($product_data);  // 1000
+
 ```
 
 ## Cart
-Your user models should use the `HasCart` trait which will create a cart automatically
-for a user when accessed for the first time.
+The `Cart` facade is session based and provides the following methods
 
-### Common Cart Methods
+### Cart Methods
 
 ```
 
 use Antidote\LaravelCart\Facades\Cart;
 
+Cart::items(); //returns a collection of the items in the cart
+
 Cart::add($product); //add a product
 Cart::add($product, 2); //add 2 products
-Cart::($variable_product, 1, ['width' => 10, 'height' => 2]); // add a variable product
 
-Cart::remove($product); //remove a product by id irrespective of quantity. If a varaible product, it will remove irrespective of specification
+// add a product with product_data. If an item in the cart
+already has the same product_data, the quantity is increased
+by one, otherwise a new cartitem is added.
+Cart::($variable_product, 1, $product_data); 
+
+Cart::remove($product); //remove a product by id irrespective of quantity.
 Cart::remove($product); //remove one product by id
 Cart::remove($product, 2); //remove two products by id
-Cart::remove($variable_product, 1, $specification); //remove a product by a specification
+Cart::remove($variable_product, 1, $product_data); //remove a product with teh specified product_data
 
 Cart::clear(); //empty the cart
 
@@ -154,3 +170,5 @@ class SpecialDiscount implements Discount
 }
 
 ```
+
+# 

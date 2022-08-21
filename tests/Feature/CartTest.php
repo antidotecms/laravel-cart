@@ -1,320 +1,304 @@
 <?php
 
-namespace Tests\Feature;
-
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Facades\Cart;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
-use PHPUnit\Framework\MockObject\InvalidMethodNameException;
-use Tests\Fixtures\app\Models\ComplexProduct;
-use Tests\Fixtures\app\Models\Customer;
-use Tests\Fixtures\app\Models\SimpleProduct;
-use Tests\Fixtures\app\Models\VariableProduct;
-use Tests\TestCase;
+use Tests\Fixtures\app\Models\Products\Product;
+use Tests\Fixtures\app\Models\ProductTypes\ComplexProductDataType;
+use Tests\Fixtures\app\Models\ProductTypes\SimpleProductDataType;
+use Tests\Fixtures\app\Models\ProductTypes\VariableProductDataType;
 
-class CartTest extends TestCase
-{
-    use RefreshDatabase;
+it('can add a product to the cart', function() {
 
-    /**
-     * @test
-     */
-    public function a_customer_can_add_a_product_as_a_guest()
-    {
-        $product = SimpleProduct::create([
-            'name' => 'A Simple Product',
-            'price' => '2000'
-        ]);
+    $product_data = SimpleProductDataType::create([
+        'name' => 'A Simple Product',
+        'description' => 'It\'s really very simple',
+        'price' => '2000'
+    ]);
 
-        Cart::add($product);
+    $product = Product::create();
 
-        $this->assertEquals(1, Cart::cartitems()->count());
+    $product->productDataType()->associate($product_data);
+    $product->save();
 
-        $product_data = new CartItem([
-            'product_id' => $product->id,
-            'product_type' => SimpleProduct::class,
-            'product' => SimpleProduct::find($product->id),
-            'quantity' => 1,
-            'specification' => null
-        ]);
+    Cart::add($product);
 
-        $this->assertEquals($product_data, Cart::cartitems()->first());
-    }
+    $this->assertEquals(1, Cart::items()->count());
 
-    /**
-     * @test
-     */
-    public function a_customer_can_add_a_product_with_a_quantity_as_a_guest()
-    {
-        $product = SimpleProduct::create([
-            'name' => 'A Simple Product',
-            'price' => '2000'
-        ]);
+    $product_data = new CartItem([
+        'product_id' => $product->id,
+        'product_type' => SimpleProductDataType::class,
+        'product' => SimpleProductDataType::find($product->id),
+        'quantity' => 1,
+        'specification' => null
+    ]);
 
-        $this->assertEquals(1, SimpleProduct::count());
+    $this->assertEquals($product_data, Cart::items()->first());
 
-        Cart::add($product, 3);
+});
 
-        $this->assertEquals(1, Cart::cartitems()->count());
-        $this->assertEquals(3, Cart::cartitems()->first()->quantity);
-    }
+it('can add a product and specify quantity', function () {
 
-    /**
-     * @test
-     */
-    public function a_customer_can_remove_a_product_by_product_id_as_a_guest()
-    {
-        $product = SimpleProduct::create([
-            'name' => 'A Simple Product',
-            'price' => '2000'
-        ]);
+    $product_data = SimpleProductDataType::create([
+        'name' => 'A Simple Product',
+        'price' => '2000'
+    ]);
 
-        $this->assertEquals(1, SimpleProduct::count());
+    $product = Product::create();
 
-        Cart::add($product);
+    $product->productDataType()->associate($product_data);
+    $product->save();
 
-        $this->assertEquals(1, Cart::cartitems()->count());
+    Cart::add($product, 3);
 
-        Cart::remove($product);
-        //$customer->refresh();
+    $this->assertEquals(1, Cart::items()->count());
+    $this->assertEquals(3, Cart::items()->first()->quantity);
 
-        $this->assertEquals(0, Cart::cartitems()->count());
-    }
+});
 
-    /**
-     * @test
-     */
-    public function customer_can_remove_a_product_with_its_specification()
-    {
-        $variable_product = VariableProduct::create([
-            'name' => 'A variable product'
-        ]);
+it('can remove a product by product id', function () {
 
-        $variable_product2 = VariableProduct::create([
-            'name' => 'Another variable product'
-        ]);
+    $product_data = SimpleProductDataType::create([
+        'name' => 'A Simple Product',
+        'price' => '2000'
+    ]);
 
-        Cart::add($variable_product, 1, [
-            'width' => 10,
-            'height' => 10
-        ]);
+    $product = Product::create();
 
-        Cart::add($variable_product2, 1, [
+    $product->productDataType()->associate($product_data);
+    $product->save();
+
+    Cart::add($product);
+
+    $this->assertEquals(1, Cart::items()->count());
+
+    Cart::remove($product);
+    //$customer->refresh();
+
+    $this->assertEquals(0, Cart::items()->count());
+
+});
+
+it('it can remove a product by product id and product data', function () {
+
+    $variable_product_data_type1 = VariableProductDataType::create([
+        'name' => 'A variable product'
+    ]);
+
+    $variable_product1 = Product::create();
+
+    $variable_product1->productDataType()->associate($variable_product_data_type1);
+    $variable_product1->save();
+
+    $variable_product_data_type2 = VariableProductDataType::create([
+        'name' => 'Another variable product'
+    ]);
+
+    $variable_product2 = Product::create();
+
+    $variable_product2->productDataType()->associate($variable_product_data_type2);
+    $variable_product2->save();
+
+    Cart::add($variable_product1, 1, [
+        'width' => 10,
+        'height' => 10
+    ]);
+
+    Cart::add($variable_product2, 1, [
+        'width' => 10,
+        'height' => 20
+    ]);
+
+    $this->assertEquals(2, Cart::items()->count());
+
+    Cart::remove($variable_product1);
+
+    $this->assertEquals(1, Cart::items()->count());
+
+    $expected_product = new CartItem([
+        'product_id' => $variable_product2->id,
+        'quantity' => 1,
+        'product_data' => [
             'width' => 10,
             'height' => 20
-        ]);
+        ]
+    ]);
 
-        $this->assertEquals(2, Cart::cartitems()->count());
+    $this->assertEquals($expected_product, Cart::items()->first());
+});
 
-        Cart::remove($variable_product, 1, [
-            'width' => 10,
-            'height' => 10
-        ]);
+it('it can remove a product by product id and product data specifying quantity', function () {
 
-        $this->assertEquals(1, Cart::cartitems()->count());
+    $product_data = SimpleProductDataType::create([
+        'name' => 'A Simple Product',
+        'price' => '2000'
+    ]);
 
-        $expected_product = new CartItem([
-            'product_id' => $variable_product2->id,
-            'product_type' => VariableProduct::class,
-            'quantity' => 1,
-            'specification' => [
-                'width' => 10,
-                'height' => 20
-            ]
-        ]);
+    $product = Product::create();
 
-        $this->assertEquals($expected_product, Cart::cartitems()->first());
-    }
+    $product->productDataType()->associate($product_data);
+    $product->save();
 
-    /**
-     * @test
-     */
-    public function a_customer_can_remove_a_product_by_product_id_with_a_quantity_as_a_guest()
-    {
-        $product = SimpleProduct::create([
-            'name' => 'A Simple Product',
-            'price' => '2000'
-        ]);
+    Cart::add($product, 5);
 
-        $this->assertEquals(1, SimpleProduct::count());
+    $this->assertEquals(1, Cart::items()->count());
+    $this->assertEquals(5, Cart::items()->first()->quantity);
 
-        Cart::add($product, 5);
+    Cart::remove($product, 2);
+    //$customer->refresh();
 
-        $this->assertEquals(1, Cart::cartitems()->count());
-        $this->assertEquals(5, Cart::cartitems()->first()->quantity);
+    $this->assertEquals(1, Cart::items()->count());
+    $this->assertEquals(3, Cart::items()->first()->quantity);
 
-        Cart::remove($product, 2);
-        //$customer->refresh();
+});
 
-        $this->assertEquals(1, Cart::cartitems()->count());
-        $this->assertEquals(3, Cart::cartitems()->first()->quantity);
-    }
+it('can clear the contents of the cart', function () {
 
-    /**
-     * @test
-     */
-    public function a_customer_can_clear_a_cart()
-    {
-        $product = SimpleProduct::create([
-            'name' => 'A Simple Product',
-            'price' => '2000'
-        ]);
+    $product_data = SimpleProductDataType::create([
+        'name' => 'A Simple Product',
+        'price' => '2000'
+    ]);
 
-        $this->assertEquals(1, SimpleProduct::count());
+    $product = Product::create();
 
-        Cart::add($product, 5);
+    $product->productDataType()->associate($product_data);
 
-        $this->assertEquals(1, Cart::cartitems()->count());
-        $this->assertEquals(5, Cart::cartitems()->first()->quantity);
+    $this->assertEquals(1, SimpleProductDataType::count());
 
-        Cart::clear();
+    Cart::add($product, 5);
 
-        $this->assertEquals(0, Cart::cartitems()->count());
-    }
+    $this->assertEquals(1, Cart::items()->count());
+    $this->assertEquals(5, Cart::items()->first()->quantity);
 
-    /**
-     * @test
-     */
-    public function a_customer_can_get_the_subtotal()
-    {
-        $product = SimpleProduct::create([
-            'name' => 'A Simple Product',
-            'price' => '2000'
-        ]);
+    Cart::clear();
 
-        $product2 = SimpleProduct::create([
-            'name' => 'A Second Simple Product',
-            'price' => '150'
-        ]);
+    $this->assertEquals(0, Cart::items()->count());
 
-        Cart::add($product);
-        Cart::add($product2, 2);
+});
 
-        $this->assertTrue(Cart::isInCart(SimpleProduct::class, $product->id));
-        $this->assertTrue(Cart::isInCart(SimpleProduct::class, $product2->id));
+it('provide the subtotal', function () {
 
-        $this->assertEquals(2300, Cart::getSubtotal());
-    }
+    $product_data1 = SimpleProductDataType::create([
+        'name' => 'A Simple Product',
+        'price' => '2000'
+    ]);
 
-    /**
-     * @test
-     */
-    public function a_customer_can_get_the_subtotal_where_price_is_overriden()
-    {
-        $product = SimpleProduct::create([
-            'name' => 'A Simple Product',
-            'price' => '2000'
-        ]);
+    $product1 = Product::create();
+    $product1->productDataType()->associate($product_data1);
+    $product1->save();
 
-        $complex = ComplexProduct::create([
-            'name' => 'A Simple Product',
-            'width' => '10',
-            'height' => '20'
-        ]);
+    $product_data2 = SimpleProductDataType::create([
+        'name' => 'A Second Simple Product',
+        'price' => '150'
+    ]);
 
-        Cart::add($product);
-        Cart::add($complex, 2);
+    $product2 = Product::create();
+    $product2->productDataType()->associate($product_data2);
+    $product2->save();
 
-        $this->assertEquals(2400, Cart::getSubtotal());
-    }
+    Cart::add($product1);
+    Cart::add($product2, 2);
 
-    /**
-     * @test
-     */
-    public function the_cart_will_state_whether_a_product_is_in_the_cart()
-    {
-        $product = SimpleProduct::create([
-            'name' => 'A Simple Product',
-            'price' => '2000'
-        ]);
+    $this->assertEquals('A Simple Product', $product1->getName());
 
-        $complex = ComplexProduct::create([
-            'name' => 'A Simple Product',
-            'width' => '10',
-            'height' => '20'
-        ]);
+    $this->assertTrue(Cart::isInCart($product1->id));
+    $this->assertTrue(Cart::isInCart($product2->id));
 
-        Cart::add($complex, 2);
-        //Cart::add($product);
+    $this->assertEquals(2300, Cart::getSubtotal());
 
-        $this->assertTrue(Cart::isInCart(ComplexProduct::class, $complex->id));
-        $this->assertFalse(Cart::isInCart(SimpleProduct::class, $product->id));
-    }
+});
 
-    /**
-     * @test
-     */
-    public function a_customer_can_add_a_product_with_specifications()
-    {
-        $variable = VariableProduct::create([
-            'name' => 'A variable product'
-        ]);
+it('provide the correct subtotal when a price of a product is calculated', function () {
 
-        $specification = [
-            'width' => 10,
-            'height' => 10
-        ];
+    $simple_product_data = SimpleProductDataType::create([
+        'name' => 'A Simple Product',
+        'price' => '2000'
+    ]);
 
-        $this->assertEquals(100, $variable->getPrice($specification));
+    $simple_product = Product::create();
 
-        Cart::add($variable, 1, [
-            'width' => 10,
-            'height' => 10
-        ]);
+    $simple_product->productDataType()->associate($simple_product_data);
+    $simple_product->save();
 
-        $this->assertTrue(Cart::isInCart(VariableProduct::class, $variable->id));
-        $this->assertEquals(100, Cart::getSubtotal());
-    }
+    $complex_product_data = ComplexProductDataType::create([
+        'name' => 'A Simple Product',
+        'width' => '10',
+        'height' => '20'
+    ]);
 
-    /**
-     * @test
-     */
-    public function the_facade_will_throw_an_error_if_they_method_does_not_exist()
-    {
-        $this->expectException(\BadMethodCallException::class);
+    $complex_product = Product::create();
 
-        Cart::nonExistantMethod();
-    }
+    $complex_product->productDataType()->associate($complex_product_data);
+    $complex_product->save();
 
-    /**
-     * @test
-     */
-    public function products_will_return_the_correct_name_and_price()
-    {
-        $simple_product = SimpleProduct::create([
-            'name' => 'A Simple Product',
-            'price' => '100',
-            'description' => 'its really very simple'
-        ]);
+    Cart::add($simple_product);
+    Cart::add($complex_product, 2);
 
-        $this->assertEquals('A Simple Product', $simple_product->getName());
-        $this->assertEquals('its really very simple', $simple_product->getDescription());
-        $this->assertEquals(100, $simple_product->getPrice());
+    $this->assertEquals(2400, Cart::getSubtotal());
 
-        $complex_product = ComplexProduct::create([
-            'name' => 'A Complex Product',
-            'width' => 20,
-            'height' => 10
-        ]);
+});
 
-        $this->assertEquals('A Complex Product', $complex_product->getName());
-        $this->assertEquals(200, $complex_product->getPrice());
+it('will state whether a product is in the cart', function () {
 
-        $specification = [
-            'width' => 20,
-            'height' => 10
-        ];
+    $simple_product_data = SimpleProductDataType::create([
+        'name' => 'A Simple Product',
+        'price' => '2000'
+    ]);
 
-        $variable_product = VariableProduct::create([
-            'name' => 'A Variable Product'
-        ]);
+    $simple_product = Product::create();
+    $simple_product->productDataType()->associate($simple_product_data);
+    $simple_product->save();
 
-        $this->assertEquals('A Variable Product', $variable_product->getName());
-        $this->assertEquals(120, $variable_product->getPrice());
-        $this->assertEquals('A Variable Product with width of 20 and height of 10', $variable_product->getName($specification));
-        $this->assertEquals('width: 20, height: 10', $variable_product->getDescription($specification));
-        $this->assertEquals(200, $variable_product->getPrice($specification));
-    }
-}
+    $complex_product_data = ComplexProductDataType::create([
+        'name' => 'A Simple Product',
+        'width' => '10',
+        'height' => '20'
+    ]);
+
+    $complex_product = Product::create();
+    $complex_product->productDataType()->associate($complex_product_data);
+    $complex_product->save();
+
+    Cart::add($complex_product, 2);
+    //Cart::add($product);
+
+    $this->assertTrue(Cart::isInCart($complex_product->id));
+    $this->assertFalse(Cart::isInCart($simple_product->id));
+
+});
+
+it('can add a product with product data', function () {
+
+    $variable_product_data = VariableProductDataType::create([
+        'name' => 'A variable product'
+    ]);
+
+    $variable_product = Product::create();
+
+    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->save();
+
+    $product_data = [
+        'width' => 10,
+        'height' => 10
+    ];
+
+    $this->assertEquals(100, $variable_product->getPrice($product_data));
+    $this->assertEquals(120, $variable_product->getPrice());
+
+    Cart::add($variable_product, 1, [
+        'width' => 10,
+        'height' => 10
+    ]);
+
+    $this->assertTrue(Cart::isInCart($variable_product->id));
+    $this->assertEquals(100, Cart::getSubtotal());
+
+});
+
+test('the facade will throw an error if the method does not exist', function () {
+
+    $this->expectException(\BadMethodCallException::class);
+
+    Cart::nonExistantMethod();
+
+});

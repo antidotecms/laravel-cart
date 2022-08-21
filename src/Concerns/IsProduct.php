@@ -1,40 +1,28 @@
 <?php
 
 namespace Antidote\LaravelCart\Concerns;
-use Exception;
 
-/**
- * @mixin \Illuminate\Database\Eloquent\Model
- */
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+
 trait IsProduct
 {
-    /**
-     * @throws Exception
-     */
-    public function getName(): string
+    public function getName(...$args) : string
     {
-        if(isset($this->name)) return $this->name;
-
-        throw new Exception('Attribute `name` not on model. Please override `isCartItem::getName()`');
+        return $this->productDataType->getName(...$args);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function getDescription(): string
+    public function getDescription(...$args) : string
     {
-        if(isset($this->description)) return $this->description;
-
-        throw new Exception('Attribute `description` not on model. Please override `isCartItem::getDescription()`');
+        return $this->productDataType->getDescription(...$args);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function getPrice(): int
+    public function getPrice(...$args) : int
     {
-        if(isset($this->price)) return $this->price;
+        return $this->productDataType->getPrice(...$args);
+    }
 
-        throw new Exception('Attribute `price` not on model. Please override `isCartItem::getPrice()`');
+    public function productDataType() : MorphTo
+    {
+        return $this->morphTo();
     }
 }

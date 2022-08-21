@@ -11,6 +11,10 @@ class CartItemsCollectionCaster implements Caster
 
     public function cast(mixed $value): mixed
     {
+        if(!$value) {
+            return null;
+        }
+
         if (!is_array($value)) {
             throw new Exception("Can only cast arrays to CartItems");
         }

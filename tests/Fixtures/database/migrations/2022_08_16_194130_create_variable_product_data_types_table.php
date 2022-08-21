@@ -13,11 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('complex_products', function (Blueprint $table) {
+        Schema::create('variable_product_data_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('width');
-            $table->integer('height');
             $table->timestamps();
         });
     }

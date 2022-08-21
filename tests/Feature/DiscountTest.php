@@ -6,10 +6,9 @@ use Antidote\LaravelCart\Domain\Discount\PercentageDiscount;
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Models\CartAdjustment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
-use Tests\Fixtures\app\Models\ComplexProduct;
 use Tests\Fixtures\app\Models\Customer;
-use Tests\Fixtures\app\Models\SimpleProduct;
+use Tests\Fixtures\app\Models\Products\Product;
+use Tests\Fixtures\app\Models\ProductTypes\SimpleProductDataType;
 use Tests\TestCase;
 
 class DiscountTest extends TestCase
@@ -21,10 +20,14 @@ class DiscountTest extends TestCase
      */
     public function it_will_apply_a_discount()
     {
-        $product = SimpleProduct::create([
+        $simple_product_data = SimpleProductDataType::create([
             'name' => 'A Simple Product',
             'price' => '2000'
         ]);
+
+        $simple_product = Product::create();
+        $simple_product->productDataType()->associate($simple_product_data);
+        $simple_product->save();
 
         $percentage_discount = CartAdjustment::create([
             'name' => '10% off',
@@ -35,7 +38,7 @@ class DiscountTest extends TestCase
             'active' => true
         ]);
 
-        Cart::add($product);
+        Cart::add($simple_product);
 
         $this->assertEquals(1800, Cart::getTotal());
     }

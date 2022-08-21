@@ -19,13 +19,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     private function migrations()
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        $this->publishes([
+            __DIR__ . '/../database/migrations/' => database_path('migrations/my-package'),
+        ], 'laravel-cart');
     }
 
     private function bindings()
     {
-//        $this->app->bind(Cart::class, function($app) {
-//                return auth()->check() ? auth()->user()->cart : null;
-//            });
 
         $this->app->bind('cart', function ($app) {
             return new \Antidote\LaravelCart\Domain\Cart();

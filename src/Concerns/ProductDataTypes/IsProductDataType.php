@@ -1,0 +1,45 @@
+<?php
+
+namespace Antidote\LaravelCart\Concerns\ProductDataTypes;
+
+use Exception;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Tests\Fixtures\app\Models\Products\Product;
+
+trait IsProductDataType
+{
+    public function product(): MorphOne
+    {
+        return $this->morphOne(Product::class, 'product_data_type');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getName(?array $product_data = null): string
+    {
+        if (isset($this->name)) return $this->name;
+
+        throw new Exception('Attribute `name` not on model. Please override `getName()`');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getDescription(?array $product_data = null): string
+    {
+        if(isset($this->description)) return $this->description;
+
+        throw new Exception('Attribute `description` not on model. Please override `getDescription()`');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getPrice(?array $product_data = null): int
+    {
+        if(isset($this->price)) return $this->price;
+
+        throw new Exception('Attribute `price` not on model. Please override `getPrice()`');
+    }
+}

@@ -4,7 +4,7 @@ namespace Antidote\LaravelCart\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-interface Product
+interface ProductData
 {
     public function getName(...$args): string;
 
@@ -12,5 +12,5 @@ interface Product
 
     public function getPrice(...$args): int;
 
-    public function productDataType(): MorphTo;
+    public function type() : MorphTo;
 }
