@@ -3,9 +3,10 @@
 namespace Tests\Fixtures\app\Models\ProductTypes;
 
 use Antidote\LaravelCart\Concerns\ProductDataTypes\IsProductDataType;
+use Antidote\LaravelCart\Contracts\ProductDataType;
 use Illuminate\Database\Eloquent\Model;
 
-class ComplexProductDataType extends Model
+class ComplexProductDataType extends Model implements ProductDataType
 {
     use IsProductDataType;
 
@@ -15,7 +16,7 @@ class ComplexProductDataType extends Model
         'height'
     ];
 
-    public function getPrice() : int
+    public function getPrice(...$args) : int
     {
         return $this->width * $this->height;
     }

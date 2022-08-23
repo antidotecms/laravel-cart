@@ -3,9 +3,10 @@
 namespace Tests\Fixtures\app\Models\ProductTypes;
 
 use Antidote\LaravelCart\Concerns\ProductDataTypes\IsProductDataType;
+use Antidote\LaravelCart\Contracts\ProductDataType;
 use Illuminate\Database\Eloquent\Model;
 
-class VariableProductDataType extends Model
+class VariableProductDataType extends Model implements ProductDataType
 {
     use IsProductDataType;
 
