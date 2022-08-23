@@ -4,7 +4,7 @@ namespace Antidote\LaravelCart\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-interface ProductData
+interface ProductDataType
 {
     public function getName(...$args): string;
 
