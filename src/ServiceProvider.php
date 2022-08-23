@@ -37,8 +37,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../config/laravel-cart.php' => config_path('laravel-cart.php'),
-        ]);
+        ], 'laravel-cart-config');
 
-        $this->mergeConfigFrom(__DIR__.'/../config/laravel-cart.php','laravel-cart-config' );
+        $this->mergeConfigFrom(__DIR__.'/../config/laravel-cart.php','laravel-cart' );
     }
 }
