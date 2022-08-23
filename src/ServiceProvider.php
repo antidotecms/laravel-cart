@@ -12,6 +12,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot()
     {
         $this->migrations();
+        $this->configuration();
     }
 
     private function migrations()
@@ -19,8 +20,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->publishes([
-            __DIR__ . '/../database/migrations/' => database_path('migrations/my-package'),
-        ], 'laravel-cart');
+            __DIR__ . '/../database/migrations/' => database_path('migrations'),
+        ], 'laravel-cart-migrations');
     }
 
     private function bindings()
@@ -30,5 +31,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             return new \Antidote\LaravelCart\Domain\Cart();
         });
 
+    }
+
+    private function configuration()
+    {
+        $this->publishes([
+            __DIR__.'/../config/laravel-cart.php' => config_path('laravel-cart.php'),
+        ]);
+
+        $this->mergeConfigFrom(__DIR__.'/../config/laravel-cart.php','laravel-cart-config' );
     }
 }

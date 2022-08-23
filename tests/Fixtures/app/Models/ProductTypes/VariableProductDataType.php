@@ -21,7 +21,7 @@ class VariableProductDataType extends Model implements ProductDataType
             $this->name;
     }
 
-    public function getDescription(?array $product_data): string
+    public function getDescription(?array $product_data  = null): string
     {
         return "width: {$product_data['width']}, height: {$product_data['height']}";
     }

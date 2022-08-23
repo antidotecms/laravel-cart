@@ -3,7 +3,6 @@
 namespace Antidote\LaravelCart\DataTransferObjects;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Tests\Fixtures\app\Models\Products\Product;
 
 class CartItem extends \Spatie\DataTransferObject\DataTransferObject implements Arrayable
 {
@@ -14,6 +13,7 @@ class CartItem extends \Spatie\DataTransferObject\DataTransferObject implements 
     public function getProduct()
     {
         //@todo why does this return incorrect model - return $this->product_type::find($this->product_id)->first();
-        return Product::where('id', $this->product_id)->first();
+        $product_class = config('laravel-cart.product_class');
+        return $product_class::where('id', $this->product_id)->first();
     }
 }

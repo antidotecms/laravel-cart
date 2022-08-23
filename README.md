@@ -1,6 +1,20 @@
 # Laravel Cart
 A simple implementation of a cart for use in Laravel applications. Very much a WIP!
 
+## Installation
+### Database
+The package only requires on table creating of `cart_adjustments`. The package will migrate this for you or you can
+publish this to make amends using:
+```
+php artisan vendor:publish --tag=laravel-cart-migrations
+```
+### Configuration
+By default, the package will use `\App\Models\Product` as your product model. You can override this by publishing
+the config and setting the `product_data` config value:
+```
+php artisan vendor:publish --tag=laravel-cart-config
+```
+
 ## Products
 Your product models should use the trait `Antidote\LaravelCart\Concerns\IsProduct` as well as implement
 `\Antidote\LaravelCart\Contracts\Product`.
