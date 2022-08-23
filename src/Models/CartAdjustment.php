@@ -5,6 +5,9 @@ namespace Antidote\LaravelCart\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 
+/**
+ * @property array $parameters
+ */
 class CartAdjustment extends Model
 {
     protected $fillable = [

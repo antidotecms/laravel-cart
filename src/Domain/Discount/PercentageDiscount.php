@@ -5,6 +5,9 @@ namespace Antidote\LaravelCart\Domain\Discount;
 use Antidote\LaravelCart\Contracts\Discount;
 use Antidote\LaravelCart\Facades\Cart;
 
+/**
+ * property CartAdjustment $adjustment
+ */
 class PercentageDiscount extends Discount
 {
     public function amount(): int

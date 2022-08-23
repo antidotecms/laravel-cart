@@ -22,7 +22,7 @@ class MyProduct extends Model implements Product
 
 Products are associated with a `ProductDataType` which encapsulates the nature of the product. For example, a
 `ClothesProductType` may need to store information about the colour and size of the product to be purchased.
-This association is done at run time so that only one `Product` model is needed without instead of many different Product 
+This association is done at run time so that only one `Product` model is needed without the need for many different Product 
 models for products that have different behaviours
 
 ```
@@ -95,6 +95,7 @@ $amazing_squares_product_data_type = AmazingSquaresProductDataType::create();
 
 $product->productDataType->associate($amazing_squares_product_data_type);
 $product->save();
+// or $amazing_squares_product_data_type->product->save($product)
 
 $price = $product->getPrice($product_data);  // 1000
 
@@ -170,5 +171,3 @@ class SpecialDiscount implements Discount
 }
 
 ```
-
-# 

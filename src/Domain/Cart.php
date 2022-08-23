@@ -5,6 +5,9 @@ namespace Antidote\LaravelCart\Domain;
 use Antidote\LaravelCart\Models\CartAdjustment;
 use Illuminate\Support\Collection;
 
+/**
+ * @method
+ */
 class Cart
 {
     public function __call($method, $arguments) : mixed

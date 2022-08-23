@@ -2,8 +2,6 @@
 
 namespace Antidote\LaravelCart;
 
-use Antidote\LaravelCart\Models\Cart;
-
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function register()
@@ -28,7 +26,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     private function bindings()
     {
 
-        $this->app->bind('cart', function ($app) {
+        $this->app->bind('cart', function () {
             return new \Antidote\LaravelCart\Domain\Cart();
         });
 

@@ -4,6 +4,9 @@ namespace Antidote\LaravelCart\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @property MorphTo $productDataType
+ */
 trait IsProduct
 {
     public function getName(...$args) : string
