@@ -295,6 +295,37 @@ it('can add a product with product data', function () {
 
 });
 
+it('will increment the quantity of a cart item if the cart already has a product with the same data', function()
+{
+    $variable_product_data = VariableProductDataType::create([
+        'name' => 'A variable product'
+    ]);
+
+    $variable_product = Product::create();
+
+    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->save();
+
+    $product_data = [
+        'width' => 10,
+        'height' => 10
+    ];
+
+    Cart::add($variable_product, 1, [
+        'width' => 10,
+        'height' => 10
+    ]);
+
+    $this->assertEquals(1, Cart::items()->first()->quantity);
+
+    Cart::add($variable_product, 1, [
+        'width' => 10,
+        'height' => 10
+    ]);
+
+    $this->assertEquals(2, Cart::items()->first()->quantity);
+});
+
 test('the facade will throw an error if the method does not exist', function () {
 
     $this->expectException(\BadMethodCallException::class);

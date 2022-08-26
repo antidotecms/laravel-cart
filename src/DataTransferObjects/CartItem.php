@@ -14,6 +14,6 @@ class CartItem extends \Spatie\DataTransferObject\DataTransferObject implements 
     {
         //@todo why does this return incorrect model - return $this->product_type::find($this->product_id)->first();
         $product_class = config('laravel-cart.product_class');
-        return $product_class::where('id', $this->product_id)->first();
+        return $product_class::with('productDataType')->where('id', $this->product_id)->first();
     }
 }

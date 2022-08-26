@@ -34,6 +34,7 @@ class Cart
     {
         $cart_items = session()->get('cart_items') ?? [];
         $cart = new \Antidote\LaravelCart\DataTransferObjects\Cart(cart_items: $cart_items);
+
         return $cart->cart_items ?? collect([]);
     }
 
@@ -61,9 +62,9 @@ class Cart
         }
         else
         {
-            $cart_items = $cart_items->each(function($cart_item) use ($product, $quantity, $product_data) {
+            $cart_items->each(function($cart_item) use ($product, $quantity, $product_data) {
 
-                if($cart_item->product_type == get_class($product) &&
+                if($cart_item->getProduct()->product_data_type_type == get_class($product->productDataType) &&
                     $cart_item->product_id == $product->id &&
                     $cart_item->product_data == $product_data) {
                         $cart_item->quantity = $cart_item->quantity + $quantity;
@@ -92,7 +93,7 @@ class Cart
                 {
                     $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
                 }
-                elseif ($cart_item->product_id == $product->id && $product_data && $cart_item->specification == $product_data)
+                elseif ($cart_item->product_id == $product->id && $product_data && $cart_item->product_data == $product_data)
                 {
                     $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
                 }
