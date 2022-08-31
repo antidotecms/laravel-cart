@@ -62,15 +62,25 @@ class Cart
         }
         else
         {
-            $cart_items->each(function($cart_item) use ($product, $quantity, $product_data) {
 
-                if($cart_item->getProduct()->product_data_type_type == get_class($product->productDataType) &&
-                    $cart_item->product_id == $product->id &&
-                    $cart_item->product_data == $product_data) {
-                        $cart_item->quantity = $cart_item->quantity + $quantity;
-                }
+            $cart_items->filter(function($cart_item) use ($product, $quantity, $product_data) {
+                    return $cart_item->getProduct()->product_data_type_type == get_class($product->productDataType) &&
+                        $cart_item->product_id == $product->id &&
+                        $cart_item->product_data == $product_data;
+                })
+                ->whenNotEmpty(function() use ($quantity, $cart_items) {
+                    return $cart_items->map(function($cart_item) use ($quantity) {
+                       $cart_item->quantity +=  $quantity;
+                    });
+                })
+                ->whenEmpty(function() use ($product, $quantity, $product_data, $cart_items) {
 
-            });
+                    return $cart_items->push([
+                        'product_id' => $product->id,
+                        'quantity' => $quantity,
+                        'product_data' => $product_data
+                    ]);
+                });
         }
 
         $cart_items = $cart_items->toArray();

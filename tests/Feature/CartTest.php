@@ -352,6 +352,42 @@ it('will remove a product if it is asked to remove more than is in the cart', fu
     $this->assertEquals(0, Cart::items()->count());
 });
 
+it('will add two cart items if the product data is different', function () {
+
+    $variable_product_data = VariableProductDataType::create([
+        'name' => 'A variable product'
+    ]);
+
+    $variable_product = Product::create();
+
+    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->save();
+
+    $product_data = [
+        'width' => 10,
+        'height' => 10
+    ];
+
+    $product_data2 = [
+        'width' => 20,
+        'height' => 20
+    ];
+
+    Cart::add($variable_product, 1, $product_data);
+
+    expect(Cart::items()->count())->toBe(1);
+
+    Cart::add($variable_product, 1, $product_data);
+
+    expect(Cart::items()->count())->toBe(1)
+        ->and(Cart::items()->first()->quantity)->toBe(2);
+
+    Cart::add($variable_product, 1, $product_data2);
+
+    expect(Cart::items()->count())->toBe(2);
+
+});
+
 test('the facade will throw an error if the method does not exist', function () {
 
     $this->expectException(\BadMethodCallException::class);
