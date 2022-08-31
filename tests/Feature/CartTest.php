@@ -326,6 +326,32 @@ it('will increment the quantity of a cart item if the cart already has a product
     $this->assertEquals(2, Cart::items()->first()->quantity);
 });
 
+it('will remove a product if it is asked to remove more than is in the cart', function () {
+
+    $variable_product_data = VariableProductDataType::create([
+        'name' => 'A variable product'
+    ]);
+
+    $variable_product = Product::create();
+
+    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->save();
+
+    $product_data = [
+        'width' => 10,
+        'height' => 10
+    ];
+
+    Cart::add($variable_product, 1, [
+        'width' => 10,
+        'height' => 10
+    ]);
+
+    Cart::remove($variable_product, 2, $product_data);
+
+    $this->assertEquals(0, Cart::items()->count());
+});
+
 test('the facade will throw an error if the method does not exist', function () {
 
     $this->expectException(\BadMethodCallException::class);

@@ -102,7 +102,7 @@ class Cart
             });
 
             $cart_items = $cart_items->reject(function($cart_item) {
-                 return $cart_item->quantity == 0;
+                 return $cart_item->quantity <= 0;
             });
 
         session()->put('cart_items', $cart_items->toArray());
