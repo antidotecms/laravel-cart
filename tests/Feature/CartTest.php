@@ -351,6 +351,35 @@ it('will increment the quantity of a cart item if the cart already has a product
     $this->assertEquals(1, Cart::items()->skip(2)->first()->quantity);
 });
 
+it('will amend the quantity of a cart item', function () {
+
+    $variable_product_data = VariableProductDataType::create([
+        'name' => 'A variable product'
+    ]);
+
+    $variable_product = Product::create();
+
+    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->save();
+
+    $product_data = [
+        'width' => 10,
+        'height' => 10
+    ];
+
+    $product_data2 = [
+        'width' => 20,
+        'height' => 20
+    ];
+
+    Cart::add($variable_product, 1, $product_data);
+    Cart::add($variable_product, 1, $product_data2);
+    Cart::add($variable_product, 2, $product_data);
+
+    $this->assertEquals(3, Cart::items()->first()->quantity);
+    $this->assertEquals(1, Cart::items()->skip(1)->first()->quantity);
+});
+
 it('will remove a product if it is asked to remove more than is in the cart', function () {
 
     $variable_product_data = VariableProductDataType::create([
