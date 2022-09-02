@@ -301,22 +301,45 @@ it('will increment the quantity of a cart item if the cart already has a product
         'name' => 'A variable product'
     ]);
 
+    $simple_product_data = SimpleProductDataType::create([
+        'name' => 'A simple product',
+        'price' => 100
+    ]);
+
     $variable_product = Product::create();
 
     $variable_product->productDataType()->associate($variable_product_data);
     $variable_product->save();
+
+    $simple_product = Product::create();
+
+    $simple_product->productDataType()->associate($simple_product_data);
+    $simple_product->save();
 
     $product_data = [
         'width' => 10,
         'height' => 10
     ];
 
-    Cart::add($variable_product, 1, [
-        'width' => 10,
-        'height' => 10
-    ]);
+    $product_data2 = [
+        'width' => 20,
+        'height' => 20
+    ];
+
+    $product_data3 = [
+        'width' => 30,
+        'height' => 30
+    ];
+
+    Cart::add($variable_product, 1, $product_data);
+
+    Cart::add($variable_product, 1, $product_data2);
+
+    Cart::add($simple_product, 1, $product_data3);
 
     $this->assertEquals(1, Cart::items()->first()->quantity);
+    $this->assertEquals(1, Cart::items()->skip(1)->first()->quantity);
+    $this->assertEquals(1, Cart::items()->skip(2)->first()->quantity);
 
     Cart::add($variable_product, 1, [
         'width' => 10,
@@ -324,6 +347,8 @@ it('will increment the quantity of a cart item if the cart already has a product
     ]);
 
     $this->assertEquals(2, Cart::items()->first()->quantity);
+    $this->assertEquals(1, Cart::items()->skip(1)->first()->quantity);
+    $this->assertEquals(1, Cart::items()->skip(2)->first()->quantity);
 });
 
 it('will remove a product if it is asked to remove more than is in the cart', function () {

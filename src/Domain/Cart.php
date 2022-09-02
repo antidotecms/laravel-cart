@@ -68,12 +68,14 @@ class Cart
                         $cart_item->product_id == $product->id &&
                         $cart_item->product_data == $product_data;
                 })
-                ->whenNotEmpty(function() use ($quantity, $cart_items) {
-                    return $cart_items->map(function($cart_item) use ($quantity) {
-                       $cart_item->quantity +=  $quantity;
+                ->whenNotEmpty(function($collection) use ($quantity, $cart_items, $product_data) {
+                    return $collection->map(function($cart_item) use ($quantity, $product_data) {
+                        //if($cart_item->product_data == $product_data) {
+                            $cart_item->quantity +=  $quantity;
+                        //}
                     });
                 })
-                ->whenEmpty(function() use ($product, $quantity, $product_data, $cart_items) {
+                ->whenEmpty(function($collection) use ($product, $quantity, $product_data, $cart_items) {
 
                     return $cart_items->push([
                         'product_id' => $product->id,
