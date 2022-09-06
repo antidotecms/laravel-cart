@@ -4,13 +4,12 @@ namespace Antidote\LaravelCart\Concerns\ProductDataTypes;
 
 use Exception;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Tests\Fixtures\app\Models\Products\Product;
 
 trait IsProductDataType
 {
     public function product(): MorphOne
     {
-        return $this->morphOne(Product::class, 'product_data_type');
+        return $this->morphOne(config('laravel-cart.product_class'), 'product_data_type');
     }
 
     /**

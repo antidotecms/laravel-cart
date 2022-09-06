@@ -5,6 +5,23 @@ use Tests\Fixtures\app\Models\ProductTypes\ComplexProductDataType;
 use Tests\Fixtures\app\Models\ProductTypes\SimpleProductDataType;
 use Tests\Fixtures\app\Models\ProductTypes\VariableProductDataType;
 
+test('a product type has a product', function()
+{
+    $product_data = \Tests\Fixtures\app\Models\ProductTypes\SimpleProductDataType::create([
+        'name' => 'Simple Product Type',
+        'description' => 'It\'s really very simple',
+        'price' => 100
+    ]);
+
+    $product = Product::create();
+
+    $product->productDataType()->associate($product_data);
+    $product->save();
+
+    expect(get_class($product_data->product))->toBe(Product::class);
+    expect($product_data->product->id)->toBe($product->id);
+});
+
 it('it can create a product and associated product data', function()
 {
     $product_data = \Tests\Fixtures\app\Models\ProductTypes\SimpleProductDataType::create([
