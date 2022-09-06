@@ -9,7 +9,7 @@ trait IsProductDataType
 {
     public function product(): MorphOne
     {
-        return $this->morphOne(config('laravel-cart.product_class'), 'product_data_type');
+        return $this->morphOne(config('laravel-cart.product_class'), 'product_data_type')->withTrashed();
     }
 
     /**

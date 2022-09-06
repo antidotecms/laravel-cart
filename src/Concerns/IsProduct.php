@@ -26,7 +26,7 @@ trait IsProduct
 
     public function productDataType() : MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     protected static function booted()
