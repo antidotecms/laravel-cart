@@ -28,4 +28,23 @@ trait IsProduct
     {
         return $this->morphTo();
     }
+
+    protected static function booted()
+    {
+        static::deleted(function ($product) {
+
+            $product->productDataType->delete();
+        });
+
+        static::restored(function ($product) {
+
+            $product->productDataType->restore();
+
+        });
+
+        static::forceDeleted(function ($product) {
+
+            $product->productDataType->forceDelete();
+        });
+    }
 }

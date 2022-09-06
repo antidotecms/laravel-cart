@@ -42,4 +42,21 @@ trait IsProductDataType
 
         throw new Exception('Attribute `price` not on model. Please override `getPrice()`');
     }
+
+    public static function booted()
+    {
+        static::deleting(function($product_data_type) {
+
+            if(is_null($product_data_type->product) || $product_data_type->product->trashed())
+            {
+                return true;
+            }
+
+            if(!$product_data_type->product->trashed())
+            {
+                return false;
+            }
+
+        });
+    }
 }

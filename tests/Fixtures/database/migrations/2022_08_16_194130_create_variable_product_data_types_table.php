@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('variable_product_data_types', function (Blueprint $table) {
             $table->id();
+            $table->softDeletes();
             $table->string('name');
             $table->timestamps();
         });

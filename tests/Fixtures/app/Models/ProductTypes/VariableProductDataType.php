@@ -5,9 +5,11 @@ namespace Tests\Fixtures\app\Models\ProductTypes;
 use Antidote\LaravelCart\Concerns\ProductDataTypes\IsProductDataType;
 use Antidote\LaravelCart\Contracts\ProductDataType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class VariableProductDataType extends Model implements ProductDataType
 {
+    use SoftDeletes;
     use IsProductDataType;
 
     protected $fillable = [

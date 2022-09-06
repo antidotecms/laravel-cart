@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('product_data_type_id')->nullable();
             $table->string('product_data_type_type')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

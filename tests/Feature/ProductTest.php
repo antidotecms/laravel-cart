@@ -89,3 +89,95 @@ it('products_will_return_the_correct_name_and_price', function () {
     $this->assertEquals(200, $variable_product->getPrice($specification));
 
 });
+
+it('will soft delete, force delete and restore product data type when soft deleted, force deleted and restored', function() {
+
+    $variable_product_data = VariableProductDataType::create([
+        'name' => 'A variable product'
+    ]);
+
+    $variable_product = Product::create();
+
+    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->save();
+
+    expect(Product::count())->toBe(1);
+    expect(VariableProductDataType::count())->toBe(1);
+
+    $variable_product->delete();
+
+    expect(Product::count())->toBe(0);
+    expect(VariableProductDataType::count())->toBe(0);
+
+    $variable_product->restore();
+
+    expect(Product::count())->toBe(1);
+    expect(VariableProductDataType::count())->toBe(1);
+
+    $variable_product->forceDelete();
+
+    expect(Product::count())->toBe(0);
+    expect(VariableProductDataType::count())->toBe(0);
+
+    $variable_product->restore();
+
+    expect(Product::count())->toBe(0);
+    expect(VariableProductDataType::count())->toBe(0);
+
+});
+
+it('will not allow soft deletion of a product type if the product is not soft deleted', function () {
+
+    $variable_product_data = VariableProductDataType::create([
+        'name' => 'A variable product'
+    ]);
+
+    $variable_product = Product::create();
+
+    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->save();
+
+    expect(Product::count())->toBe(1);
+    expect(VariableProductDataType::count())->toBe(1);
+
+    $variable_product_data->delete();
+
+    expect(Product::count())->toBe(1);
+    expect(VariableProductDataType::count())->toBe(1);
+
+    //bypass model events on product
+    Product::where('id', $variable_product->id)->update(['deleted_at' => now()]);
+
+    $variable_product->refresh();
+    expect($variable_product->trashed())->toBeTrue();
+
+    expect(Product::count())->toBe(0);
+    expect(VariableProductDataType::count())->toBe(1);
+
+    $variable_product_data->refresh();
+    $variable_product_data->delete();
+
+    expect(Product::count())->toBe(0);
+    expect(VariableProductDataType::count())->toBe(0);
+
+});
+
+it('will not allow restoration of a product data type if the product is deleted', function() {
+
+    $variable_product_data = VariableProductDataType::create([
+        'name' => 'A variable product'
+    ]);
+
+    $variable_product = Product::create();
+
+    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->save();
+
+    expect(Product::count())->toBe(1);
+    expect(VariableProductDataType::count())->toBe(1);
+
+    $variable_product_data->delete();
+
+    expect(Product::count())->toBe(1);
+    expect(VariableProductDataType::count())->toBe(1);
+});
