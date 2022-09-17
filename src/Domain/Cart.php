@@ -2,7 +2,9 @@
 
 namespace Antidote\LaravelCart\Domain;
 
+use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Models\CartAdjustment;
+use Antidote\LaravelCart\Types\ValidCartItem;
 use Illuminate\Support\Collection;
 
 /**
@@ -38,13 +40,13 @@ class Cart
         return $cart->cart_items ?? collect([]);
     }
 
-    private function add($product, int $quantity = 1, $product_data = null)
+    private function add($product, int $quantity = 1, $product_data = null) : void
     {
-        //ensure the product has a product type
-        if(!$product->productDataType)
-        {
-            throw new \Exception('Product has no product data type associated');
-        }
+        $cart_item = ValidCartItem::create(new CartItem([
+            'product_id' => $product->id,
+            'quantity' => $quantity,
+            'product_data' => $product_data
+        ]));
 
         $cart_items = $this->items();
 
@@ -52,13 +54,7 @@ class Cart
             ->where('product_id', '=', $product->id);
 
         if(!$items->count()) {
-
-            $cart_items->push([
-                'product_id' => $product->id,
-                'quantity' => $quantity,
-                'product_data' => $product_data
-            ]);
-
+            $cart_items->push($cart_item);
         }
         else
         {
@@ -124,18 +120,18 @@ class Cart
      * Clears the contents of the cart
      * @return void
      */
-    private function clear()
+    private function clear() : void
     {
         session()->put('cart_items', []);
     }
 
-    private function getSubtotal()
+    private function getSubtotal() : int
     {
         $subtotal = 0;
 
         $this->items()->each(function($cart_item) use (&$subtotal)
         {
-            $subtotal += $cart_item->getProduct()->getPrice($cart_item->product_data ?? null) * $cart_item->quantity;
+            $subtotal += $cart_item->getCost();
         });
 
         return $subtotal;

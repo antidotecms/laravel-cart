@@ -3,16 +3,17 @@
 use Antidote\LaravelCart\Domain\Discount\PercentageDiscount;
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Models\CartAdjustment;
-use Tests\Fixtures\app\Models\Products\Product;
+use Tests\Fixtures\app\Models\Products\TestProduct;
 use Tests\Fixtures\app\Models\ProductTypes\SimpleProductDataType;
 
 it('will apply a discount', function() {
     $simple_product_data = SimpleProductDataType::create([
-        'name' => 'A Simple Product',
         'price' => '2000'
     ]);
 
-    $simple_product = Product::create();
+    $simple_product = TestProduct::create([
+        'name' => 'A Simple Product'
+    ]);
     $simple_product->productDataType()->associate($simple_product_data);
     $simple_product->save();
 

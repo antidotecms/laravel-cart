@@ -18,4 +18,21 @@ class SimpleProductDataType extends Model implements ProductDataType
         'price',
         'description'
     ];
+
+    public function getName(...$args) : string {
+        return 'A Simple Product';
+    }
+
+    public function getPrice(...$args) : string {
+        return $this->price;
+    }
+
+    public function getDescription() : string {
+        return $this->description;
+    }
+
+    public function isValid(?array $product_data = null): bool
+    {
+        return true;
+    }
 }

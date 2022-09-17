@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('test_products', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable();
+            $table->string('description')->nullable();
             $table->integer('product_data_type_id')->nullable();
             $table->string('product_data_type_type')->nullable();
             $table->softDeletes();
