@@ -125,6 +125,8 @@ it('will soft delete, force delete and restore product data type when soft delet
 
     expect(Product::count())->toBe(0);
     expect(VariableProductDataType::count())->toBe(0);
+    expect(Product::withTrashed()->count())->toBe(1);
+    expect(VariableProductDataType::withTrashed()->count())->toBe(1);
 
     $variable_product->restore();
 
@@ -135,6 +137,8 @@ it('will soft delete, force delete and restore product data type when soft delet
 
     expect(Product::count())->toBe(0);
     expect(VariableProductDataType::count())->toBe(0);
+    expect(Product::withTrashed()->count())->toBe(0);
+    expect(VariableProductDataType::withTrashed()->count())->toBe(0);
 
     $variable_product->restore();
 
@@ -179,7 +183,7 @@ it('will not allow soft deletion of a product type if the product is not soft de
 
 });
 
-it('will not allow restoration of a product data type if the product is deleted', function() {
+it('will not allow restoration of a product data type if the product is soft deleted', function() {
 
     $variable_product_data = VariableProductDataType::create([
         'name' => 'A variable product'
