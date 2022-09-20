@@ -2,7 +2,6 @@
 
 namespace Antidote\LaravelCart\Models;
 
-use Antidote\LaravelCart\Concerns\IsProduct;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,7 +9,15 @@ use Illuminate\Support\Str;
 
 abstract class Product extends Model implements \Antidote\LaravelCart\Contracts\Product
 {
-    use IsProduct;
+    /**
+     * @var array array of attributes that should be obtained from the Product Data Type
+     */
+    protected array $product_data = [];
+
+    /**
+     * @var array array of Product Data Type classes where validity should be checked. The Product Data Type should provide the method `isValid` returning a boolean
+     */
+    protected array $product_validity = [];
 
     public function productDataType() : MorphTo
     {
