@@ -20,7 +20,7 @@ class SimpleProductDataType extends ProductType
         return 'A Simple Product';
     }
 
-    public function getPrice(...$args) : string {
+    public function getPrice(...$args) : int {
         return $this->price;
     }
 

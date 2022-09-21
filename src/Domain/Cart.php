@@ -4,8 +4,11 @@ namespace Antidote\LaravelCart\Domain;
 
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Models\CartAdjustment;
+use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Types\ValidCartItem;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * @method
@@ -24,7 +27,8 @@ class Cart
             'getSubtotal',
             'getTotal',
             'isInCart',
-            'remove'
+            'remove',
+            'createOrder'
         ];
 
         in_array($method, $allowedMethods) ?: throw new \BadMethodCallException();
@@ -164,5 +168,33 @@ class Cart
             ->contains(function($cart_item) use ($product_id) {
                 return $cart_item->product_id == $product_id;
             });
+    }
+
+    private function createOrder(Customer $customer) : Order
+    {
+        // create an order
+        $order = config('laravel-cart.order_class')::create([
+            $customer->getForeignKey() => $customer->id
+        ]);
+
+        $cart_items = Cart::items();
+
+        foreach($cart_items as $cart_item) {
+
+            $product_key = Str::snake(class_basename(config('laravel-cart.product_class'))).'_id';
+            $order->items()->create([
+                'name' => $cart_item->getProduct()->getName($cart_item->product_data),
+                $product_key => $cart_item->product_id,
+                'product_data' => $cart_item->product_data,
+                'price' => $cart_item->getProduct()->getPrice($cart_item->product_data),
+                'quantity' => $cart_item->quantity
+            ]);
+
+        }
+
+        Cart::clear();
+
+        return $order;
+
     }
 }

@@ -1,10 +1,13 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
+use Tests\Fixtures\app\Models\Products\TestCustomer;
 
 uses(\Tests\TestCase::class)->in(__DIR__);
 
 uses(RefreshDatabase::class)->in('Feature');
 
-uses()->beforeEach(fn() => Config::set('laravel-cart.product_class', \Tests\Fixtures\app\Models\Products\TestProduct::class))->in('Feature');
+function actingAsCustomer(TestCustomer $customer, string $driver = null)
+{
+    return test()->actingAs($customer, $driver);
+}
