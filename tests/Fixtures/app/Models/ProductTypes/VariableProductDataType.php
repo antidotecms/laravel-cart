@@ -2,15 +2,16 @@
 
 namespace Tests\Fixtures\app\Models\ProductTypes;
 
-use Antidote\LaravelCart\Concerns\ProductDataTypes\IsProductDataType;
-use Antidote\LaravelCart\Contracts\ProductDataType;
+use Antidote\LaravelCart\Contracts\ProductType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class VariableProductDataType extends Model implements ProductDataType
+/**
+ * @mixin Model
+ */
+class VariableProductDataType extends ProductType
 {
     use SoftDeletes;
-    use IsProductDataType;
 
     public function getName(array $product_data) : string
     {

@@ -2,14 +2,14 @@
 
 namespace Tests\Fixtures\app\Models\ProductTypes;
 
-use Antidote\LaravelCart\Concerns\ProductDataTypes\IsProductDataType;
-use Antidote\LaravelCart\Contracts\ProductDataType;
+use Antidote\LaravelCart\Contracts\ProductType;
 use Illuminate\Database\Eloquent\Model;
 
-class ComplexProductDataType extends Model implements ProductDataType
+/**
+ * @mixin Model
+ */
+class ComplexProductDataType extends ProductType
 {
-    use IsProductDataType;
-
     protected $fillable = [
         'width',
         'height'

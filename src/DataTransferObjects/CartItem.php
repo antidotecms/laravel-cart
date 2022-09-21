@@ -13,7 +13,7 @@ class CartItem extends \Spatie\DataTransferObject\DataTransferObject implements 
     public function getProduct()
     {
         $product_class = config('laravel-cart.product_class');
-        return $product_class::with('productDataType')->find($this->product_id);
+        return $product_class::with('productType')->find($this->product_id);
     }
 
     public function getCost() : int

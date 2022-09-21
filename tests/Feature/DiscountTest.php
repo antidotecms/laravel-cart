@@ -14,7 +14,7 @@ it('will apply a discount', function() {
     $simple_product = TestProduct::create([
         'name' => 'A Simple Product'
     ]);
-    $simple_product->productDataType()->associate($simple_product_data);
+    $simple_product->productType()->associate($simple_product_data);
     $simple_product->save();
 
     CartAdjustment::create([

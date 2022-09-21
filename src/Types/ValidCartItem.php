@@ -36,7 +36,7 @@ class ValidCartItem
      * @return bool
      */
     private function isValid() : bool {
-        $this->cartItem->getProduct()->productDataType ?: throw new InvalidArgumentException('Product has no product data type associated');
+        $this->cartItem->getProduct()->productType ?: throw new InvalidArgumentException('Product has no product data type associated');
 
         return $this->cartItem->getProduct()->checkValidity($this->cartItem->product_data);
     }

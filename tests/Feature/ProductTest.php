@@ -14,7 +14,7 @@ test('a product type has a product', function()
         'name' => 'Simple Product Type'
     ]);
 
-    $product->productDataType()->associate($product_data);
+    $product->productType()->associate($product_data);
     $product->save();
 
     expect(get_class($product_data->product))->toBe(TestProduct::class);
@@ -32,7 +32,7 @@ it('it can create a product and associated product data', function()
         'description' => 'It\'s really very simple',
     ]);
 
-    $product->productDataType()->associate($product_data);
+    $product->productType()->associate($product_data);
     // or $product_data->product()->save($product);
 
     $this->assertEquals(1, TestProduct::count());
@@ -52,7 +52,7 @@ it('can utilize product data to determine name, price and specification', functi
         'description' => 'It\'s really very simple'
     ]);
 
-    $product->productDataType()->associate($product_data);
+    $product->productType()->associate($product_data);
 
     $name = $product->getName([
        'width' => 10,
@@ -119,7 +119,7 @@ it('will soft delete, force delete and restore product data type when soft delet
         'name' => 'A variable product'
     ]);
 
-    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->productType()->associate($variable_product_data);
     $variable_product->save();
 
     expect(TestProduct::count())->toBe(1)
@@ -159,7 +159,7 @@ it('will not allow soft deletion of a product type if the product is not soft de
         'name' => 'A variable product'
     ]);
 
-    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->productType()->associate($variable_product_data);
     $variable_product->save();
 
     expect(TestProduct::count())->toBe(1)
@@ -195,7 +195,7 @@ it('will not allow restoration of a product data type if the product is soft del
         'name' => 'A variable product'
     ]);
 
-    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->productType()->associate($variable_product_data);
     $variable_product->save();
 
     expect(TestProduct::count())->toBe(1)

@@ -17,7 +17,7 @@ it('can add a product to the cart', function() {
         'description' => 'It\'s really very simple'
     ]);
 
-    $product->productDataType()->associate($product_data);
+    $product->productType()->associate($product_data);
     $product->save();
 
     Cart::add($product);
@@ -83,7 +83,7 @@ it('can add a product and specify quantity', function () {
         'name' => 'A Simple Product'
     ]);
 
-    $product->productDataType()->associate($product_data);
+    $product->productType()->associate($product_data);
     $product->save();
 
     Cart::add($product, 3);
@@ -104,7 +104,7 @@ it('can remove a product by product id', function () {
         'name' => 'A Simple Product',
     ]);
 
-    $product->productDataType()->associate($product_data);
+    $product->productType()->associate($product_data);
     $product->save();
 
     Cart::add($product);
@@ -126,7 +126,7 @@ it('it can remove a product by product id and product data', function () {
         'name' => 'A variable product'
     ]);
 
-    $variable_product1->productDataType()->associate($variable_product_data_type1);
+    $variable_product1->productType()->associate($variable_product_data_type1);
     $variable_product1->save();
 
     $variable_product_data_type2 = VariableProductDataType::create();
@@ -135,7 +135,7 @@ it('it can remove a product by product id and product data', function () {
         'name' => 'Another variable product'
     ]);
 
-    $variable_product2->productDataType()->associate($variable_product_data_type2);
+    $variable_product2->productType()->associate($variable_product_data_type2);
     $variable_product2->save();
 
     Cart::add($variable_product1, 1, [
@@ -176,7 +176,7 @@ it('it can remove a product by product id and product data specifying quantity',
         'name' => 'A Simple Product',
     ]);
 
-    $product->productDataType()->associate($product_data);
+    $product->productType()->associate($product_data);
     $product->save();
 
     Cart::add($product, 5);
@@ -202,7 +202,7 @@ it('can clear the contents of the cart', function () {
         'name' => 'A Simple Product',
     ]);
 
-    $product->productDataType()->associate($product_data);
+    $product->productType()->associate($product_data);
     $product->save();
 
     $this->assertEquals(1, SimpleProductDataType::count());
@@ -227,7 +227,7 @@ it('provide the subtotal', function () {
     $product1 = TestProduct::create([
         'name' => 'A Simple Product',
     ]);
-    $product1->productDataType()->associate($product_data1);
+    $product1->productType()->associate($product_data1);
     $product1->save();
 
     $product_data2 = SimpleProductDataType::create([
@@ -237,7 +237,7 @@ it('provide the subtotal', function () {
     $product2 = TestProduct::create([
         'name' => 'A Second Simple Product'
     ]);
-    $product2->productDataType()->associate($product_data2);
+    $product2->productType()->associate($product_data2);
     $product2->save();
 
     Cart::add($product1);
@@ -262,7 +262,7 @@ it('provides the correct subtotal when a price of a product is calculated', func
         'name' => 'A Simple Product'
     ]);
 
-    $simple_product->productDataType()->associate($simple_product_data);
+    $simple_product->productType()->associate($simple_product_data);
     $simple_product->save();
 
     $complex_product_data = ComplexProductDataType::create([
@@ -274,7 +274,7 @@ it('provides the correct subtotal when a price of a product is calculated', func
         'name' => 'A Complex Product'
     ]);
 
-    $complex_product->productDataType()->associate($complex_product_data);
+    $complex_product->productType()->associate($complex_product_data);
     $complex_product->save();
 
     Cart::add($simple_product);
@@ -293,7 +293,7 @@ it('will state whether a product is in the cart', function () {
     $simple_product = TestProduct::create([
         'name' => 'A Simple Product'
     ]);
-    $simple_product->productDataType()->associate($simple_product_data);
+    $simple_product->productType()->associate($simple_product_data);
     $simple_product->save();
 
     $complex_product_data = ComplexProductDataType::create([
@@ -304,7 +304,7 @@ it('will state whether a product is in the cart', function () {
     $complex_product = TestProduct::create([
         'name' => 'A Simple Product'
     ]);
-    $complex_product->productDataType()->associate($complex_product_data);
+    $complex_product->productType()->associate($complex_product_data);
     $complex_product->save();
 
     Cart::add($complex_product, 2);
@@ -323,7 +323,7 @@ it('can add a product with product data', function () {
         'name' => 'A variable product'
     ]);
 
-    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->productType()->associate($variable_product_data);
     $variable_product->save();
 
     $product_data = [
@@ -355,14 +355,14 @@ it('will increment the quantity of a cart item if the cart already has a product
         'name' => 'A variable product'
     ]);
 
-    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->productType()->associate($variable_product_data);
     $variable_product->save();
 
     $simple_product = TestProduct::create([
         'name' => 'A simple product'
     ]);
 
-    $simple_product->productDataType()->associate($simple_product_data);
+    $simple_product->productType()->associate($simple_product_data);
     $simple_product->save();
 
     $product_data = [
@@ -408,7 +408,7 @@ it('will amend the quantity of a cart item', function () {
         'name' => 'A variable product'
     ]);
 
-    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->productType()->associate($variable_product_data);
     $variable_product->save();
 
     $product_data = [
@@ -437,7 +437,7 @@ it('will remove a product if it is asked to remove more than is in the cart', fu
         'name' => 'A variable product'
     ]);
 
-    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->productType()->associate($variable_product_data);
     $variable_product->save();
 
     $product_data = [
@@ -463,7 +463,7 @@ it('will add two cart items if the product data is different', function () {
         'name' => 'A variable product'
     ]);
 
-    $variable_product->productDataType()->associate($variable_product_data);
+    $variable_product->productType()->associate($variable_product_data);
     $variable_product->save();
 
     $product_data = [

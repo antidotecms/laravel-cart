@@ -60,7 +60,7 @@ class Cart
         {
 
             $cart_items->filter(function($cart_item) use ($product, $quantity, $product_data) {
-                    return $cart_item->getProduct()->product_data_type_type == get_class($product->productDataType) &&
+                    return $cart_item->getProduct()->product_type_type == get_class($product->productType) &&
                         $cart_item->product_id == $product->id &&
                         $cart_item->product_data == $product_data;
                 })

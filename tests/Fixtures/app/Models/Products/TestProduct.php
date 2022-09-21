@@ -14,7 +14,7 @@ use Tests\Fixtures\app\Models\ProductTypes\ComplexProductDataType;
  * @property $price
  * @property $productDataType
  */
-class TestProduct extends \Antidote\LaravelCart\Models\Product
+class TestProduct extends \Antidote\LaravelCart\Contracts\Product
 {
     use SoftDeletes;
     use HasFactory;
@@ -25,12 +25,13 @@ class TestProduct extends \Antidote\LaravelCart\Models\Product
     ];
 
 
-    //these attributes are deferred to the product data type
+    //these attributes are deferred to the product type
     protected array $product_data = [
         'price',
         'name'
     ];
 
+    //the validity of the product is checked on the product type
     protected array $product_validity = [
         ComplexProductDataType::class
     ];

@@ -25,7 +25,7 @@ class TestProductFactory extends \Illuminate\Database\Eloquent\Factories\Factory
                 'price' => rand(50, 1000)
             ], $definition);
             $simple_product_type = SimpleProductDataType::create($definition);
-            $product->productDataType()->associate($simple_product_type);
+            $product->productType()->associate($simple_product_type);
             $product->save();
 
         });
@@ -40,7 +40,7 @@ class TestProductFactory extends \Illuminate\Database\Eloquent\Factories\Factory
                 'height' => 10
             ], $definition);
             $complex_product_type = ComplexProductDataType::create($definition);
-            $product->productDataType()->associate($complex_product_type);
+            $product->productType()->associate($complex_product_type);
             $product->save();
 
         });
@@ -52,7 +52,7 @@ class TestProductFactory extends \Illuminate\Database\Eloquent\Factories\Factory
 
             $definition = array_merge([], $definition);
             $variable_product_type = VariableProductDataType::create($definition);
-            $product->productDataType()->associate($variable_product_type);
+            $product->productType()->associate($variable_product_type);
             $product->save();
 
         });
