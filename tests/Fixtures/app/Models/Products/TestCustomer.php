@@ -2,7 +2,7 @@
 
 namespace Tests\Fixtures\app\Models\Products;
 
-use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Contracts\Customer;
 use Database\Factories\Tests\Fixtures\app\Models\Products\TestCustomerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 

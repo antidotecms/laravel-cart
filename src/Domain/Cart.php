@@ -2,10 +2,10 @@
 
 namespace Antidote\LaravelCart\Domain;
 
+use Antidote\LaravelCart\Contracts\Customer;
+use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Models\CartAdjustment;
-use Antidote\LaravelCart\Models\Customer;
-use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Types\ValidCartItem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;

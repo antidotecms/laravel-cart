@@ -2,7 +2,7 @@
 
 namespace Tests\Fixtures\app\Models\Products;
 
-class TestOrderItem extends \Antidote\LaravelCart\Models\OrderItem
+class TestOrderItem extends \Antidote\LaravelCart\Contracts\OrderItem
 {
     protected $fillable = [
         'name',
