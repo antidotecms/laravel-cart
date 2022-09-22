@@ -2,7 +2,7 @@
 
 namespace Antidote\LaravelCart\Contracts;
 
-use Antidote\LaravelCart\Concerns\HasFillableOrderAttributes;
+use Antidote\LaravelCart\Concerns\ConfiguresOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 abstract class Order extends Model
 {
-    use HasFillableOrderAttributes;
+    use ConfiguresOrder;
 
     public function items() : HasMany
     {

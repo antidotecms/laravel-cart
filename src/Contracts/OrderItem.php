@@ -2,14 +2,14 @@
 
 namespace Antidote\LaravelCart\Contracts;
 
-use Antidote\LaravelCart\Concerns\HasFillableOrderItemAttributes;
+use Antidote\LaravelCart\Concerns\ConfiguresOrderItem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 abstract class OrderItem extends Model
 {
-    use HasFillableOrderItemAttributes;
+    use ConfiguresOrderItem;
 
     public function product(): BelongsTo
     {

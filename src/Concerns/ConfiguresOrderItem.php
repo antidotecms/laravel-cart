@@ -4,9 +4,9 @@ namespace Antidote\LaravelCart\Concerns;
 
 use Illuminate\Support\Str;
 
-trait HasFillableOrderItemAttributes
+trait ConfiguresOrderItem
 {
-    public function initializeHasFillableOrderItemAttributes() : void
+    public function initializeConfiguresOrderItem() : void
     {
         $this->fillable[] = 'name';
 
