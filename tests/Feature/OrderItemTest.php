@@ -25,3 +25,11 @@ it('automatically populates the fillable fields', function () {
     ]);
 
 });
+
+it('populates the casts', function () {
+
+    $test_order_item = new TestOrderItem;
+
+    expect($test_order_item->getCasts())->toHaveKey('product_data');
+    expect($test_order_item->getCasts()['product_data'])->toBe('array');
+});

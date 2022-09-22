@@ -16,6 +16,12 @@ trait ConfiguresOrderItem
         $this->fillable[] = 'product_data';
         $this->fillable[] = 'price';
         $this->fillable[] = 'quantity';
+    }
 
+    public function getCasts() : array
+    {
+        return array_merge(parent::getCasts(), [
+           'product_data' => 'array'
+        ]);
     }
 }
