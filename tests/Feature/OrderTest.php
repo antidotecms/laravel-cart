@@ -77,3 +77,19 @@ it('will detail an order item', function () {
         ->and($order->items()->skip(1)->first()->getCost())->toBe(100);
 
 });
+
+it('automatically populates the fillable fields', function () {
+
+    $test_order = new TestOrder;
+    expect($test_order->getFillable())->toBe([
+        'test_customer_id'
+    ]);
+
+    class NewCustomer extends \Antidote\LaravelCart\Models\Customer {}
+    Config::set('laravel-cart.customer_class', NewCustomer::class);
+    $new_order = new class extends \Antidote\LaravelCart\Models\Order {};
+    expect($new_order->getFillable())->toBe([
+       'new_customer_id'
+    ]);
+
+});
