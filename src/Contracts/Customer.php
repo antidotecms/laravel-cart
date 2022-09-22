@@ -1,6 +1,6 @@
 <?php
 
-namespace Antidote\LaravelCart\Models;
+namespace Antidote\LaravelCart\Contracts;
 
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;

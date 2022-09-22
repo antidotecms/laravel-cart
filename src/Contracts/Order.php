@@ -1,6 +1,6 @@
 <?php
 
-namespace Antidote\LaravelCart\Models;
+namespace Antidote\LaravelCart\Contracts;
 
 use Antidote\LaravelCart\Concerns\HasFillableOrderAttributes;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 abstract class Order extends Model
 {
     use HasFillableOrderAttributes;
-    
+
     public function items() : HasMany
     {
         return $this->hasMany(config('laravel-cart.orderitem_class'));
