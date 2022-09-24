@@ -1,6 +1,9 @@
 <?php
 
-use Tests\Fixtures\app\Models\Products\TestOrderItem;
+use Tests\Fixtures\app\Models\Products\TestCustomer;
+use Tests\Fixtures\app\Models\Products\TestProduct;
+use Tests\Fixtures\app\Models\TestOrder;
+use Tests\Fixtures\app\Models\TestOrderItem;
 
 it('automatically populates the fillable fields', function () {
 
@@ -32,4 +35,58 @@ it('populates the casts', function () {
 
     expect($test_order_item->getCasts())->toHaveKey('product_data');
     expect($test_order_item->getCasts()['product_data'])->toBe('array');
+});
+
+it('has a product', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1999
+    ])->create();
+
+    $customer = TestCustomer::factory()->create();
+
+    $test_order = TestOrder::factory()->create([
+        'test_customer_id' => $customer->id
+    ]);
+
+    $test_order_item = TestOrderItem::factory()
+        ->withProduct($simple_product)
+        ->withQuantity(2)
+        ->forOrder($test_order)
+        ->create();
+
+    expect($test_order_item->product->id)->toBe($simple_product->id);
+    expect($test_order_item->getPrice())->toBe($simple_product->getPrice());
+    expect($test_order_item->getName())->toBe($simple_product->getName());
+    expect($test_order_item->getCost())->toBe($simple_product->getPrice() * 2);
+
+});
+
+it('will not change values of product after being created as an order', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1999
+    ])->create();
+
+    $customer = TestCustomer::factory()->create();
+
+    $test_order = TestOrder::factory()->create([
+        'test_customer_id' => $customer->id
+    ]);
+
+    $test_order_item = TestOrderItem::factory()
+        ->withProduct($simple_product)
+        ->withQuantity(2)
+        ->forOrder($test_order)
+        ->create();
+
+    $simple_product->name = 'A different name';
+    $simple_product->productType->price = 1000;
+    $simple_product->save();
+
+    expect($test_order_item->product->id)->toBe($simple_product->id);
+    expect($test_order_item->getPrice())->toBe(1999);
+    expect($test_order_item->getName())->toBe('A Simple Product');
+    expect($test_order_item->getCost())->toBe(3998);
+
 });

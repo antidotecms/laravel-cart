@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Models;
 
+use Antidote\LaravelCart\Facades\Cart;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 
@@ -35,6 +36,6 @@ class CartAdjustment extends Model
     public function amount()
     {
         $adjustment = App::make($this->class, ['adjustment' => $this]);
-        return $adjustment->amount();
+        return $adjustment->amount(Cart::getSubtotal());
     }
 }

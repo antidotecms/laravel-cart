@@ -4,9 +4,9 @@ namespace Tests;
 
 use Illuminate\Support\Facades\Config;
 use Tests\Fixtures\app\Models\Products\TestCustomer;
-use Tests\Fixtures\app\Models\Products\TestOrder;
-use Tests\Fixtures\app\Models\Products\TestOrderItem;
 use Tests\Fixtures\app\Models\Products\TestProduct;
+use Tests\Fixtures\app\Models\TestOrder;
+use Tests\Fixtures\app\Models\TestOrderItem;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {

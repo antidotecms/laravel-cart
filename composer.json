@@ -3,17 +3,23 @@
     "description": "Simple package to provide cart functionality",
     "type": "library",
     "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Antidote\\LaravelCart\\": "src/"
-        }
-    },
     "authors": [
         {
             "name": "Tim Smith",
             "email": "tim.smith@titan21.co.uk"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Antidote\\LaravelCart\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Database\\Factories\\Tests\\Fixtures\\app\\Models\\" : "tests/Fixtures/database/factories/"
+        }
+    },
     "minimum-stability": "stable",
     "extra": {
         "laravel": {
@@ -31,16 +37,11 @@
         "pestphp/pest": "^1.21",
         "pestphp/pest-plugin-laravel": "^1.2"
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/",
-            "Database\\Factories\\Tests\\Fixtures\\app\\Models\\" : "tests/Fixtures/database/factories/"
-        }
-    },
     "scripts": {
         "post-autoload-dump": [
             "@php ./vendor/bin/testbench package:discover --ansi"
-        ]
+        ],
+        "coverage": "XDEBUG_MODE=coverage ./vendor/bin/pest --coverage --coverage-html ./coverage --path-coverage"
     },
     "require": {
         "spatie/data-transfer-object": "^3.8"

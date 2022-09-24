@@ -7,6 +7,9 @@ use Tests\Fixtures\app\Models\ProductTypes\ComplexProductDataType;
 use Tests\Fixtures\app\Models\ProductTypes\SimpleProductDataType;
 use Tests\Fixtures\app\Models\ProductTypes\VariableProductDataType;
 
+/**
+ * @covers \Antidote\LaravelCart\Domain\Cart
+ */
 it('can add a product to the cart', function() {
 
     $product_data = SimpleProductDataType::create([

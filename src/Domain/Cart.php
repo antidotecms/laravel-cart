@@ -154,12 +154,18 @@ class Cart
     {
         $discount_total = 0;
 
-        CartAdjustment::all()->each(function($adjustment) use (&$discount_total)
-        {
-            $discount_total += $adjustment->isActive() && $adjustment->isValid() ? $adjustment->amount() : 0;
+        $this->getValidDiscounts()->each(function(CartAdjustment $adjustment) use (&$discount_total) {
+            $discount_total += $adjustment->amount();
         });
 
         return $discount_total;
+    }
+
+    private function getValidDiscounts() : Collection
+    {
+        return CartAdjustment::all()->filter(function(CartAdjustment $adjustment) {
+            return $adjustment->isActive() && $adjustment->isValid();
+        });
     }
 
     private function isInCart($product_id) : bool
@@ -179,8 +185,7 @@ class Cart
 
         $cart_items = Cart::items();
 
-        foreach($cart_items as $cart_item) {
-
+        $cart_items->each(function($cart_item) use ($order) {
             $product_key = Str::snake(class_basename(config('laravel-cart.product_class'))).'_id';
             $order->items()->create([
                 'name' => $cart_item->getProduct()->getName($cart_item->product_data),
@@ -189,8 +194,19 @@ class Cart
                 'price' => $cart_item->getProduct()->getPrice($cart_item->product_data),
                 'quantity' => $cart_item->quantity
             ]);
+        });
 
-        }
+        $validDiscounts = $this->getValidDiscounts();
+
+        $validDiscounts->each(function (CartAdjustment $adjustment) use ($order) {
+            $order_key = Str::snake(class_basename(config('laravel-cart.order_class'))).'_id';
+            $order->adjustments()->create([
+                'name' => $adjustment->name,
+                'class' => $adjustment->class,
+                'parameters' => $adjustment->parameters,
+                $order_key => $order->id
+            ]);
+        });
 
         Cart::clear();
 

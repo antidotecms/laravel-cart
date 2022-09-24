@@ -1,9 +1,11 @@
 <?php
 
+use Antidote\LaravelCart\Domain\Discount\PercentageDiscount;
 use Antidote\LaravelCart\Facades\Cart;
+use Antidote\LaravelCart\Models\CartAdjustment;
 use Tests\Fixtures\app\Models\Products\TestCustomer;
-use Tests\Fixtures\app\Models\Products\TestOrder;
 use Tests\Fixtures\app\Models\Products\TestProduct;
+use Tests\Fixtures\app\Models\TestOrder;
 
 it('will create an order', function() {
 
@@ -22,6 +24,41 @@ it('will create an order', function() {
         ->and($order->items()->first()->id)->toBe($product->id)
         ->and(Cart::items())->toBeEmpty()
         ->and($order->customer->id)->toBe($customer->id);
+});
+
+it('will create an order with discount', function () {
+
+    Config::set('laravel-cart.order_adjustment_class', \Tests\Fixtures\app\Models\TestOrderAdjustment::class);
+
+    $product = TestProduct::factory()->asSimpleProduct([
+        'price' => '1000'
+    ])->create();
+
+    Cart::add($product);
+
+    $customer = TestCustomer::factory()->create();
+
+    $cart_adjustment = CartAdjustment::create([
+        'name' => '10% off',
+        'class' => PercentageDiscount::class,
+        'parameters' => [
+            'percentage' => 10
+        ],
+        'active' => true
+    ]);
+
+
+    $order = Cart::createOrder($customer);
+
+    //even disabled, because the order was created before, it is still active on the order
+    $cart_adjustment->active = false;
+    $cart_adjustment->save();
+
+    expect($order->items()->count())->toBe(1);
+    expect($order->adjustments()->count())->toBe(1);
+    expect($order->getSubtotal())->toBe(1000);
+    expect($order->getTotal())->toBe(900);
+
 });
 
 test('a customer has an order', function () {

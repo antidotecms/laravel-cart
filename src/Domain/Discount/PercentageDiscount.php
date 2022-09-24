@@ -3,16 +3,15 @@
 namespace Antidote\LaravelCart\Domain\Discount;
 
 use Antidote\LaravelCart\Contracts\Discount;
-use Antidote\LaravelCart\Facades\Cart;
 
 /**
  * property CartAdjustment $adjustment
  */
 class PercentageDiscount extends Discount
 {
-    public function amount(): int
+    public function amount(int $subtotal): int
     {
-        return Cart::getSubtotal() * ($this->adjustment->parameters['percentage']/100);
+        return $subtotal * ($this->adjustment->parameters['percentage']/100);
     }
 
     public function isValid(): bool
