@@ -17,7 +17,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     private function migrations()
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         $this->publishes([
             __DIR__ . '/../database/migrations/' => database_path('migrations'),
@@ -36,9 +36,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     private function configuration()
     {
         $this->publishes([
-            __DIR__.'/../config/laravel-cart.php' => config_path('laravel-cart.php'),
+            __DIR__ . '/../../../config/laravel-cart.php' => config_path('laravel-cart.php'),
         ], 'laravel-cart-config');
 
-        $this->mergeConfigFrom(__DIR__.'/../config/laravel-cart.php','laravel-cart' );
+        $this->mergeConfigFrom(__DIR__ . '/../../../config/laravel-cart.php','laravel-cart' );
     }
 }

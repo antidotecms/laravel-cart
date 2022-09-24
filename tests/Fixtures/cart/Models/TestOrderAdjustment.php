@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixtures\app\Models;
+namespace Antidote\LaravelCart\Tests\Fixtures\cart\Models;
 
 use Antidote\LaravelCart\Contracts\OrderAdjustment;
 

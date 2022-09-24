@@ -1,11 +1,11 @@
 <?php
 
-namespace Database\Factories\Tests\Fixtures\app\Models\Products;
+namespace Antidote\LaravelCart\Tests\Fixtures\database\factories\Products;
 
-use Tests\Fixtures\app\Models\Products\TestProduct;
-use Tests\Fixtures\app\Models\ProductTypes\ComplexProductDataType;
-use Tests\Fixtures\app\Models\ProductTypes\SimpleProductDataType;
-use Tests\Fixtures\app\Models\ProductTypes\VariableProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\ComplexProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\SimpleProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\VariableProductDataType;
 
 class TestProductFactory extends \Illuminate\Database\Eloquent\Factories\Factory
 {

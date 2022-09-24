@@ -2,8 +2,8 @@
 
 it('automatically populates the fillable fields', function () {
 
-    Config::set('laravel-cart.order_class', \Tests\Fixtures\app\Models\TestOrder::class);
-    $test_order_item = new \Tests\Fixtures\app\Models\TestOrderAdjustment;
+    Config::set('laravel-cart.order_class', \Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder::class);
+    $test_order_item = new \Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrderAdjustment;
     expect($test_order_item->getFillable())->toBe([
         'name',
         'class',
@@ -25,7 +25,7 @@ it('automatically populates the fillable fields', function () {
 
 it('populates the casts', function () {
 
-    $test_order_adjustment = new \Tests\Fixtures\app\Models\TestOrderAdjustment;
+    $test_order_adjustment = new \Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrderAdjustment;
 
     expect($test_order_adjustment->getCasts())->toHaveKey('parameters');
     expect($test_order_adjustment->getCasts()['parameters'])->toBe('array');

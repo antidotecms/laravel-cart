@@ -1,9 +1,9 @@
 <?php
 
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Fixtures\app\Models\Products\TestCustomer;
 
-uses(\Tests\TestCase::class)->in(__DIR__);
+uses(\Antidote\LaravelCart\Tests\TestCase::class)->in(__DIR__);
 
 uses(RefreshDatabase::class)->in('Feature');
 

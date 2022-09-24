@@ -3,8 +3,8 @@
 use Antidote\LaravelCart\Domain\Discount\PercentageDiscount;
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Models\CartAdjustment;
-use Tests\Fixtures\app\Models\Products\TestProduct;
-use Tests\Fixtures\app\Models\ProductTypes\SimpleProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\SimpleProductDataType;
 
 it('will apply a discount', function() {
 

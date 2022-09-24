@@ -1,11 +1,11 @@
 <?php
 
-namespace Database\Factories\Tests\Fixtures\app\Models\Products;
+namespace Antidote\LaravelCart\Tests\Fixtures\database\factories\Products;
 
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Tests\Fixtures\app\Models\Products\TestCustomer;
 
 class TestCustomerFactory extends Factory
 {

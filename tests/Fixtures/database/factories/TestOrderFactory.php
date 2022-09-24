@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Factories\Tests\Fixtures\app\Models;
+namespace Antidote\LaravelCart\Tests\Fixtures\database\factories;
 
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Tests\Fixtures\app\Models\Products\TestCustomer;
-use Tests\Fixtures\app\Models\TestOrder;
 
 class TestOrderFactory extends Factory
 {

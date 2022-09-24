@@ -1,9 +1,9 @@
 <?php
 
-use Tests\Fixtures\app\Models\Products\TestCustomer;
-use Tests\Fixtures\app\Models\Products\TestProduct;
-use Tests\Fixtures\app\Models\TestOrder;
-use Tests\Fixtures\app\Models\TestOrderItem;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrderItem;
 
 it('automatically populates the fillable fields', function () {
 

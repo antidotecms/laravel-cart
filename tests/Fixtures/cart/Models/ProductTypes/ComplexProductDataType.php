@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Fixtures\app\Models\ProductTypes;
+namespace Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes;
 
 use Antidote\LaravelCart\Contracts\ProductType;
 use Illuminate\Database\Eloquent\Model;

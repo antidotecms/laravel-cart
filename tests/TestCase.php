@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests;
+namespace Antidote\LaravelCart\Tests;
 
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrderItem;
 use Illuminate\Support\Facades\Config;
-use Tests\Fixtures\app\Models\Products\TestCustomer;
-use Tests\Fixtures\app\Models\Products\TestProduct;
-use Tests\Fixtures\app\Models\TestOrder;
-use Tests\Fixtures\app\Models\TestOrderItem;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {

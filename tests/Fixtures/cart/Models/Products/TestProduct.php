@@ -1,11 +1,12 @@
 <?php
 
-namespace Tests\Fixtures\app\Models\Products;
+namespace Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products;
 
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\ComplexProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\database\factories\Products\TestProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Tests\Fixtures\app\Models\ProductTypes\ComplexProductDataType;
 
 /**
  * @mixin Model
@@ -23,6 +24,11 @@ class TestProduct extends \Antidote\LaravelCart\Contracts\Product
         'name',
         'description'
     ];
+
+    protected static function newFactory()
+    {
+        return TestProductFactory::new();
+    }
 
 
     //these attributes are deferred to the product type

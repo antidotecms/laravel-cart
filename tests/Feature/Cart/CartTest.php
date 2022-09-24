@@ -2,10 +2,10 @@
 
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Facades\Cart;
-use Tests\Fixtures\app\Models\Products\TestProduct;
-use Tests\Fixtures\app\Models\ProductTypes\ComplexProductDataType;
-use Tests\Fixtures\app\Models\ProductTypes\SimpleProductDataType;
-use Tests\Fixtures\app\Models\ProductTypes\VariableProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\ComplexProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\SimpleProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\VariableProductDataType;
 
 /**
  * @covers \Antidote\LaravelCart\Domain\Cart
