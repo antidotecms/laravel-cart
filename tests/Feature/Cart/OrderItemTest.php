@@ -17,7 +17,7 @@ it('automatically populates the fillable fields', function () {
     ]);
 
     class NewProduct extends \Antidote\LaravelCart\Contracts\Product {};
-    Config::set('laravel-cart.product_class', NewProduct::class);
+    Config::set('laravel-cart.classes.product', NewProduct::class);
     $new_order_item = new class extends \Antidote\LaravelCart\Contracts\OrderItem {};
     expect($new_order_item->getFillable())->toBe([
         'name',

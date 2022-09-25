@@ -52,7 +52,7 @@ class TestOrderFactory extends Factory
     {
         return $this->afterMaking(function(Order $order) {
 
-            $payment_method_class = config('laravel-cart.payment_method_class');
+            $payment_method_class = getClassNameFor('payment_method');
             if(!$order->paymentMethod) {
                 $payment_method = $payment_method_class::make();
                 $order->paymentMethod()->associate($payment_method);

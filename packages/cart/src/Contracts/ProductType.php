@@ -9,7 +9,7 @@ abstract class ProductType extends Model
 {
     public function product(): MorphOne
     {
-        return $this->morphOne(config('laravel-cart.product_class'), 'product_type')->withTrashed();
+        return $this->morphOne(getClassNameFor('product'), 'product_type')->withTrashed();
     }
 
     public abstract function isValid(?array $product_data = null): bool;

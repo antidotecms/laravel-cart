@@ -5,7 +5,6 @@ namespace Antidote\LaravelCart\Contracts;
 use Antidote\LaravelCart\Concerns\ConfiguresOrderItem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Str;
 
 abstract class OrderItem extends Model
 {
@@ -13,8 +12,7 @@ abstract class OrderItem extends Model
 
     public function product(): BelongsTo
     {
-        $foreignKey = Str::snake(class_basename(config('laravel-cart.product_class'))) . '_id';
-        return $this->belongsTo(config('laravel-cart.product_class'), $foreignKey);
+        return $this->belongsTo(getClassNameFor('product'), getKeyFor('product'));
     }
 
     public function getName(): string

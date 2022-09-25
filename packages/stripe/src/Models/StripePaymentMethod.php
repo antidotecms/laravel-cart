@@ -18,7 +18,7 @@ class StripePaymentMethod extends PaymentMethod
 
     public function order() : MorphOne
     {
-        $order_class = config('laravel-cart.order_class');
+        $order_class = getClassNameFor('order');
         return $this->morphOne($order_class);
     }
 

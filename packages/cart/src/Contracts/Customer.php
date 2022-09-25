@@ -43,6 +43,6 @@ abstract class Customer extends Authenticatable
 
     public function orders() : hasMany
     {
-        return $this->hasMany(config('laravel-cart.order_class'));
+        return $this->hasMany(getClassNameFor('order'));
     }
 }

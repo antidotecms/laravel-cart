@@ -8,7 +8,6 @@ use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Models\CartAdjustment;
 use Antidote\LaravelCart\Types\ValidCartItem;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 /**
  * @method
@@ -179,14 +178,15 @@ class Cart
     private function createOrder(Customer $customer) : Order
     {
         // create an order
-        $order = config('laravel-cart.order_class')::create([
+        $order_class = getClassNameFor('order');
+        $order = $order_class::create([
             $customer->getForeignKey() => $customer->id
         ]);
 
         $cart_items = Cart::items();
 
         $cart_items->each(function($cart_item) use ($order) {
-            $product_key = Str::snake(class_basename(config('laravel-cart.product_class'))).'_id';
+            $product_key = getKeyFor('product');
             $order->items()->create([
                 'name' => $cart_item->getProduct()->getName($cart_item->product_data),
                 $product_key => $cart_item->product_id,
@@ -199,12 +199,11 @@ class Cart
         $validDiscounts = $this->getValidDiscounts();
 
         $validDiscounts->each(function (CartAdjustment $adjustment) use ($order) {
-            $order_key = Str::snake(class_basename(config('laravel-cart.order_class'))).'_id';
             $order->adjustments()->create([
                 'name' => $adjustment->name,
                 'class' => $adjustment->class,
                 'parameters' => $adjustment->parameters,
-                $order_key => $order->id
+                getKeyFor('order') => $order->id
             ]);
         });
 

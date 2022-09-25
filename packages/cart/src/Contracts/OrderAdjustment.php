@@ -6,7 +6,6 @@ use Antidote\LaravelCart\Concerns\ConfiguresOrderAdjustment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Str;
 
 abstract class OrderAdjustment extends Model
 {
@@ -14,8 +13,7 @@ abstract class OrderAdjustment extends Model
 
     public function order() : BelongsTo
     {
-        $foreignKey = Str::snake(class_basename(config('laravel-cart.order_class'))) . '_id';
-        return $this->belongsTo(config('laravel-cart.order_class'), $foreignKey);
+        return $this->belongsTo(getClassNameFor('order'), getKeyFor('order'));
     }
 
     public function amount()

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Str;
 
 abstract class Order extends Model
 {
@@ -15,18 +14,17 @@ abstract class Order extends Model
 
     public function items() : HasMany
     {
-        return $this->hasMany(config('laravel-cart.orderitem_class'));
+        return $this->hasMany(getClassNameFor('order_item'));
     }
 
     public function adjustments() : HasMany
     {
-        return $this->hasMany(config('laravel-cart.order_adjustment_class'));
+        return $this->hasMany(getClassNameFor('order_adjustment'));
     }
 
     public function customer() : BelongsTo
     {
-        $foreignKey = Str::snake(class_basename(config('laravel-cart.customer_class'))).'_id';
-        return $this->belongsTo(config('laravel-cart.customer_class'), $foreignKey);
+        return $this->belongsTo(getClassNameFor('customer'), getKeyFor('customer'));
     }
 
     public function getSubtotal() : int

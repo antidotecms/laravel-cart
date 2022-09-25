@@ -36,11 +36,11 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'prefix'   => '',
         ]);
 
-        Config::set('laravel-cart.product_class', TestProduct::class);
-        Config::set('laravel-cart.customer_class', TestCustomer::class);
-        Config::set('laravel-cart.order_class', TestOrder::class);
-        Config::set('laravel-cart.orderitem_class', TestOrderItem::class);
-        Config::set('laravel-cart.order_adjustment_class', TestOrderAdjustment::class);
-        Config::set('laravel-cart.payment_method_class', TestPaymentMethod::class);
+        Config::set('laravel-cart.classes.product', TestProduct::class);
+        Config::set('laravel-cart.classes.customer', TestCustomer::class);
+        Config::set('laravel-cart.classes.order', TestOrder::class);
+        Config::set('laravel-cart.classes.order_item', TestOrderItem::class);
+        Config::set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
+        Config::set('laravel-cart.classes.payment_method', TestPaymentMethod::class);
     }
 }

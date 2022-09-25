@@ -28,7 +28,7 @@ it('will create an order', function() {
 
 it('will create an order with discount', function () {
 
-    Config::set('laravel-cart.order_adjustment_class', \Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrderAdjustment::class);
+    Config::set('laravel-cart.classes.order_adjustment', \Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrderAdjustment::class);
 
     $product = TestProduct::factory()->asSimpleProduct([
         'price' => '1000'
@@ -123,7 +123,7 @@ it('automatically populates the fillable fields', function () {
     ]);
 
     class NewCustomer extends \Antidote\LaravelCart\Contracts\Customer {}
-    Config::set('laravel-cart.customer_class', NewCustomer::class);
+    Config::set('laravel-cart.classes.customer', NewCustomer::class);
     $new_order = new class extends \Antidote\LaravelCart\Contracts\Order {};
     expect($new_order->getFillable())->toBe([
        'new_customer_id'

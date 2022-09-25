@@ -7,7 +7,7 @@ use Antidote\LaravelCartStripe\Domain\PaymentIntent;
 
 beforeEach(function () {
     new PaymentIntentHttpClient();
-    Config::set('laravel-cart.payment_method_class', \Antidote\LaravelCartStripe\Models\StripePaymentMethod::class);
+    Config::set('laravel-cart.classes.payment_method', \Antidote\LaravelCartStripe\Models\StripePaymentMethod::class);
 });
 
 it('will return a payment intent object', function() {

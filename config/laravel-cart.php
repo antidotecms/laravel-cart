@@ -1,10 +1,12 @@
 <?php
 
 return [
-    'product_class' => \App\Models\Product::class,
-    'customer_class' => \App\Models\Customer::class,
-    'order_class' => \App\Models\Order::class,
-    'orderitem_class' => \App\Models\OrderItem::class,
-    'order_adjustment_class' => \App\Models\OrderAdjustment::class,
-    'payment_method_class' => \Antidote\LaravelCartStripe\Models\StripePaymentMethod::class
+    'classes' => [
+        'product' => \App\Models\Product::class,
+        'customer' => \App\Models\Customer::class,
+        'order' => \App\Models\Order::class,
+        'order_item' => \App\Models\OrderItem::class,
+        'order_adjustment' => \App\Models\OrderAdjustment::class,
+        'payment_method' => \Antidote\LaravelCartStripe\Models\StripePaymentMethod::class
+    ]
 ];

@@ -5,7 +5,6 @@ namespace Antidote\LaravelCartStripe\Domain;
 use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCartStripe\Concerns\HasStripeClient;
 use Antidote\LaravelCartStripe\Models\StripePaymentMethod;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 abstract class PaymentIntent
@@ -28,12 +27,9 @@ abstract class PaymentIntent
                 'receipt_email' => $order->customer->email
             ]);
 
-            //$order_class = config('laravel-cart.order_class');
-            $order_key = Str::snake(class_basename(config('laravel-cart.order_class'))).'_id';
-
             return StripePaymentMethod::create([
                 'data' => $payment_intent_response,
-                $order_key => $order->id
+                getKeyFor('order') => $order->id
             ]);
         }
 
