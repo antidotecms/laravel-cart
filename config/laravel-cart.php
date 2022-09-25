@@ -5,5 +5,6 @@ return [
     'customer_class' => \App\Models\Customer::class,
     'order_class' => \App\Models\Order::class,
     'orderitem_class' => \App\Models\OrderItem::class,
-    'order_adjustment_class' => \App\Models\OrderAdjustment::class
+    'order_adjustment_class' => \App\Models\OrderAdjustment::class,
+    'payment_method_class' => \Antidote\LaravelCartStripe\Models\StripePaymentMethod::class
 ];

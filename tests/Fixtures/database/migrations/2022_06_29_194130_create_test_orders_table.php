@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->integer('test_customer_id');
+            $table->string('payment_method_id')->nullable();
+            $table->string('payment_method_type')->nullable();
             $table->softDeletes();
         });
     }

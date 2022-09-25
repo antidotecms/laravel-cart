@@ -11,7 +11,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Antidote\\LaravelCart\\": "packages/cart/src/"
+            "Antidote\\LaravelCart\\": "packages/cart/src/",
+            "Antidote\\LaravelCartStripe\\": "packages/stripe/src/"
         }
     },
     "autoload-dev": {
@@ -43,7 +44,8 @@
         "coverage": "XDEBUG_MODE=coverage ./vendor/bin/pest --coverage --coverage-html ./coverage --path-coverage"
     },
     "require": {
-        "spatie/data-transfer-object": "^3.8"
+        "spatie/data-transfer-object": "^3.8",
+        "stripe/stripe-php": "^9.6"
     },
     "config": {
         "allow-plugins": {

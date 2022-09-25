@@ -5,7 +5,9 @@ namespace Antidote\LaravelCart\Tests;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrderItem;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPaymentMethod;
 use Illuminate\Support\Facades\Config;
 
 class TestCase extends \Orchestra\Testbench\TestCase
@@ -38,5 +40,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.customer_class', TestCustomer::class);
         Config::set('laravel-cart.order_class', TestOrder::class);
         Config::set('laravel-cart.orderitem_class', TestOrderItem::class);
+        Config::set('laravel-cart.order_adjustment_class', TestOrderAdjustment::class);
+        Config::set('laravel-cart.payment_method_class', TestPaymentMethod::class);
     }
 }

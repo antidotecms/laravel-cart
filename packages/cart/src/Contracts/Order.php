@@ -6,6 +6,7 @@ use Antidote\LaravelCart\Concerns\ConfiguresOrder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
 
 abstract class Order extends Model
@@ -58,5 +59,10 @@ abstract class Order extends Model
         });
 
         return $discount_total;
+    }
+
+    public function paymentMethod() : MorphTo
+    {
+        return $this->morphTo();
     }
 }
