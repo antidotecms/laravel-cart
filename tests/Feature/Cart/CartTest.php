@@ -2,10 +2,12 @@
 
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Facades\Cart;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\ComplexProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\SimpleProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\VariableProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
 
 /**
  * @covers \Antidote\LaravelCart\Domain\Cart
@@ -530,3 +532,21 @@ it('will not allow a product to be added if it is invalid', function () {
     expect(Cart::items()->count())->toBe(0);
 })
 ->throws(InvalidArgumentException::class, 'The cart item is invalid');
+
+it('will set up a payment method', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1000
+    ])->create();
+
+    $customer = TestCustomer::factory()->create();
+
+    Cart::add($simple_product);
+
+    Cart::createOrder($customer);
+
+    Cart::initializePaymentMethod($customer->orders()->first());
+
+    expect(TestOrder::count())->toBe(1);
+    expect(get_class(TestOrder::first()->paymentMethod))->toBe(\Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPaymentMethod::class);
+});

@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Facades;
 
+use Antidote\LaravelCart\Contracts\Customer;
 use Antidote\LaravelCart\Contracts\Order;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Facade;
@@ -24,7 +25,9 @@ use Illuminate\Support\Facades\Facade;
  * @see \Antidote\LaravelCart\Domain\Cart::isInCart
  * @method static bool isInCart($product)
  * @see \Antidote\LaravelCart\Domain\Cart::createOrder
- * @method static Order createOrder()
+ * @method static Order createOrder(Customer $customer)
+ * @see \Antidote\LaravelCart\Domain\Cart::initializePaymentMethod
+ * @method initializePaymentMethod(Order $order)
  */
 
 class Cart extends Facade

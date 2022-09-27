@@ -12,7 +12,7 @@ abstract class PaymentMethod extends Model
 
     public function order() : MorphOne
     {
-        return $this->morphOne(getClassNameFor('order'));
+        return $this->morphOne(getClassNameFor('order'), 'payment_method');
     }
 
     public abstract function initialize() : void;

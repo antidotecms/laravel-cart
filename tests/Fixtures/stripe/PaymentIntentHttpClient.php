@@ -10,28 +10,33 @@ class PaymentIntentHttpClient implements ClientInterface
     private array $params = [];
     private int $http_code = 200;
     private array $headers = [];
+    private string $exception_class;
 
-    public function __construct(array $params = [])
+    public function __construct()
     {
-        $this->params = $params;
         ApiRequestor::setHttpClient($this);
     }
 
-    public function with($key, $value) : self
+    public function with($key, $value): self
     {
         $this->params[$key] = $value;
 
         return $this;
     }
 
-    public function withHttpCode($http_code) : self
+    public function withHttpCode($http_code): self
     {
         $this->http_code = $http_code;
 
         return $this;
     }
 
-    public function withHeader($key, $value) : self
+    public function throwException($exception_class)
+    {
+        $this->exception_class = $exception_class;
+    }
+
+    public function withHeader($key, $value): self
     {
         $this->headers[$key] = $value;
 
@@ -40,6 +45,10 @@ class PaymentIntentHttpClient implements ClientInterface
 
     public function request($method, $absUrl, $headers, $params, $hasFile)
     {
+        if($this->exception_class) {
+            throw new $this->exception_class;
+        }
+
         return [
             $this->response(),
             $this->http_code,
@@ -47,7 +56,7 @@ class PaymentIntentHttpClient implements ClientInterface
         ];
     }
 
-    private function response() : string
+    private function response(): string
     {
         return json_encode(array_merge([
             'id' => 'xxx',

@@ -27,7 +27,8 @@ class Cart
             'getTotal',
             'isInCart',
             'remove',
-            'createOrder'
+            'createOrder',
+            'initializePaymentMethod'
         ];
 
         in_array($method, $allowedMethods) ?: throw new \BadMethodCallException();
@@ -210,6 +211,22 @@ class Cart
         Cart::clear();
 
         return $order;
+    }
 
+    private function initializePaymentMethod(Order $order)
+    {
+        //attach payment method to order
+        $payment_method_class = getClassNameFor('payment_method');
+
+        $payment_method = $payment_method_class::create([
+            getKeyFor('order') => $order->id
+        ]);
+
+        $order->paymentMethod()->associate($payment_method);
+        $order->save();
+
+
+        $order->refresh();
+        $order->paymentMethod->initialize();
     }
 }

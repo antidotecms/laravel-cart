@@ -50,12 +50,15 @@ class TestOrderFactory extends Factory
 
     public function configure()
     {
-        return $this->afterMaking(function(Order $order) {
+        return $this->afterCreating(function(Order $order) {
 
             $payment_method_class = getClassNameFor('payment_method');
             if(!$order->paymentMethod) {
-                $payment_method = $payment_method_class::make();
+                $payment_method = $payment_method_class::make([
+                    'test_order_id' => $order->id
+                ]);
                 $order->paymentMethod()->associate($payment_method);
+                //$payment_method->save();
             }
 
             if(!$order->customer) {

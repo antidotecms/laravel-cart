@@ -4,23 +4,21 @@ namespace Antidote\LaravelCartStripe\Models;
 
 use Antidote\LaravelCart\Contracts\PaymentMethod;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class StripePaymentMethod extends PaymentMethod
 {
     protected $fillable = [
-        'data'
+        'body'
     ];
 
     protected $casts = [
-        'data' => 'array'
+        'body' => 'array'
     ];
 
-    public function order() : MorphOne
-    {
-        $order_class = getClassNameFor('order');
-        return $this->morphOne($order_class);
-    }
+//    public function order() : MorphOne
+//    {
+//        return $this->morphOne(getClassNameFor('order'), getKeyFor('order'));
+//    }
 
     public function initialize(): void
     {

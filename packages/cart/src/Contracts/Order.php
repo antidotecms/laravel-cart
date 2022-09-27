@@ -61,6 +61,6 @@ abstract class Order extends Model
 
     public function paymentMethod() : MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('paymentMethod', 'payment_method_type');
     }
 }
