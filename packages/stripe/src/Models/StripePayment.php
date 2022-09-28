@@ -2,10 +2,10 @@
 
 namespace Antidote\LaravelCartStripe\Models;
 
-use Antidote\LaravelCart\Contracts\PaymentMethod;
+use Antidote\LaravelCart\Contracts\Payment;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
 
-class StripePaymentMethod extends PaymentMethod
+class StripePayment extends Payment
 {
     protected $fillable = [
         'body'

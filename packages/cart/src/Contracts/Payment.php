@@ -6,7 +6,7 @@ use Antidote\LaravelCart\Concerns\ConfiguresPaymentMethod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-abstract class PaymentMethod extends Model
+abstract class Payment extends Model
 {
     use ConfiguresPaymentMethod;
 

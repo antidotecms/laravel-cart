@@ -63,4 +63,8 @@ abstract class Order extends Model
     {
         return $this->morphTo('paymentMethod', 'payment_method_type');
     }
+    public function logItems() : hasMany
+    {
+        return $this->hasMany(getClassNameFor('order_log_item'), getKeyFor('order'));
+    }
 }

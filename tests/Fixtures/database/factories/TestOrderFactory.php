@@ -3,7 +3,7 @@
 namespace Antidote\LaravelCart\Tests\Fixtures\database\factories;
 
 use Antidote\LaravelCart\Contracts\Order;
-use Antidote\LaravelCart\Contracts\PaymentMethod;
+use Antidote\LaravelCart\Contracts\Payment;
 use Antidote\LaravelCart\Contracts\Product;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
@@ -20,7 +20,7 @@ class TestOrderFactory extends Factory
         ];
     }
 
-    public function withPaymentMethod(?PaymentMethod $payment_method)
+    public function withPaymentMethod(?Payment $payment_method)
     {
         return $this->state([
             'payment_method_id' => $payment_method->id,
@@ -28,7 +28,7 @@ class TestOrderFactory extends Factory
         ]);
     }
 
-    public function withProduct(Product $product, $quantity)
+    public function withProduct(Product $product, $quantity = 1)
     {
         return $this->afterCreating(function(Order $order) use ($product, $quantity) {
             $order->items()->create([
@@ -43,9 +43,9 @@ class TestOrderFactory extends Factory
     }
 
     public function forCustomer(TestCustomer $customer) {
-        return [
+        return $this->state([
             'test_customer_id' => $customer->id
-        ];
+        ]);
     }
 
     public function configure()

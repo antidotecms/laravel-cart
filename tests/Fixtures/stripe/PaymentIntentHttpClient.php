@@ -10,7 +10,7 @@ class PaymentIntentHttpClient implements ClientInterface
     private array $params = [];
     private int $http_code = 200;
     private array $headers = [];
-    private string $exception_class;
+    private string $exception_class = '';
 
     public function __construct()
     {
@@ -58,6 +58,10 @@ class PaymentIntentHttpClient implements ClientInterface
 
     private function response(): string
     {
+        if($this->exception_class) {
+            throw new $this->exception_class;
+        }
+
         return json_encode(array_merge([
             'id' => 'xxx',
             'object' => 'payment_intent',

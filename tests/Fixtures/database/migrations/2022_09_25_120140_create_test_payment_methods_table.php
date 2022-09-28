@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('test_payment_methods', function (Blueprint $table) {
+        Schema::create('test_payments', function (Blueprint $table) {
             $table->id();
 
             $table->integer('test_order_id');
@@ -18,6 +18,6 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists('test_payment_methods');
+        Schema::dropIfExists('test_payments');
     }
 };

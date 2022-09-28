@@ -2,17 +2,17 @@
 
 namespace Antidote\LaravelCart\Tests\Fixtures\cart\Models;
 
-use Antidote\LaravelCart\Contracts\PaymentMethod;
-use Antidote\LaravelCart\Tests\Fixtures\database\factories\TestPaymentMethodFactory;
+use Antidote\LaravelCart\Contracts\Payment;
+use Antidote\LaravelCart\Tests\Fixtures\database\factories\TestPaymentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class TestPaymentMethod extends PaymentMethod
+class TestPayment extends Payment
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return TestPaymentMethodFactory::new();
+        return TestPaymentFactory::new();
     }
 
     public function initialize(): void

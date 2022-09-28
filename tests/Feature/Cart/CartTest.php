@@ -548,5 +548,5 @@ it('will set up a payment method', function () {
     Cart::initializePaymentMethod($customer->orders()->first());
 
     expect(TestOrder::count())->toBe(1);
-    expect(get_class(TestOrder::first()->paymentMethod))->toBe(\Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPaymentMethod::class);
+    expect(get_class(TestOrder::first()->paymentMethod))->toBe(\Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPayment::class);
 });

@@ -2,12 +2,12 @@
 
 namespace Antidote\LaravelCart\Tests\Fixtures\database\factories;
 
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPaymentMethod;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPayment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TestPaymentMethodFactory extends Factory
+class TestPaymentFactory extends Factory
 {
-    protected $model = TestPaymentMethod::class;
+    protected $model = TestPayment::class;
 
     public function definition(): array
     {

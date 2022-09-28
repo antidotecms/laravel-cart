@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('stripe_payments', function (Blueprint $table) {
+        Schema::create('test_order_log_items', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('test_order_id');
-            $table->json('body')->nullable();
+            $table->string('message');
+            $table->string('test_order_id');
 
             $table->timestamps();
         });
@@ -19,6 +19,6 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists('stripe_payments');
+        Schema::dropIfExists('test_order_log_items');
     }
 };

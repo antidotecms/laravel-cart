@@ -135,5 +135,5 @@ it('has a payment method', function () {
 
     $order = TestOrder::factory()->create();
 
-    expect(get_class($order->paymentMethod))->toBe(\Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPaymentMethod::class);
+    expect(get_class($order->paymentMethod))->toBe(\Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPayment::class);
 });

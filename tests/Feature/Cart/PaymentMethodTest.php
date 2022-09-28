@@ -4,7 +4,7 @@ use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPaymentMethod;
+use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPayment;
 
 it('has an order', function() {
 
@@ -24,7 +24,7 @@ it('has an order', function() {
 
     Cart::add($product);
 
-    $payment_method = TestPaymentMethod::create([
+    $payment_method = TestPayment::create([
         'test_order_id' => $order->id
     ]);
 
