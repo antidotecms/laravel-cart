@@ -27,7 +27,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Antidote\\LaravelCart\\ServiceProvider"
+                "Antidote\\LaravelCart\\ServiceProvider",
+                "Antidote\\LaravelCartStripe\\ServiceProvider"
             ],
             "aliases": {
                 "cart": "Antidote\\LaravelCart\\Facades\\Cart"
@@ -38,7 +39,8 @@
         "orchestra/testbench": "^7.5",
         "phpunit/phpunit": "^9.5",
         "pestphp/pest": "^1.21",
-        "pestphp/pest-plugin-laravel": "^1.2"
+        "pestphp/pest-plugin-laravel": "^1.2",
+        "laravel/framework": "^9.32"
     },
     "scripts": {
         "post-autoload-dump": [
