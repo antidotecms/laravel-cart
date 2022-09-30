@@ -32,8 +32,8 @@ abstract class PaymentIntent
                     'receipt_email' => $order->customer->email
                 ]);
 
-                $order->paymentMethod->body = $payment_intent_response->getLastResponse()->body;
-                $order->paymentMethod->save();
+                $order->payment->body = $payment_intent_response->getLastResponse()->body;
+                $order->payment->save();
 
             } catch (CardException $e) {
                 //problem with card

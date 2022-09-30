@@ -10,7 +10,7 @@ use Antidote\LaravelCartStripe\Models\StripePayment;
 
 beforeEach(function () {
     new PaymentIntentHttpClient();
-    Config::set('laravel-cart.classes.payment_method', StripePayment::class);
+    Config::set('laravel-cart.classes.payment', StripePayment::class);
 });
 
 it('will return a payment intent object', function() {
@@ -23,7 +23,7 @@ it('will return a payment intent object', function() {
         ->withProduct($product, 1)
         ->create();
 
-    expect(get_class($order->paymentMethod))->toBe(StripePayment::class);
+    expect(get_class($order->payment))->toBe(StripePayment::class);
 });
 
 it('will throw an exception if the amount is too low', function () {
@@ -83,15 +83,10 @@ it('will set up a payment method', function () {
     $order = Cart::createOrder($customer);
     expect($order->getTotal())->toBe(1000);
 
-    Cart::initializePaymentMethod($order);
+    Cart::initializePayment($order);
 
     expect(TestOrder::count())->toBe(1);
-    expect(get_class($order->paymentMethod))->toBe(StripePayment::class);
-
-    $order->paymentMethod->refresh();
-
-    dump($order->paymentMethod->body);
-    dump($order->paymentMethod);
+    expect(get_class($order->payment))->toBe(StripePayment::class);
 });
 
 it('will log an order log item', function ($exception_class, $expected_message) {
@@ -110,7 +105,7 @@ it('will log an order log item', function ($exception_class, $expected_message) 
     $order = Cart::createOrder($customer);
     expect($order->getTotal())->toBe(1000);
 
-    Cart::initializePaymentMethod($order);
+    Cart::initializePayment($order);
 
     expect($order->logItems()->count())->toBe(1);
     expect($order->logItems()->first()->message)->toBe($expected_message);

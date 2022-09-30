@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('stripe_payments', function (Blueprint $table) {
+        Schema::create('$table_name$', function (Blueprint $table) {
             $table->id();
 
             $table->integer('$order_key$');
@@ -19,6 +19,6 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists('stripe_payments');
+        Schema::dropIfExists('$table_name$');
     }
 };

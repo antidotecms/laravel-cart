@@ -1,0 +1,10 @@
+<?php
+
+namespace $NAMESPACE$;
+
+use Antidote\LaravelCart\Contracts\OrderAdjustment;
+
+class $CLASSNAME$ extends OrderAdjustment
+{
+
+}

@@ -2,9 +2,9 @@
 
 namespace Antidote\LaravelCart\Concerns;
 
-trait ConfiguresPaymentMethod
+trait ConfiguresPayment
 {
-    public function initializeConfiguresPaymentMethod() : void
+    public function initializeConfiguresPayment() : void
     {
         $this->fillable[] = getKeyFor('order');
     }

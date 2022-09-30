@@ -24,17 +24,17 @@ it('has an order', function() {
 
     Cart::add($product);
 
-    $payment_method = TestPayment::create([
+    $payment = TestPayment::create([
         'test_order_id' => $order->id
     ]);
 
-    $order->paymentMethod()->associate($payment_method);
+    $order->payment()->associate($payment);
     $order->save();
 
     //dump($payment_method->attributesToArray());
 
     //dump($payment_method->order()->toSql());
 
-    expect($order->paymentMethod->id)->toBe($payment_method->id);
-    expect($payment_method->order->id)->toBe($order->id);
+    expect($order->payment->id)->toBe($payment->id);
+    expect($payment->order->id)->toBe($order->id);
 });

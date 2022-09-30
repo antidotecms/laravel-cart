@@ -43,7 +43,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.classes.order', TestOrder::class);
         Config::set('laravel-cart.classes.order_item', TestOrderItem::class);
         Config::set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
-        Config::set('laravel-cart.classes.payment_method', TestPayment::class);
+        Config::set('laravel-cart.classes.payment', TestPayment::class);
         Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
     }
 }

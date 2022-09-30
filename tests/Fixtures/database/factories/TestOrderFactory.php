@@ -52,12 +52,12 @@ class TestOrderFactory extends Factory
     {
         return $this->afterCreating(function(Order $order) {
 
-            $payment_method_class = getClassNameFor('payment_method');
+            $payment_method_class = getClassNameFor('payment');
             if(!$order->paymentMethod) {
                 $payment_method = $payment_method_class::make([
                     'test_order_id' => $order->id
                 ]);
-                $order->paymentMethod()->associate($payment_method);
+                $order->payment()->associate($payment_method);
                 //$payment_method->save();
             }
 

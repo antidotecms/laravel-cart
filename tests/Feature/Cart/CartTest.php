@@ -533,7 +533,7 @@ it('will not allow a product to be added if it is invalid', function () {
 })
 ->throws(InvalidArgumentException::class, 'The cart item is invalid');
 
-it('will set up a payment method', function () {
+it('will set up a payment', function () {
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000
@@ -545,8 +545,8 @@ it('will set up a payment method', function () {
 
     Cart::createOrder($customer);
 
-    Cart::initializePaymentMethod($customer->orders()->first());
+    Cart::initializePayment($customer->orders()->first());
 
     expect(TestOrder::count())->toBe(1);
-    expect(get_class(TestOrder::first()->paymentMethod))->toBe(\Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPayment::class);
+    expect(get_class(TestOrder::first()->payment))->toBe(\Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPayment::class);
 });

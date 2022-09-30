@@ -59,9 +59,9 @@ abstract class Order extends Model
         return $discount_total;
     }
 
-    public function paymentMethod() : MorphTo
+    public function payment() : MorphTo
     {
-        return $this->morphTo('paymentMethod', 'payment_method_type');
+        return $this->morphTo();
     }
     public function logItems() : hasMany
     {

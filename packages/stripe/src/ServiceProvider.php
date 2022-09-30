@@ -2,7 +2,8 @@
 
 namespace Antidote\LaravelCartStripe;
 
-use Antidote\LaravelCartStripe\Commands\MakeStripePaymentTableCommand;
+
+use Antidote\LaravelCart\Commands\CreateMigrationCommand;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -10,7 +11,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         if($this->app->runningInConsole()) {
             $this->commands([
-                MakeStripePaymentTableCommand::class
+                CreateMigrationCommand::class
             ]);
         }
     }
