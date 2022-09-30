@@ -12,10 +12,11 @@
     "autoload": {
         "psr-4": {
             "Antidote\\LaravelCart\\": "packages/cart/src/",
-            "Antidote\\LaravelCartStripe\\": "packages/stripe/src/"
+            "Antidote\\LaravelCartStripe\\": "packages/stripe/src/",
+            "Antidote\\LaravelCartFilament\\": "packages/filament/src/"
         },
         "files" : [
-            "packages/helpers//helpers.php"
+            "packages/helpers/helpers.php"
         ]
     },
     "autoload-dev": {
@@ -28,7 +29,8 @@
         "laravel": {
             "providers": [
                 "Antidote\\LaravelCart\\ServiceProvider",
-                "Antidote\\LaravelCartStripe\\ServiceProvider"
+                "Antidote\\LaravelCartStripe\\ServiceProvider",
+                "Antidote\\LaravelCartFilament\\ServiceProvider"
             ],
             "aliases": {
                 "cart": "Antidote\\LaravelCart\\Facades\\Cart"
@@ -50,7 +52,8 @@
     },
     "require": {
         "spatie/data-transfer-object": "^3.8",
-        "stripe/stripe-php": "^9.6"
+        "stripe/stripe-php": "^9.6",
+        "filament/filament": "^2.16"
     },
     "config": {
         "allow-plugins": {
