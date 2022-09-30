@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCartFilament;
 
+use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
 use Filament\PluginServiceProvider;
 use Spatie\LaravelPackageTools\Package;
@@ -9,7 +10,8 @@ use Spatie\LaravelPackageTools\Package;
 class ServiceProvider extends PluginServiceProvider
 {
     protected array $resources = [
-        OrderResource::class
+        OrderResource::class,
+        CustomerResource::class,
     ];
 
     public function configurePackage(Package $package): void

@@ -2,12 +2,13 @@
 
 namespace Antidote\LaravelCartFilament\Resources;
 
-use App\Filament\Resources\OrderResource\Pages\CreateOrder;
-use App\Filament\Resources\OrderResource\Pages\EditOrder;
-use App\Filament\Resources\OrderResource\Pages\ListOrders;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\CreateCustomer;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\CreateOrder;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
-use Filament\Tables\Columns\Column;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Str;
 
 class OrderResource extends Resource
@@ -27,8 +28,10 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                Column::make('id'),
-                Column::make('order_total')
+                TextColumn::make('id'),
+                TextColumn::make('order_total')
+                    ->getStateUsing(fn($record) => $record->getTotal()),
+                TextColumn::make('customer.name')
             ]);
     }
 
@@ -37,7 +40,6 @@ class OrderResource extends Resource
         return [
             'index' => ListOrders::route('/'),
             'create' => CreateOrder::route('/create'),
-            //'edit' => Pages\EditProduct::route('/{record}/edit'),
             'edit' => EditOrder::route('/{record}/edit'),
         ];
     }
