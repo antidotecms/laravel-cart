@@ -38,26 +38,31 @@ abstract class PaymentIntent
             } catch (CardException $e) {
                 //problem with card
                 self::logMessage($order, 'Card Issue: '.$e->getMessage());
+                abort(500);
 
             } catch (InvalidRequestException $e) {
 
                 //request was invalid
                 self::logMessage($order, 'Invalid API Request: '.$e->getMessage());
+                abort(500);
 
             } catch (AuthenticationException $e) {
 
                 //unable to auth
                 self::logMessage($order, 'Unable to authenticate with Stripe API: '.$e->getMessage());
+                abort(500);
 
             } catch (ApiErrorException $e) {
 
                 //any other Stripe error
                 self::logMessage($order, 'Stripe API Error: '.$e->getMessage());
+                abort(500);
 
             } catch (\Exception $e) {
 
                 //application error
                 self::logMessage($order, 'Application Error: '.$e->getMessage());
+                abort(500);
 
             } finally {
                 return;
