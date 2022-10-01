@@ -112,7 +112,7 @@ it('will log an order log item', function ($exception_class, $expected_message) 
 
 
 })
-->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class)
+->expectException(\Exception::class)
 ->with([
     'Card Exception' => [
         'exception_class' => \Stripe\Exception\CardException::class,
