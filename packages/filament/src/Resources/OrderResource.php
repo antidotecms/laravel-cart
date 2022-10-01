@@ -2,10 +2,13 @@
 
 namespace Antidote\LaravelCartFilament\Resources;
 
-use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\CreateCustomer;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\CreateOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
+use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderItemRelationManager;
+use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager;
+use Filament\Forms\Components\TextInput;
+use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
@@ -22,6 +25,19 @@ class OrderResource extends Resource
         return (string) Str::of(class_basename(getClassNameFor('order')))
                 ->beforeLast('Resource')
                 ->prepend('App\\Models\\');
+    }
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                TextInput::make('id')
+                    ->disabled(),
+                TextInput::make('order_total')
+                    ->afterStateHydrated(fn($component, $record) => $component->state($record->getTotal()))
+                    ->disabled()
+
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -41,6 +57,14 @@ class OrderResource extends Resource
             'index' => ListOrders::route('/'),
             'create' => CreateOrder::route('/create'),
             'edit' => EditOrder::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            OrderItemRelationManager::class,
+            OrderLogItemRelationManager::class
         ];
     }
 }
