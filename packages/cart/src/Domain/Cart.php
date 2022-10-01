@@ -176,41 +176,47 @@ class Cart
             });
     }
 
-    private function createOrder(Customer $customer) : Order
+    private function createOrder(Customer $customer) : Order | bool
     {
-        // create an order
-        $order_class = getClassNameFor('order');
-        $order = $order_class::create([
-            $customer->getForeignKey() => $customer->id
-        ]);
-
-        $cart_items = Cart::items();
-
-        $cart_items->each(function($cart_item) use ($order) {
-            $product_key = getKeyFor('product');
-            $order->items()->create([
-                'name' => $cart_item->getProduct()->getName($cart_item->product_data),
-                $product_key => $cart_item->product_id,
-                'product_data' => $cart_item->product_data,
-                'price' => $cart_item->getProduct()->getPrice($cart_item->product_data),
-                'quantity' => $cart_item->quantity
+        if(Cart::getTotal() >= 30 && Cart::getTotal() <= 99999999) {
+            // create an order
+            $order_class = getClassNameFor('order');
+            $order = $order_class::create([
+                $customer->getForeignKey() => $customer->id
             ]);
-        });
 
-        $validDiscounts = $this->getValidDiscounts();
+            $cart_items = Cart::items();
 
-        $validDiscounts->each(function (CartAdjustment $adjustment) use ($order) {
-            $order->adjustments()->create([
-                'name' => $adjustment->name,
-                'class' => $adjustment->class,
-                'parameters' => $adjustment->parameters,
-                getKeyFor('order') => $order->id
-            ]);
-        });
+            $cart_items->each(function ($cart_item) use ($order) {
+                $product_key = getKeyFor('product');
+                $order->items()->create([
+                    'name' => $cart_item->getProduct()->getName($cart_item->product_data),
+                    $product_key => $cart_item->product_id,
+                    'product_data' => $cart_item->product_data,
+                    'price' => $cart_item->getProduct()->getPrice($cart_item->product_data),
+                    'quantity' => $cart_item->quantity
+                ]);
+            });
 
-        Cart::clear();
+            $validDiscounts = $this->getValidDiscounts();
 
-        return $order;
+            $validDiscounts->each(function (CartAdjustment $adjustment) use ($order) {
+                $order->adjustments()->create([
+                    'name' => $adjustment->name,
+                    'class' => $adjustment->class,
+                    'parameters' => $adjustment->parameters,
+                    getKeyFor('order') => $order->id
+                ]);
+            });
+
+            Cart::clear();
+
+            return $order;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private function initializePayment(Order $order)

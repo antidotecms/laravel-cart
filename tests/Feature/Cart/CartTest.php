@@ -550,3 +550,19 @@ it('will set up a payment', function () {
     expect(TestOrder::count())->toBe(1);
     expect(get_class(TestOrder::first()->payment))->toBe(\Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPayment::class);
 });
+
+it('will not create an order if the amount is out of bounds', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1
+    ])->create();
+
+    $customer = TestCustomer::factory()->create();
+
+    Cart::add($simple_product);
+
+    $result = Cart::createOrder($customer);
+
+    expect($result)->toBeFalse();
+    expect(TestOrder::count())->toBe(0);
+});
