@@ -1,11 +1,11 @@
 <?php
 
-namespace Antidote\LaravelCart\Tests\Fixtures\stripe;
+namespace Antidote\LaravelCartStripe\Testing;
 
 use Stripe\ApiRequestor;
 use Stripe\HttpClient\ClientInterface;
 
-class PaymentIntentHttpClient implements ClientInterface
+class MockStripeHttpClient implements ClientInterface
 {
     private array $params = [];
     private int $http_code = 200;

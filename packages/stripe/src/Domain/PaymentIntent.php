@@ -4,6 +4,7 @@ namespace Antidote\LaravelCartStripe\Domain;
 
 use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCartStripe\Concerns\HasStripeClient;
+use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use InvalidArgumentException;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\AuthenticationException;
@@ -13,6 +14,11 @@ use Stripe\Exception\InvalidRequestException;
 abstract class PaymentIntent
 {
     use HasStripeClient;
+
+    public static function fake()
+    {
+        new MockStripeHttpClient();
+    }
 
     public static function create(Order $order) : void
     {

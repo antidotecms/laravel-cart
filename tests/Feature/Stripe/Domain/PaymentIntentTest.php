@@ -4,12 +4,12 @@ use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
-use Antidote\LaravelCart\Tests\Fixtures\stripe\PaymentIntentHttpClient;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
 use Antidote\LaravelCartStripe\Models\StripePayment;
+use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 
 beforeEach(function () {
-    new PaymentIntentHttpClient();
+    new MockStripeHttpClient();
     Config::set('laravel-cart.classes.payment', StripePayment::class);
 });
 
@@ -91,7 +91,7 @@ it('will set up a payment method', function () {
 
 it('will log an order log item', function ($exception_class, $expected_message) {
 
-    (new PaymentIntentHttpClient())->throwException($exception_class);
+    (new MockStripeHttpClient())->throwException($exception_class);
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000
@@ -108,10 +108,11 @@ it('will log an order log item', function ($exception_class, $expected_message) 
     Cart::initializePayment($order);
 
     expect($order->logItems()->count())->toBe(1);
-    expect($order->logItems()->first()->message)->toBe($expected_message);
+    expect($order->logItems()->first()->message)->toStartWith($expected_message);
 
 
 })
+->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class)
 ->with([
     'Card Exception' => [
         'exception_class' => \Stripe\Exception\CardException::class,
