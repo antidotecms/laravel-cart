@@ -4,9 +4,17 @@ namespace Antidote\LaravelCartStripe\Domain\Controllers;
 
 class StripeController
 {
-    public function getClientSecret(int $order_id)
+    public function confirm()
     {
-        $order_class = getClassNameFor('order');
-        $order = $order_class::where('id', $order_id)->first();
+        //confirm that the order has not already been paid for
+
+        //confirm that all products are active and valid
+
+        //confirm order total to be submitted to stripe is the same as that of the order total
+    }
+
+    public function webhook()
+    {
+
     }
 }

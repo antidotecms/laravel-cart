@@ -28,7 +28,8 @@ class Cart
             'isInCart',
             'remove',
             'createOrder',
-            'initializePayment'
+            'initializePayment',
+            'getActiveOrder'
         ];
 
         in_array($method, $allowedMethods) ?: throw new \BadMethodCallException();
@@ -211,12 +212,30 @@ class Cart
 
             Cart::clear();
 
+            static::setActiveOrder($order);
+
             return $order;
         }
         else
         {
             return false;
         }
+    }
+
+    private function setActiveOrder(int|Order $order)
+    {
+        if(is_int($order)) {
+            session()->put('active_order', $order);
+        } else {
+            session()->put('active_order', $order->id);
+        }
+    }
+
+    private function getActiveOrder()
+    {
+        $order_id =  session()->get('active_order');
+        $order_class = getClassNameFor('order');
+        return $order_class::where('id', $order_id)->first();
     }
 
     private function initializePayment(Order $order)

@@ -32,14 +32,15 @@ abstract class PaymentIntent
                     'currency' => 'gbp',
                     'payment_method_types' => ['card'],
                     'description' => 'Order #'.$order->id,
-                    'meta_data' => [
+                    'metadata' => [
                         'order_id' => $order->id
                     ],
                     'receipt_email' => $order->customer->email
                 ]);
 
-                $order->payment->body = $payment_intent_response->getLastResponse()->body;
+                $order->payment->body = json_decode($payment_intent_response->getLastResponse()->body);
                 $order->payment->save();
+                self::logMessage($order, 'Payment Intent Created: '.$payment_intent_response->id);
 
             } catch (CardException $e) {
                 //problem with card
@@ -72,6 +73,7 @@ abstract class PaymentIntent
 
                 //application error
                 //self::logMessage($order, 'Application Error: '.$e->getMessage());
+                \Log::error($e->getMessage(), $e->getTrace());
                 self::logError($order, 'Application Error', $e);
                 //abort(500);
 

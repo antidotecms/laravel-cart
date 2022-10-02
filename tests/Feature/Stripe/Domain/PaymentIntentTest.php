@@ -56,6 +56,10 @@ it('will throw an exception if the amount is too high', function () {
 
 it('will initialise a payment intent request', function () {
 
+    PaymentIntent::fake();
+
+    Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+
     $customer = TestCustomer::factory()->create();
 
     $order = TestOrder::factory()
@@ -69,7 +73,11 @@ it('will initialise a payment intent request', function () {
 
 });
 
-it('will set up a payment method', function () {
+it('will set up a payment', function () {
+
+    PaymentIntent::fake();
+
+    Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000
@@ -87,6 +95,10 @@ it('will set up a payment method', function () {
 
     expect(TestOrder::count())->toBe(1);
     expect(get_class($order->payment))->toBe(StripePayment::class);
+
+    $order = TestOrder::first();
+    expect($order->logItems()->count())->toBe(1);
+    expect($order->logItems()->first()->message)->toStartWith('Payment Intent Created');
 });
 
 it('will log an order log item', function ($exception_class, $expected_message) {
