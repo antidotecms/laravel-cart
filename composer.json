@@ -42,7 +42,8 @@
         "phpunit/phpunit": "^9.5",
         "pestphp/pest": "^1.21",
         "pestphp/pest-plugin-laravel": "^1.2",
-        "laravel/framework": "^9.32"
+        "laravel/framework": "^9.32",
+        "orchestra/testbench-dusk": "^7.8"
     },
     "scripts": {
         "post-autoload-dump": [
@@ -52,8 +53,7 @@
     },
     "require": {
         "spatie/data-transfer-object": "^3.8",
-        "stripe/stripe-php": "^9.6",
-        "filament/filament": "^2.16"
+        "stripe/stripe-php": "^9.6"
     },
     "config": {
         "allow-plugins": {

@@ -5,9 +5,9 @@
          colors="true"
 >
     <testsuites>
-<!--        <testsuite name="Unit">-->
-<!--            <directory suffix="Test.php">./tests/Unit</directory>-->
-<!--        </testsuite>-->
+        <testsuite name="Browser">
+            <directory suffix="Test.php">./tests/Browser</directory>
+        </testsuite>
         <testsuite name="Feature">
             <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
@@ -19,6 +19,8 @@
     </coverage>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_BASE_PATH" value="/var/www/docker/laravel-cart/packages/antidote/laravel-cart/tests/laravel"/>
+        <env name="APP_URL" value="http://127.0.0.1:8001"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="DB_DATABASE" value="testing"/>

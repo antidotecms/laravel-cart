@@ -2,12 +2,12 @@
 
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Facades\Cart;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\ComplexProductDataType;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\SimpleProductDataType;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\VariableProductDataType;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
+use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
+use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\laravel\app\Models\ProductTypes\ComplexProductDataType;
+use Antidote\LaravelCart\Tests\laravel\app\Models\ProductTypes\SimpleProductDataType;
+use Antidote\LaravelCart\Tests\laravel\app\Models\ProductTypes\VariableProductDataType;
+use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
 
 /**
  * @covers \Antidote\LaravelCart\Domain\Cart
@@ -548,7 +548,7 @@ it('will set up a payment', function () {
     Cart::initializePayment($customer->orders()->first());
 
     expect(TestOrder::count())->toBe(1);
-    expect(get_class(TestOrder::first()->payment))->toBe(\Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestPayment::class);
+    expect(get_class(TestOrder::first()->payment))->toBe(\Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment::class);
 });
 
 it('will not create an order if the amount is out of bounds', function () {

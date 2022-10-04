@@ -1,8 +1,8 @@
 <?php
 
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\SimpleProductDataType;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\ProductTypes\VariableProductDataType;
+use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\laravel\app\Models\ProductTypes\SimpleProductDataType;
+use Antidote\LaravelCart\Tests\laravel\app\Models\ProductTypes\VariableProductDataType;
 
 test('a product type has a product', function()
 {

@@ -1,9 +1,9 @@
 <?php
 
 use Antidote\LaravelCart\Facades\Cart;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestCustomer;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
+use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
+use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
 use Antidote\LaravelCartStripe\Models\StripePayment;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;

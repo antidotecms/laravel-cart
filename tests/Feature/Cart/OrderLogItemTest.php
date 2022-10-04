@@ -1,8 +1,8 @@
 <?php
 
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrder;
-use Antidote\LaravelCart\Tests\Fixtures\cart\Models\TestOrderLogItem;
+use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
+use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderLogItem;
 
 it('has an order log item', function() {
 
