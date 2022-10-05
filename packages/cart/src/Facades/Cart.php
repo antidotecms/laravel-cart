@@ -28,6 +28,10 @@ use Illuminate\Support\Facades\Facade;
  * @method static Order createOrder(Customer $customer)
  * @see \Antidote\LaravelCart\Domain\Cart::initializePayment
  * @method initializePayment(Order $order)
+ * @see \Antidote\LaravelCart\Domain\Cart::getActiveOrder
+ * @method getActiveOrder()
+ * @see \Antidote\LaravelCart\Domain\Cart::setActiveOrder
+ * @method setActiveOrder(int|Order|null $order)
  */
 
 class Cart extends Facade

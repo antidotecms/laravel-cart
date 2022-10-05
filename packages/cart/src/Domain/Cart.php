@@ -29,7 +29,8 @@ class Cart
             'remove',
             'createOrder',
             'initializePayment',
-            'getActiveOrder'
+            'getActiveOrder',
+            'setActiveOrder'
         ];
 
         in_array($method, $allowedMethods) ?: throw new \BadMethodCallException();
@@ -222,9 +223,11 @@ class Cart
         }
     }
 
-    private function setActiveOrder(int|Order $order)
+    private function setActiveOrder(int|Order|null $order)
     {
-        if(is_int($order)) {
+        if(is_null($order)) {
+            session()->remove('active_order');
+        } else if(is_int($order)) {
             session()->put('active_order', $order);
         } else {
             session()->put('active_order', $order->id);

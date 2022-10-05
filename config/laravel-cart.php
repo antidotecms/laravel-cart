@@ -12,6 +12,17 @@ return [
     ],
     'stripe' => [
         'api_key' => env('STRIPE_API_KEY'),
-        'secret_key' => env('STRIPE_SECRET_KEY')
+        'secret_key' => env('STRIPE_SECRET_KEY'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET')
+    ],
+    'urls' => [
+        'order_complete' => '/checkout/complete',
+        'checkout_confirm' => '/checkout/confirm',
+        'stripe' => [
+            'webhook_handler' => '/checkout/stripe'
+        ]
+    ],
+    'views' => [
+        'order_complete' => 'shop.checkout.order_complete'
     ]
 ];

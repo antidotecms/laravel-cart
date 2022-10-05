@@ -27,20 +27,27 @@
                 return response.json();
             })
             .then(function(response) {
-                alert(response.check);
 
                 if(response.check) {
                     stripe.confirmCardPayment(
                         "{{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->payment->body['client_secret'] }}",
                         {
-                                payment_method : {
-                                    card: cardElement
-                                }
+                            payment_method : {
+                                card: cardElement
+                            }
                         }
                     )
                     .then(function(response) {
-                        alert(response)
+
+                        if(response.error) {
+
+                        } else {
+                            location.href = "{{ \Illuminate\Support\Facades\Config::get('laravel-cart.urls.order_complete') }}"
+                        }
                     })
+                } else {
+                    window.alert("cart amount has changed");
+                    location.reload(true);
                 }
             });
         '

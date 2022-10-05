@@ -42,8 +42,8 @@
         "phpunit/phpunit": "^9.5",
         "pestphp/pest": "^1.21",
         "pestphp/pest-plugin-laravel": "^1.2",
-        "laravel/framework": "^9.32",
-        "orchestra/testbench-dusk": "^7.8"
+        "orchestra/testbench-dusk": "^7.8",
+        "laravel/framework": "^9.34"
     },
     "scripts": {
         "post-autoload-dump": [

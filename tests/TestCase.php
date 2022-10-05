@@ -9,6 +9,7 @@ use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment;
+use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Tables\TablesServiceProvider;
@@ -20,6 +21,11 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function defineDatabaseMigrations()
     {
         $this->loadMigrationsFrom(__DIR__.'/laravel/database/migrations');
+    }
+
+    protected function defineRoutes($router)
+    {
+        $router->post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class);
     }
 
     protected function getPackageProviders($app): array
