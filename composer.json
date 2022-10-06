@@ -53,7 +53,8 @@
     },
     "require": {
         "spatie/data-transfer-object": "^3.8",
-        "stripe/stripe-php": "^9.6"
+        "stripe/stripe-php": "^9.6",
+        "filament/filament": "^2.16"
     },
     "config": {
         "allow-plugins": {
