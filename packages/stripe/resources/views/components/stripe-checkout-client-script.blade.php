@@ -42,7 +42,7 @@
                         if(response.error) {
 
                         } else {
-                            location.href = "{{ \Illuminate\Support\Facades\Config::get('laravel-cart.urls.order_complete') }}"
+                            location.href = "{{ \Illuminate\Support\Facades\Config::get('laravel-cart.urls.order_complete') }}?order_id={{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->id }}"
                         }
                     })
                 } else {
