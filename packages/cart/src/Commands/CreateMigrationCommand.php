@@ -31,8 +31,17 @@ class CreateMigrationCommand extends Command
 
     public function getStubVariables() : array
     {
-        return match($this->option('type')) {
-            'payment',
+        $type = $this->option('type');
+
+        return match($type) {
+            'payment' => [
+                'order_key' => getKeyFor('order'),
+                'table_name' => getTableNameFor('payment')
+            ],
+            'stripe_payment' => [
+                'order_key' => getKeyFor('order'),
+                'table_name' => 'stripe_payments'
+            ],
             'order_adjustment' => [
                 'order_key' => getKeyFor('order'),
                 'table_name' => getTableNameFor('order_adjustment')
@@ -55,7 +64,12 @@ class CreateMigrationCommand extends Command
             ],
             'product' => [
                 'table_name' => getTableNameFor('product')
+            ],
+            'stripe_order_log_item' => [
+                'order_key' => getKeyFor('order'),
+                'table_name' => 'stripe_order_log_items'
             ]
+
         };
     }
 
@@ -69,6 +83,8 @@ class CreateMigrationCommand extends Command
             'customer' => __DIR__.'../../../stubs/migrations/create-customers-table.stub',
             'order_log_item' => __DIR__.'../../../stubs/migrations/create-order-log-items-table.stub',
             'product' => __DIR__.'../../../stubs/migrations/create-products-table.stub',
+            'stripe_order_log_item' => __DIR__.'../../../../stripe/stubs/migrations/create-stripe-order-log-items-table.stub',
+            'stripe_payment' => __DIR__.'../../../../stripe/stubs/migrations/create-stripe-payments-table.stub'
         };
     }
 
@@ -76,7 +92,10 @@ class CreateMigrationCommand extends Command
     {
         $contents = $this->substituteVariables();
 
-        $filename = $this->getMigrationFilename();
+        //$filename = $this->getMigrationFilename();
+        $filename = Carbon::now()->format('Y_m_d_Gis') .
+            '_create_' .
+            $this->getStubVariables()['table_name'].'.php';
 
         $this->files->put(
             database_path('migrations') . '/' . $filename,

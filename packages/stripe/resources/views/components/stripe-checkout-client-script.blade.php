@@ -3,7 +3,7 @@
     @push('laravel-cart-header-scripts')
         <meta name="csrf-token" content="{{ csrf_token() }}">
     @endpush
-
+        {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->payment->client_secret }}
         {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->getTotal() }}
     <form
         x-data=''
@@ -30,7 +30,7 @@
 
                 if(response.check) {
                     stripe.confirmCardPayment(
-                        "{{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->payment->body['client_secret'] }}",
+                        "{{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->payment->client_secret }}",
                         {
                             payment_method : {
                                 card: cardElement

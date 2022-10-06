@@ -38,35 +38,36 @@ abstract class PaymentIntent
                     'receipt_email' => $order->customer->email
                 ]);
 
-                $order->payment->body = json_decode($payment_intent_response->getLastResponse()->body);
+                $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
                 $order->payment->save();
-                self::logMessage($order, 'Payment Intent Created: '.$payment_intent_response->id);
+                $event = json_decode($payment_intent_response->getLastResponse()->body);
+                self::logMessage($order, 'Payment Intent Created: '.$payment_intent_response->id, $event);
 
             } catch (CardException $e) {
                 //problem with card
                 //self::logMessage($order, 'Card Issue: '.$e->getMessage());
-                self::logError($order, 'Card Error', $e);
+                self::logError($order, 'Card Error', $e, $event);
                 //abort(500);
 
             } catch (InvalidRequestException $e) {
 
                 //request was invalid
                 //self::logMessage($order, 'Invalid API Request: '.$e->getMessage());
-                self::logError($order, 'Invalid API Request', $e);
+                self::logError($order, 'Invalid API Request', $e, $event);
                 //abort(500);
 
             } catch (AuthenticationException $e) {
 
                 //unable to auth
                 //self::logMessage($order, 'Unable to authenticate with Stripe API: '.$e->getMessage());
-                self::logError($order, 'Stripe Authentication Error', $e);
+                self::logError($order, 'Stripe Authentication Error', $e, $event);
                 //abort(500);
 
             } catch (ApiErrorException $e) {
 
                 //any other Stripe error
                 //self::logMessage($order, 'Stripe API Error: '.$e->getMessage());
-                self::logError($order, 'Stripe API Error', $e);
+                self::logError($order, 'Stripe API Error', $e, $event);
                 //abort(500);
 
             } catch (\Exception $e) {
@@ -74,7 +75,7 @@ abstract class PaymentIntent
                 //application error
                 //self::logMessage($order, 'Application Error: '.$e->getMessage());
                 \Log::error($e->getMessage(), $e->getTrace());
-                self::logError($order, 'Application Error', $e);
+                self::logError($order, 'Application Error', $e, $event);
                 //abort(500);
 
             }
@@ -85,16 +86,17 @@ abstract class PaymentIntent
         throw new InvalidArgumentException('The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
     }
 
-    private static function logError($order, $type, $exception)
+    private static function logError($order, $type, $exception, $event)
     {
-        self::logMessage($order, $type.' : '.$exception->getMessage());
+        self::logMessage($order, $type.' : '.$exception->getMessage(), $event);
         throw new \Exception();
     }
 
-    private static function logMessage($order, $message)
+    private static function logMessage($order, $message, $event = [])
     {
         $order->logItems()->create([
-            'message' => $message
+            'message' => $message,
+            'event' => $event
         ]);
     }
 

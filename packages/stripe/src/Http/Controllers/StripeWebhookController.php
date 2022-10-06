@@ -43,16 +43,22 @@ class StripeWebhookController extends Controller
         switch($event->type) {
 
             case "payment_intent.created":
-                $order->log('Stripe Payment Intent Created');
+                $order_log_item = $order->log('Stripe Payment Intent Created');
+                $order_log_item->event  = $event;
+                $order_log_item->save();
             break;
 
             case "payment_intent.succeeded":
-                $order->log('Stripe Payment Intent Succeeded');
+                $order_log_item = $order->log('Stripe Payment Intent Succeeded');
+                $order_log_item->event  = $event;
+                $order_log_item->save();
             break;
 
             case "charge.succeeded":
                 //order successful
-                $order->log('Stripe Charge Succeeded');
+                $order_log_item = $order->log('Stripe Charge Succeeded');
+                $order_log_item->event  = $event;
+                $order_log_item->save();
 
                 //send emails
             break;

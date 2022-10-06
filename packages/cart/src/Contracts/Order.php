@@ -69,9 +69,9 @@ abstract class Order extends Model
         return $this->hasMany(getClassNameFor('order_log_item'), getKeyFor('order'));
     }
 
-    public function log(string $message)
+    public function log(string $message) : OrderLogItem
     {
-        $this->logItems()->create([
+        return $this->logItems()->create([
             'message' => $message
         ]);
     }
