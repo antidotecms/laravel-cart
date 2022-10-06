@@ -7,6 +7,7 @@ use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
 use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderItemRelationManager;
 use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -35,7 +36,9 @@ class OrderResource extends Resource
                     ->disabled(),
                 TextInput::make('order_total')
                     ->afterStateHydrated(fn($component, $record) => $component->state($record->getTotal()))
-                    ->disabled()
+                    ->disabled(),
+                Select::make('customer')
+                    ->relationship('customer', 'name')
 
             ]);
     }
