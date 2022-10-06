@@ -2,7 +2,9 @@
 
 namespace Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers;
 
+use Antidote\LaravelCartStripe\Models\StripeOrderLogItem;
 use Filament\Resources\Table;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 
 class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\RelationManager
@@ -20,6 +22,23 @@ class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\R
                 TextColumn::make('created_at'),
                     //->getStateUsing(fn($record) => $record->created_at),
                 TextColumn::make('message')
-            ]);
+            ])
+            ->actions(self::getActions());
+    }
+
+    private static function getActions() : array
+    {
+        //@todo better way to determine payment provider needed?
+        return match(getClassNameFor('order_log_item')) {
+            StripeOrderLogItem::class => [
+                Action::make('event')
+                    ->action(fn($record) => $record)
+                    ->modalContent(function($record) {
+
+                        return view('laravel-cart-filament::stripe-event', [
+                            'event_data' => \Illuminate\Support\Arr::dot($record->event)]);
+                    })
+            ]
+        };
     }
 }

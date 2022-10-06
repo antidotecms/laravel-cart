@@ -16,6 +16,8 @@ class ServiceProvider extends PluginServiceProvider
 
     public function configurePackage(Package $package): void
     {
-        $package->name('laravel-cart-filament');
+        $package
+            ->name('laravel-cart-filament')
+            ->hasViews('laravel-cart-filament');
     }
 }
