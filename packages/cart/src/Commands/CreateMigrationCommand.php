@@ -95,7 +95,7 @@ class CreateMigrationCommand extends Command
         //$filename = $this->getMigrationFilename();
         $filename = Carbon::now()->format('Y_m_d_Gis') .
             '_create_' .
-            $this->getStubVariables()['table_name'].'.php';
+            $this->getStubVariables()['table_name'].'_table.php';
 
         $this->files->put(
             database_path('migrations') . '/' . $filename,
