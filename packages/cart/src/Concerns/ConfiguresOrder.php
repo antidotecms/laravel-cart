@@ -8,5 +8,6 @@ trait ConfiguresOrder
     {
         $customer_class = getClassNameFor('customer');
         $this->fillable[] = (new $customer_class)->getForeignKey();
+        $this->append('total');
     }
 }

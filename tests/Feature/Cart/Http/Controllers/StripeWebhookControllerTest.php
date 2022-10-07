@@ -13,7 +13,7 @@ it('will record that a payment intent has been created', function() {
         ->forCustomer($customer)
         ->create();
 
-    expect($order->getTotal())->toBe($product->getPrice());
+    expect($order->total)->toBe($product->getPrice());
 
     $event = createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 

@@ -22,7 +22,7 @@ abstract class PaymentIntent
 
     public static function create(Order $order) : void
     {
-        $order_total = $order->getTotal();
+        $order_total = $order->total;
 
         if($order_total >= 30 && $order_total <= 99999999) {
 
@@ -30,7 +30,7 @@ abstract class PaymentIntent
 
             try {
                 $payment_intent_response = static::getClient()->paymentIntents->create([
-                    'amount' => $order->getTotal(),
+                    'amount' => $order->total,
                     'currency' => 'gbp',
                     'payment_method_types' => ['card'],
                     'description' => 'Order #'.$order->id,
@@ -91,7 +91,7 @@ abstract class PaymentIntent
     private static function logError($order, $type, $exception, $event)
     {
         self::logMessage($order, $type.' : '.$exception->getMessage(), $event);
-        throw new \Exception();
+        throw new \Exception($exception->getMessage());
     }
 
     private static function logMessage($order, $message, $event = [])

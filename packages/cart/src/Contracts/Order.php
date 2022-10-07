@@ -3,6 +3,7 @@
 namespace Antidote\LaravelCart\Contracts;
 
 use Antidote\LaravelCart\Concerns\ConfiguresOrder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -39,13 +40,15 @@ abstract class Order extends Model
         return $subtotal;
     }
 
-    public function getTotal()
+    public function total() : Attribute
     {
-        $total = $this->getSubtotal();
-
-        $total -= $this->getDiscountTotal();
-
-        return $total;
+        return Attribute::make(
+            get: function($value) {
+                $total = $this->getSubtotal();
+                $total -= $this->getDiscountTotal();
+                return $total;
+            }
+        );
     }
 
     public function getDiscountTotal()

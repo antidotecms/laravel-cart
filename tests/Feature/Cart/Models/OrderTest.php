@@ -57,7 +57,7 @@ it('will create an order with discount', function () {
     expect($order->items()->count())->toBe(1);
     expect($order->adjustments()->count())->toBe(1);
     expect($order->getSubtotal())->toBe(1000);
-    expect($order->getTotal())->toBe(900);
+    expect($order->total)->toBe(900);
 
 });
 

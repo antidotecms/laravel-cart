@@ -89,7 +89,7 @@ it('will set up a payment', function () {
 
 
     $order = Cart::createOrder($customer);
-    expect($order->getTotal())->toBe(1000);
+    expect($order->total)->toBe(1000);
 
     Cart::initializePayment($order);
 
@@ -115,7 +115,7 @@ it('will log an order log item', function ($exception_class, $expected_message) 
 
 
     $order = Cart::createOrder($customer);
-    expect($order->getTotal())->toBe(1000);
+    expect($order->total)->toBe(1000);
 
     Cart::initializePayment($order);
 
