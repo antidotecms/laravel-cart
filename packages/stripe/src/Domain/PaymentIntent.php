@@ -26,6 +26,8 @@ abstract class PaymentIntent
 
         if($order_total >= 30 && $order_total <= 99999999) {
 
+            $event = [];
+
             try {
                 $payment_intent_response = static::getClient()->paymentIntents->create([
                     'amount' => $order->getTotal(),
