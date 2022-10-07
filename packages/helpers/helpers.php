@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 if(!function_exists('getClassNameFor')) {
 
     function getClassNameFor($item) {
@@ -31,6 +33,6 @@ if(!function_exists('getTableNameFor')) {
             throw new Exception("\'{$item}\' not allowed");
         }
 
-        return Str::of(class_basename(getClassNameFor('payment')))->snake()->lower()->plural();
+        return Str::of(class_basename(getClassNameFor($item)))->snake()->lower()->plural();
     }
 }
