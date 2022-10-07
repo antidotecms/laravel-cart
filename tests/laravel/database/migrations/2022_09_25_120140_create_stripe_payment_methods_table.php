@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
 
             $table->integer('test_order_id');
-            $table->json('body')->nullable();
+            $table->string('client_secret')->default('');
 
             $table->timestamps();
         });
