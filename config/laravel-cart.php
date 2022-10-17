@@ -24,5 +24,6 @@ return [
     ],
     'views' => [
         'order_complete' => 'shop.checkout.order_complete'
-    ]
+    ],
+    'tax_rate' => '0.2'
 ];

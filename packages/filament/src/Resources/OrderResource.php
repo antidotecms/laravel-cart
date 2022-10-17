@@ -35,7 +35,7 @@ class OrderResource extends Resource
                 TextInput::make('id')
                     ->disabled(),
                 TextInput::make('order_total')
-                    ->afterStateHydrated(fn($component, $record) => $component->state($record->getTotal()))
+                    ->afterStateHydrated(fn($component, $record) => $component->state($record->total))
                     ->disabled(),
                 Select::make('customer')
                     ->relationship('customer', 'name')
@@ -49,7 +49,7 @@ class OrderResource extends Resource
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('order_total')
-                    ->getStateUsing(fn($record) => $record->getTotal()),
+                    ->getStateUsing(fn($record) => $record->total),
                 TextColumn::make('customer.name')
             ]);
     }

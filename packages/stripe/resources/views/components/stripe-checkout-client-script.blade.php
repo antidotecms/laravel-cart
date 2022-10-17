@@ -4,7 +4,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
     @endpush
         {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->payment->client_secret }}
-        {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->getTotal() }}
+        {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->total }}
     <form
         x-data=''
         x-init='

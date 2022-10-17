@@ -10,11 +10,7 @@ use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment;
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
-use Filament\FilamentServiceProvider;
-use Filament\Forms\FormsServiceProvider;
-use Filament\Tables\TablesServiceProvider;
 use Illuminate\Support\Facades\Config;
-use Livewire\LivewireServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -62,5 +58,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
         Config::set('laravel-cart.classes.payment', TestPayment::class);
         Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+        Config::set('laravel-cart.tax_rate', 0.2);
+
+        Config::set('laravel-cart.stripe.secret_key', 'secret_key');
     }
 }

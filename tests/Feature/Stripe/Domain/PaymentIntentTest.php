@@ -29,7 +29,7 @@ it('will return a payment intent object', function() {
 it('will throw an exception if the amount is too low', function () {
 
     $product = TestProduct::factory()->asSimpleProduct([
-        'price' => 29
+        'price' => 1
     ])->create();
 
     $order = TestOrder::factory()
@@ -55,8 +55,6 @@ it('will throw an exception if the amount is too high', function () {
 ->throws(InvalidArgumentException::class, 'The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
 
 it('will initialise a payment intent request', function () {
-
-    PaymentIntent::fake();
 
     Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
@@ -89,7 +87,7 @@ it('will set up a payment', function () {
 
 
     $order = Cart::createOrder($customer);
-    expect($order->total)->toBe(1000);
+    expect($order->total)->toBe(1200); //inc VAT of 20%
 
     Cart::initializePayment($order);
 
@@ -115,7 +113,7 @@ it('will log an order log item', function ($exception_class, $expected_message) 
 
 
     $order = Cart::createOrder($customer);
-    expect($order->total)->toBe(1000);
+    expect($order->total)->toBe(1200); //with 20% tax
 
     Cart::initializePayment($order);
 

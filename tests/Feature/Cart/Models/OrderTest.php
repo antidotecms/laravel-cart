@@ -6,6 +6,7 @@ use Antidote\LaravelCart\Models\CartAdjustment;
 use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
 use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
+use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderItem;
 
 it('will create an order', function() {
 
@@ -57,7 +58,9 @@ it('will create an order with discount', function () {
     expect($order->items()->count())->toBe(1);
     expect($order->adjustments()->count())->toBe(1);
     expect($order->getSubtotal())->toBe(1000);
-    expect($order->total)->toBe(900);
+
+    //subtotal with discount should be 900. Given tax rate of 20%, total should be 900 * 1.2 = 1080
+    expect($order->total)->toBe(1080);
 
 });
 
@@ -136,4 +139,39 @@ it('has a payment method', function () {
     $order = TestOrder::factory()->create();
 
     expect(get_class($order->payment))->toBe(\Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment::class);
+});
+
+it('will get the subtotal', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1999
+    ])->create([
+        'name' => 'A Simple Product'
+    ]);
+
+    $customer = TestCustomer::factory()->create();
+
+    $order = TestOrder::factory()->forCustomer($customer)->create();
+
+    TestOrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
+
+    expect($order->getSubtotal())->toBe(1999);
+
+});
+
+it('will get the total with VAT', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 2000
+    ])->create([
+        'name' => 'A Simple Product'
+    ]);
+
+    $customer = TestCustomer::factory()->create();
+
+    $order = TestOrder::factory()->forCustomer($customer)->create();
+
+    TestOrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
+
+    expect($order->total)->toBe(2400);
 });

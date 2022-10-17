@@ -46,7 +46,17 @@ abstract class Order extends Model
             get: function($value) {
                 $total = $this->getSubtotal();
                 $total -= $this->getDiscountTotal();
+                $total += (int) $this->tax;
                 return $total;
+            }
+        );
+    }
+
+    public function tax() : Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                return ($this->getSubtotal() - $this->getDiscountTotal()) * config('laravel-cart.tax_rate');
             }
         );
     }
