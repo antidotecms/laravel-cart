@@ -3,8 +3,8 @@
     @push('laravel-cart-header-scripts')
         <meta name="csrf-token" content="{{ csrf_token() }}">
     @endpush
-        {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->payment->client_secret }}
-        {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->total }}
+{{--        {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->payment->client_secret }}--}}
+{{--        {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->total }}--}}
     <form
         x-data=''
         x-init='
@@ -52,8 +52,6 @@
             });
         '
     >
-        <label for="card-element">Card</label>
-        <div id="card-element"></div>
-        <x-button type='submit' class='p-8 bg-arbor-green-500 text-white'>Submit</x-button>
+        <x-laravel-cart-stripe::card-form/>
     </form>
 </div>
