@@ -183,9 +183,16 @@ class Cart
         if(Cart::getTotal() >= 30 && Cart::getTotal() <= 99999999) {
             // create an order
             $order_class = getClassNameFor('order');
-            $order = $order_class::create([
-                $customer->getForeignKey() => $customer->id
-            ]);
+
+            $order = Cart::getActiveOrder() ?? $order_class::create([
+                    $customer->getForeignKey() => $customer->id
+                ]);
+
+//            $order = $order_class::create([
+//                $customer->getForeignKey() => $customer->id
+//            ]);
+
+            $order->items()->delete();
 
             $cart_items = Cart::items();
 
@@ -211,7 +218,7 @@ class Cart
                 ]);
             });
 
-            Cart::clear();
+            //Cart::clear();
 
             static::setActiveOrder($order);
 

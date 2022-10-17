@@ -23,7 +23,7 @@ it('will create an order', function() {
     expect(TestOrder::count())->toBe(1)
         ->and($order->items()->count())->toBe(1)
         ->and($order->items()->first()->id)->toBe($product->id)
-        ->and(Cart::items())->toBeEmpty()
+        //->and(Cart::items())->toBeEmpty() // cart no longer cleared
         ->and($order->customer->id)->toBe($customer->id);
 });
 
@@ -174,4 +174,30 @@ it('will get the total with VAT', function () {
     TestOrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
 
     expect($order->total)->toBe(2400);
+});
+
+it('will not create an order if an active order already exists', function () {
+
+    $product = TestProduct::factory()->asSimpleProduct()->create();
+
+    Cart::add($product);
+
+    $customer = TestCustomer::factory()->create();
+
+    Cart::createOrder($customer);
+
+    $order = TestOrder::first();
+
+    expect(TestOrder::count())->toBe(1)
+        ->and($order->items()->count())->toBe(1)
+        ->and($order->items()->first()->product->id)->toBe($product->id)
+        //->and(Cart::items())->toBeEmpty() // cart no longer cleared
+        ->and($order->customer->id)->toBe($customer->id);
+
+    Cart::createOrder($customer);
+
+    expect(TestOrder::count())->toBe(1)
+        ->and($order->items()->count())->toBe(1)
+        ->and($order->items()->first()->product->id)->toBe($product->id)
+        ->and($order->customer->id)->toBe($customer->id);
 });
