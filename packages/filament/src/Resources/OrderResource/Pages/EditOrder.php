@@ -8,4 +8,6 @@ use Filament\Resources\Pages\EditRecord;
 class EditOrder extends EditRecord
 {
     protected static string $resource = OrderResource::class;
+
+    protected static ?string $title = 'Edit Order';
 }
