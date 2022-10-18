@@ -7,6 +7,7 @@ use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
 use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderItemRelationManager;
 use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
@@ -24,10 +25,6 @@ class OrderResource extends Resource
 
     public static function getModel(): string
     {
-//        return (string) Str::of(class_basename(getClassNameFor('order')))
-//                ->beforeLast('Resource')
-//                ->prepend('App\\Models\\');
-
         return (string) getClassNameFor('order');
     }
 
@@ -37,17 +34,21 @@ class OrderResource extends Resource
             ->schema([
                 TextInput::make('id')
                     ->disabled(),
-                TextInput::make('order_subtotal')
-                    ->afterStateHydrated(fn($component, $record) => $component->state($record->getSubtotal()))
-                    ->disabled(),
-                TextInput::make('tax')
-                    ->afterStateHydrated(fn($component, $record) => $component->state($record->tax))
-                    ->disabled(),
-                TextInput::make('order_total')
-                    ->afterStateHydrated(fn($component, $record) => $component->state($record->total))
-                    ->disabled(),
                 Select::make('customer')
-                    ->relationship('customer', 'name')
+                    ->relationship('customer', 'name'),
+                Fieldset::make('Totals')
+                    ->columns(1)
+                    ->schema([
+                    TextInput::make('order_subtotal')
+                        ->afterStateHydrated(fn($component, $record) => $component->state($record->getSubtotal()))
+                        ->disabled(),
+                    TextInput::make('tax')
+                        ->afterStateHydrated(fn($component, $record) => $component->state($record->tax))
+                        ->disabled(),
+                    TextInput::make('order_total')
+                        ->afterStateHydrated(fn($component, $record) => $component->state($record->total))
+                        ->disabled(),
+                ])
 
             ]);
     }
@@ -78,5 +79,10 @@ class OrderResource extends Resource
             OrderItemRelationManager::class,
             OrderLogItemRelationManager::class
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 }
