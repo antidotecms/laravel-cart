@@ -30,13 +30,7 @@ abstract class PaymentIntent
 
             try {
 
-                if($order->paymment_intent_id)
-                {
-                    $payment_intent_response = static::getClient()->paymentIntents->retrieve(
-                        $order->paymment_intent_id
-                    );
-                }
-                else
+                if(!$order->payment_intent_id)
                 {
                     $payment_intent_response = static::getClient()->paymentIntents->create([
                         'amount' => $order->total,
