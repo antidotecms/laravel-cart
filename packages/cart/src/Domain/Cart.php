@@ -250,18 +250,21 @@ class Cart
 
     private function initializePayment(Order $order)
     {
-        //attach payment method to order
-        $payment_class = getClassNameFor('payment');
+        //create payment method to order
+        if(!$order->payment_intent_id)
+        {
+            $payment_class = getClassNameFor('payment');
 
-        $payment_method = $payment_class::create([
-            getKeyFor('order') => $order->id
-        ]);
+            $payment_method = $payment_class::create([
+                getKeyFor('order') => $order->id
+            ]);
 
-        $order->payment()->associate($payment_method);
-        $order->save();
+            $order->payment()->associate($payment_method);
+            $order->save();
 
 
-        $order->refresh();
-        $order->payment->initialize();
+            $order->refresh();
+            $order->payment->initialize();
+        }
     }
 }

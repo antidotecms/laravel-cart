@@ -2,8 +2,8 @@
 
 namespace Antidote\LaravelCartStripe\Domain;
 
-use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCartStripe\Concerns\HasStripeClient;
+use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use InvalidArgumentException;
 use Stripe\Exception\ApiErrorException;
@@ -20,7 +20,7 @@ abstract class PaymentIntent
         new MockStripeHttpClient();
     }
 
-    public static function create(Order $order) : void
+    public static function create(StripeOrder $order) : void
     {
         $order_total = $order->total;
 
@@ -29,21 +29,33 @@ abstract class PaymentIntent
             $event = [];
 
             try {
-                $payment_intent_response = static::getClient()->paymentIntents->create([
-                    'amount' => $order->total,
-                    'currency' => 'gbp',
-                    'payment_method_types' => ['card'],
-                    'description' => 'Order #'.$order->id,
-                    'metadata' => [
-                        'order_id' => $order->id
-                    ],
-                    'receipt_email' => $order->customer->email
-                ]);
 
-                $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
-                $order->payment->save();
-                $event = json_decode($payment_intent_response->getLastResponse()->body);
-                self::logMessage($order, 'Payment Intent Created: '.$payment_intent_response->id, $event);
+                if($order->paymment_intent_id)
+                {
+                    $payment_intent_response = static::getClient()->paymentIntents->retrieve(
+                        $order->paymment_intent_id
+                    );
+                }
+                else
+                {
+                    $payment_intent_response = static::getClient()->paymentIntents->create([
+                        'amount' => $order->total,
+                        'currency' => 'gbp',
+                        'payment_method_types' => ['card'],
+                        'description' => 'Order #'.$order->id,
+                        'metadata' => [
+                            'order_id' => $order->id
+                        ],
+                        'receipt_email' => $order->customer->email
+                    ]);
+
+                    $order->payment_intent_id = json_decode($payment_intent_response->getLastResponse()->body)->id;
+                    $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
+                    $order->payment->save();
+                    $event = json_decode($payment_intent_response->getLastResponse()->body);
+                    self::logMessage($order, 'Payment Intent Created: '.$payment_intent_response->id, $event);
+                }
+
 
             } catch (CardException $e) {
                 //problem with card

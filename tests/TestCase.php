@@ -10,10 +10,22 @@ use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment;
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    use RefreshDatabase;
+
+    protected function migrateUsing()
+    {
+        return [
+            '--path' => [
+                './database/migrations/cart'
+            ]
+        ];
+    }
+
     protected function defineDatabaseMigrations()
     {
         $this->loadMigrationsFrom(__DIR__.'/laravel/database/migrations');

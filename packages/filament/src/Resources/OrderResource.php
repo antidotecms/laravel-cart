@@ -13,7 +13,6 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Support\Str;
 
 class OrderResource extends Resource
 {
@@ -21,11 +20,15 @@ class OrderResource extends Resource
 
     protected static ?string $navigationGroup = 'Orders';
 
+    protected static ?string $navigationLabel = 'Orders';
+
     public static function getModel(): string
     {
-        return (string) Str::of(class_basename(getClassNameFor('order')))
-                ->beforeLast('Resource')
-                ->prepend('App\\Models\\');
+//        return (string) Str::of(class_basename(getClassNameFor('order')))
+//                ->beforeLast('Resource')
+//                ->prepend('App\\Models\\');
+
+        return (string) getClassNameFor('order');
     }
 
     public static function form(Form $form): Form
@@ -33,6 +36,12 @@ class OrderResource extends Resource
         return $form
             ->schema([
                 TextInput::make('id')
+                    ->disabled(),
+                TextInput::make('order_subtotal')
+                    ->afterStateHydrated(fn($component, $record) => $component->state($record->getSubtotal()))
+                    ->disabled(),
+                TextInput::make('tax')
+                    ->afterStateHydrated(fn($component, $record) => $component->state($record->tax))
                     ->disabled(),
                 TextInput::make('order_total')
                     ->afterStateHydrated(fn($component, $record) => $component->state($record->total))
