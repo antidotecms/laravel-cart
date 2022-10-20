@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('test_stripe_orders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('status')->nullable();
             $table->integer('test_customer_id');
             $table->string('payment_intent_id')->nullable();
             $table->string('payment_id')->nullable();

@@ -7,11 +7,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('test_order_log_items', function (Blueprint $table) {
+        Schema::create('test_stripe_order_log_items', function (Blueprint $table) {
             $table->id();
 
             $table->string('message');
             $table->string('test_stripe_order_id');
+            $table->json('event')->nullable();
 
             $table->timestamps();
         });

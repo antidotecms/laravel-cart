@@ -2,13 +2,16 @@
 
 use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
 use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
+use Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrder;
 
 it('will record that a payment intent has been created', function() {
 
+    Config::set('laravel-cart.classes.order', TestStripeOrder::class);
+    Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrderLogItem::class);
+
     $product = TestProduct::factory()->asSimpleProduct()->create();
     $customer = TestCustomer::factory()->create();
-    $order = TestOrder::factory()
+    $order = TestStripeOrder::factory()
         ->withProduct($product)
         ->forCustomer($customer)
         ->create();
@@ -24,6 +27,10 @@ it('will record that a payment intent has been created', function() {
 
     $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event);
 
+    $order->refresh();
+
     expect($order->logItems()->count())->toBe(1);
+
+    expect($order->status)->toBe('Payment Intent Created');
 
 });

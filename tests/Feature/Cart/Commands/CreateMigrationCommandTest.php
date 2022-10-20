@@ -1,7 +1,9 @@
 <?php
 
+use Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrder;
 use Carbon\Carbon;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Config;
 use Mockery\MockInterface;
 
 it('will create the payments migration', function() {
@@ -31,6 +33,7 @@ it('will create the payments migration', function() {
 it('will create the stripe payments migration', function() {
 
     Config::set('laravel-cart.classes.payment', \Antidote\LaravelCartStripe\Models\StripePayment::class);
+    Config::set('laravel-cart.classes.order', TestStripeOrder::class);
 
     $contents = file_get_contents('../../../packages/antidote/laravel-cart/packages/cart/stubs/migrations/create-payments-table.stub');
     $contents = str_replace('$order_key$', getKeyFor('order'), $contents);
