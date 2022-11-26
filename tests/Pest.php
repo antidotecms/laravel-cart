@@ -16,14 +16,18 @@ function actingAsCustomer(TestCustomer $customer, string $driver = null)
 function createStripeEvent(string $type, array $parameters = [])
 {
     $event = match($type) {
-        'payment_intent.created' => include 'Fixtures/Stripe/events/payment_intent.created.php'
+        'payment_intent.created' => include 'Fixtures/Stripe/events/payment_intent.created.php',
+        'payment_intent.succeeded' => include 'Fixtures/Stripe/events/payment_intent.succeeded.php',
+        'charge.succeeded' => include 'Fixtures/Stripe/events/charge.succeeded.php',
+        'payment_intent.cancelled' => include 'Fixtures/Stripe/events/payment_intent.cancelled.php',
+        'payment_intent.payment_failed' => include 'Fixtures/Stripe/events/payment_intent.payment_failed.php'
     };
 
-    return arraysMergeUnique($event, $parameters);
+    return arraysMergeUnique($parameters, $event);
 }
 
 //https://stackoverflow.com/a/20550845
-function arraysMergeUnique($array1, $array2)
+function arraysMergeUnique($array2, $array1)
 {
     foreach ($array2 as $k => $v) {
         if ( is_array($array1) ) {

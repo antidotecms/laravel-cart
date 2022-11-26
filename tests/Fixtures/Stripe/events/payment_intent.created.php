@@ -34,7 +34,7 @@ return [
             "invoice" => null,
             "last_payment_error" => null,
             "livemode" => false,
-            //"metadata" => [],
+            "metadata" => [],
             "next_action" => null,
             "object" => "payment_intent",
             "on_behalf_of" => null,

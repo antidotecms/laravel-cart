@@ -84,6 +84,6 @@ return [
         "id" => "req_IRER50uWvgR94r",
         "idempotency_key" => "c3244bf2-991d-460b-9140-342e3eba7f8e"
     ],
-    "type" => "payment_intent.created"
+    "type" => "payment_intent.succeeded"
 
 ];

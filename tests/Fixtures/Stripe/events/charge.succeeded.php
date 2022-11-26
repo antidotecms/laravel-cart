@@ -45,9 +45,7 @@ return [
             ],
             "invoice" => null,
             "livemode" => false,
-            "metadata" => [
-                "order_id" => "6"
-            ],
+            "metadata" => [],
             "on_behalf_of" => null,
             "order" => null,
             "outcome" => [

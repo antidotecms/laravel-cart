@@ -55,6 +55,27 @@ class StripeWebhookController extends Controller
                 $order_log_item = $order->log('Stripe Payment Intent Succeeded');
                 $order_log_item->event  = $event;
                 $order_log_item->save();
+
+                $order->status = 'Payment Intent Succeeded';
+                $order->save();
+            break;
+
+            case 'payment_intent.canceled':
+                $order_log_item = $order->log('Stripe Payment Intent Canceled');
+                $order_log_item->event  = $event;
+                $order_log_item->save();
+
+                $order->status = 'Payment Intent Canceled';
+                $order->save();
+            break;
+
+            case 'payment_intent.payment_failed':
+                $order_log_item = $order->log('Stripe Payment Intent Failed');
+                $order_log_item->event  = $event;
+                $order_log_item->save();
+
+                $order->status = 'Payment Intent Payment Failed';
+                $order->save();
             break;
 
             case "charge.succeeded":
@@ -62,6 +83,9 @@ class StripeWebhookController extends Controller
                 $order_log_item = $order->log('Stripe Charge Succeeded');
                 $order_log_item->event  = $event;
                 $order_log_item->save();
+
+                $order->status = 'Charge Succeeded';
+                $order->save();
 
                 //send emails
             break;
