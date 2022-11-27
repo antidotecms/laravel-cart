@@ -48,7 +48,8 @@ class OrderResource extends Resource
                     TextInput::make('order_total')
                         ->afterStateHydrated(fn($component, $record) => $component->state($record->total))
                         ->disabled(),
-                ])
+                ]),
+                TextInput::make('status')
 
             ]);
     }
