@@ -22,7 +22,7 @@ class OrderRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('total')
-                    ->getStateUsing(fn($record) => $record->getTotal())
+                    ->getStateUsing(fn($record) => $record->total)
             ]);
     }
 
