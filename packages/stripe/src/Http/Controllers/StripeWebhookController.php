@@ -40,6 +40,8 @@ class StripeWebhookController extends Controller
 
         $order = getClassNameFor('order')::where('id', $event->data->object->metadata->order_id)->first();
 
+        $this->logStripeEvent($event);
+
         switch($event->type) {
 
             case "payment_intent.created":
@@ -95,6 +97,15 @@ class StripeWebhookController extends Controller
                 $order_log_item->event  = $event;
                 $order_log_item->save();
             break;
+        }
+    }
+
+    private function logStripeEvent($event)
+    {
+        if(config('laravel-cart.stripe.log') === true) {
+            Log::info(json_encode($event));
+        } else if(is_string(config('laravel-cart.stripe.log'))) {
+            Log::channel(config('laravel-cart.stripe.log'))->info(json_encode($event));
         }
     }
 }

@@ -13,7 +13,13 @@ return [
     'stripe' => [
         'api_key' => env('STRIPE_API_KEY'),
         'secret_key' => env('STRIPE_SECRET_KEY'),
-        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET')
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+        /**
+         * if log is set to true, events will be written to the standard log file
+         * if false, no logging occurs
+         * if set as a string, the relevant logging channel will be used
+         */
+        'log' => false
     ],
     'urls' => [
         'order_complete' => '/checkout/complete',
