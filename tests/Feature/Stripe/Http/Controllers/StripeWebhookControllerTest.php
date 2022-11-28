@@ -154,3 +154,31 @@ it('will record that a payment intent payment failed', function () {
 
     expect($order->status)->toBe('Payment Intent Payment Failed');
 });
+
+it('will record an unknown event', function () {
+
+    Config::set('laravel-cart.classes.order', TestStripeOrder::class);
+    Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrderLogItem::class);
+
+    $product = TestProduct::factory()->asSimpleProduct()->create();
+    $customer = TestCustomer::factory()->create();
+    $order = TestStripeOrder::factory()
+        ->withProduct($product)
+        ->forCustomer($customer)
+        ->create();
+
+    expect($order->total)->toBe($product->getPrice() + (int)($product->getPrice() * config('laravel-cart.tax_rate')));
+
+    $event = createStripeEvent('unknown_event', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
+
+    $this->mock(\Stripe\Webhook::class, function(\Mockery\MockInterface $mock) use ($event) {
+        $mock->shouldReceive('constructEvent')
+            ->andReturn($event);
+    });
+
+    $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event);
+
+    $order->refresh();
+
+    expect($order->logItems()->count())->toBe(1);
+});

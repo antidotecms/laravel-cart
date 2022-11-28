@@ -34,7 +34,8 @@ class TestProduct extends \Antidote\LaravelCart\Contracts\Product
     //these attributes are deferred to the product type
     protected array $product_data = [
         'price',
-        'name'
+        'name',
+        'foo'
     ];
 
     //the validity of the product is checked on the product type

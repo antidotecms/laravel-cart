@@ -20,7 +20,8 @@ function createStripeEvent(string $type, array $parameters = [])
         'payment_intent.succeeded' => include 'Fixtures/Stripe/events/payment_intent.succeeded.php',
         'charge.succeeded' => include 'Fixtures/Stripe/events/charge.succeeded.php',
         'payment_intent.cancelled' => include 'Fixtures/Stripe/events/payment_intent.cancelled.php',
-        'payment_intent.payment_failed' => include 'Fixtures/Stripe/events/payment_intent.payment_failed.php'
+        'payment_intent.payment_failed' => include 'Fixtures/Stripe/events/payment_intent.payment_failed.php',
+        'unknown_event' => include 'Fixtures/Stripe/events/unknown_event.php'
     };
 
     return arraysMergeUnique($parameters, $event);

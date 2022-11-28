@@ -217,3 +217,14 @@ it('will defer an attribute to the product data type', function() {
     expect($product->getName())->toBe('A Simple Product')
         ->and($product->getDescription())->toBe('This Description');
 });
+
+it('will throw an exception if a defered attribute is not defined', function () {
+
+    $product = TestProduct::factory()->asSimpleProduct()->create([
+        'name' => 'This Product',
+        'description' => 'This Description'
+    ]);
+
+    $product->getFoo();
+})
+->throws(Exception::class, "Define 'getFoo' on Antidote\LaravelCart\Tests\laravel\app\Models\ProductTypes\SimpleProductDataType");

@@ -67,7 +67,7 @@ abstract class Product extends Model
             if(method_exists($this->productType, $method )) {
                 return $this->productType->$method(...$parameters);
             } else {
-                throw new \Exception("Define {$method} on ".get_class($this->productType));
+                throw new \Exception("Define '{$method}' on ".get_class($this->productType));
             }
         }
 

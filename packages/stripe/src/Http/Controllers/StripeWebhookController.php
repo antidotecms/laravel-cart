@@ -44,7 +44,7 @@ class StripeWebhookController extends Controller
 
             case "payment_intent.created":
                 $order_log_item = $order->log('Stripe Payment Intent Created');
-                $order_log_item->event  = json_encode($event);
+                $order_log_item->event  = $event;
                 $order_log_item->save();
 
                 $order->status = 'Payment Intent Created';
@@ -88,6 +88,12 @@ class StripeWebhookController extends Controller
                 $order->save();
 
                 //send emails
+            break;
+
+            default:
+                $order_log_item = $order->log('Unknown Event');
+                $order_log_item->event  = $event;
+                $order_log_item->save();
             break;
         }
     }
