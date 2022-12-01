@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/packages/cart/src" isTestSource="false" packagePrefix="Antidote\LaravelCart\" />
       <sourceFolder url="file://$MODULE_DIR$/packages/stripe/src" isTestSource="false" packagePrefix="Antidote\LaravelCartStripe\" />
       <sourceFolder url="file://$MODULE_DIR$/packages/filament/src" isTestSource="false" packagePrefix="Antidote\LaravelCartFilament\" />
+      <sourceFolder url="file://$MODULE_DIR$/packages/stripe/database/factories" isTestSource="false" packagePrefix="Antidote\LaravelCartStripe\Database\factories\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/event-dispatcher" />

@@ -13,6 +13,7 @@
         "psr-4": {
             "Antidote\\LaravelCart\\": "packages/cart/src/",
             "Antidote\\LaravelCartStripe\\": "packages/stripe/src/",
+            "Antidote\\LaravelCartStripe\\Database\\factories\\": "packages/stripe/database/factories/",
             "Antidote\\LaravelCartFilament\\": "packages/filament/src/"
         },
         "files" : [
