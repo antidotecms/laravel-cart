@@ -1,8 +1,10 @@
 <?php
 
+use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
 use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrder;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 
 it('will record that a payment intent has been created', function() {
@@ -262,4 +264,33 @@ it('will not log items', function () {
         ->never();
 
     $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event);
+});
+
+it('will generate an OrderCompleted event', function () {
+
+    Config::set('laravel-cart.classes.order', TestStripeOrder::class);
+    Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrderLogItem::class);
+    Config::set('laravel-cart.stripe.log', false);
+
+    $product = TestProduct::factory()->asSimpleProduct()->create();
+    $customer = TestCustomer::factory()->create();
+    $order = TestStripeOrder::factory()
+        ->withProduct($product)
+        ->forCustomer($customer)
+        ->create();
+
+    expect($order->total)->toBe($product->getPrice() + (int)($product->getPrice() * config('laravel-cart.tax_rate')));
+
+    $event = createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
+
+    $this->mock(\Stripe\Webhook::class, function(\Mockery\MockInterface $mock) use ($event) {
+        $mock->shouldReceive('constructEvent')
+            ->andReturn($event);
+    });
+
+    Event::fake();
+
+    $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event);
+
+    Event::assertDispatched(OrderCompleted::class);
 });

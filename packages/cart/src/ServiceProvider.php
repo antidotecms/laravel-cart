@@ -19,6 +19,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-cart');
+
         $this->publishes([
             __DIR__ . '/../database/migrations/' => database_path('migrations'),
         ], 'laravel-cart-migrations');

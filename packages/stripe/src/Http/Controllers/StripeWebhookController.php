@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCartStripe\Http\Controllers;
 
+use Antidote\LaravelCart\Events\OrderCompleted;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
@@ -90,6 +91,7 @@ class StripeWebhookController extends Controller
                 $order->save();
 
                 //send emails
+            event(new OrderCompleted($order));
             break;
 
             default:
