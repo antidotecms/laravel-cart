@@ -5,7 +5,7 @@ use Illuminate\Support\Str;
 if(!function_exists('getClassNameFor')) {
 
     function getClassNameFor($item) {
-        if(!in_array($item, array_keys(config('laravel-cart.classes')))) {
+        if(!in_array($item, array_keys(config('laravel-cart.classes') ?? []))) {
             throw new Exception("\'{$item}\' not allowed");
         }
 

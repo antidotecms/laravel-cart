@@ -10,8 +10,17 @@ use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment;
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
+use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
+use Filament\FilamentServiceProvider;
+use Filament\Forms\FormsServiceProvider;
+use Filament\Notifications\NotificationsServiceProvider;
+use Filament\Support\SupportServiceProvider;
+use Filament\Tables\TablesServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Livewire\LivewireServiceProvider;
+use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -41,8 +50,16 @@ class TestCase extends \Orchestra\Testbench\TestCase
         return [
             'Antidote\LaravelCart\ServiceProvider',
             'Antidote\LaravelCartStripe\ServiceProvider',
-//            LivewireServiceProvider::class,
-//            FilamentServiceProvider::class
+            'Antidote\LaravelCartFilament\ServiceProvider',
+            BladeCaptureDirectiveServiceProvider::class,
+            BladeHeroiconsServiceProvider::class,
+            BladeIconsServiceProvider::class,
+            FilamentServiceProvider::class,
+            FormsServiceProvider::class,
+            LivewireServiceProvider::class,
+            NotificationsServiceProvider::class,
+            SupportServiceProvider::class,
+            TablesServiceProvider::class,
         ];
     }
 
@@ -53,8 +70,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function getEnvironmentSetUp($app)
     {
-        //$this->loadFactoriesUsing($app, __DIR__.'/Fixtures/database/factories');
-
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [

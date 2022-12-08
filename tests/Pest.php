@@ -3,6 +3,7 @@
 use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
 
 uses(\Antidote\LaravelCart\Tests\TestCase::class)->in('Feature/Cart');
+uses(\Antidote\LaravelCart\Tests\TestCase::class)->in('Feature/Filament');
 uses(\Antidote\LaravelCart\Tests\StripeTestCase::class)->in('Feature/Stripe');
 uses(\Antidote\LaravelCart\Tests\BrowserTestCase::class)->in('Browser');
 

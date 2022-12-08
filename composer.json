@@ -44,7 +44,8 @@
         "pestphp/pest": "^1.21",
         "pestphp/pest-plugin-laravel": "^1.2",
         "orchestra/testbench-dusk": "^7.8",
-        "laravel/framework": "^9.34"
+        "laravel/framework": "^9.34",
+        "pestphp/pest-plugin-livewire": "^1.0"
     },
     "scripts": {
         "post-autoload-dump": [
