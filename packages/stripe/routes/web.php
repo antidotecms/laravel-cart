@@ -4,7 +4,7 @@ use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 
-Route::post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class)->middleware('stripe_webhooks');
+Route::post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class)->middleware('stripe_webhook');
 
 Route::middleware(['web', 'auth:customer'])->group(function() {
 
