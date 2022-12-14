@@ -22,7 +22,7 @@ it('will record that a payment intent has been created', function() {
 
     expect($order->total)->toBe($product->getPrice() + (int)($product->getPrice() * config('laravel-cart.tax_rate')));
 
-    $event = createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
+    $event = createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => $order->id], 'id' => 'payment_intent_identifier']]]);
 
     $this->mock(\Stripe\Webhook::class, function(\Mockery\MockInterface $mock) use ($event) {
         $mock->shouldReceive('constructEvent')
@@ -40,6 +40,7 @@ it('will record that a payment intent has been created', function() {
     expect($order->logItems()->count())->toBe(1);
 
     expect($order->status)->toBe('Payment Intent Created');
+    expect($order->payment_intent_id)->toBe('payment_intent_identifier');
 
 });
 
