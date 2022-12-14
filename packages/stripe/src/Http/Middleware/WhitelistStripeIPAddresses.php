@@ -21,7 +21,9 @@ class WhitelistStripeIPAddresses
         "54.88.130.237",
         "54.187.174.169",
         "54.187.205.235",
-        "54.187.216.72"
+        "54.187.216.72",
+        //internal for use in docker
+        "172.21.0.1"
     ];
     /**
      * Handle an incoming request.
