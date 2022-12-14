@@ -8,7 +8,14 @@ Route::post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookCon
 Route::middleware(['web', 'auth:customer'])->group(function() {
 
     Route::get(config('laravel-cart.urls.checkout_confirm'), function () {
-        return response()->json(['check' => true]);
+
+        $check = true;
+
+        if($check) {
+            \Antidote\LaravelCart\Facades\Cart::clear();
+        }
+
+        return response()->json(['check' => $check]);
     });
 
 //    Route::get(config('laravel-cart.urls.order_complete'), function () {
