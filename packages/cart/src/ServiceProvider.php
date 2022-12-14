@@ -13,6 +13,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->migrations();
         $this->configuration();
+        $this->loadRoutesFrom(__DIR__.'../../routes/web.php');
     }
 
     private function migrations()
