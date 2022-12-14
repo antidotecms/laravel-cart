@@ -9,12 +9,13 @@ use Antidote\LaravelCartStripe\Models\StripePayment;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 
 beforeEach(function () {
-    new MockStripeHttpClient();
     Config::set('laravel-cart.classes.order', TestStripeOrder::class);
     Config::set('laravel-cart.classes.payment', StripePayment::class);
 });
 
 it('will return a payment intent object', function() {
+
+    new MockStripeHttpClient();
 
     $product = TestProduct::factory()->asSimpleProduct([
         'price' => 1999
@@ -28,6 +29,8 @@ it('will return a payment intent object', function() {
 });
 
 it('will throw an exception if the amount is too low', function () {
+
+    new MockStripeHttpClient();
 
     $product = TestProduct::factory()->asSimpleProduct([
         'price' => 1
@@ -44,6 +47,8 @@ it('will throw an exception if the amount is too low', function () {
 
 it('will throw an exception if the amount is too high', function () {
 
+    new MockStripeHttpClient();
+
     $product = TestProduct::factory()->asSimpleProduct([
         'price' => 999999999
     ])->create();
@@ -58,6 +63,7 @@ it('will throw an exception if the amount is too high', function () {
 
 it('will initialise a payment intent request', function () {
 
+    new MockStripeHttpClient();
 
     Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
@@ -76,6 +82,8 @@ it('will initialise a payment intent request', function () {
 });
 
 it('will set up a payment', function () {
+
+    new MockStripeHttpClient();
 
     PaymentIntent::fake();
 
@@ -151,6 +159,71 @@ it('will log an order log item', function ($exception_class, $expected_message) 
 ]);
 
 it('will not generate a new payment intent if one already exists', function () {
+
+    new MockStripeHttpClient();
+
+    Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+
+    $customer = TestCustomer::factory()->create();
+
+    $order = TestStripeOrder::factory()
+        ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
+        ->forCustomer($customer)
+        ->create();
+
+    expect(TestStripeOrder::count())->toBe(1);
+
+    Cart::initializePayment($order);
+    PaymentIntent::create($order);
+
+    $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
+
+    expect(StripePayment::count())->toBe(1);
+
+    Cart::initializePayment($order);
+    PaymentIntent::create($order);
+
+    expect(StripePayment::count())->toBe(1);
+    expect(TestStripeOrder::first()->payment_intent_id)->toBe($payment_intent_id);
+
+});
+
+it('will generate a new payment intent if the old one has been cancelled', function () {
+
+    new MockStripeHttpClient();
+
+    Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+
+    $customer = TestCustomer::factory()->create();
+
+    $order = TestStripeOrder::factory()
+        ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
+        ->forCustomer($customer)
+        ->create();
+
+    expect(TestStripeOrder::count())->toBe(1);
+
+    Cart::initializePayment($order);
+    PaymentIntent::create($order);
+
+    $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
+
+    expect(StripePayment::count())->toBe(1);
+
+    Cart::initializePayment($order);
+
+    (new MockStripeHttpClient())->with('canceled_at', 'hello');
+    PaymentIntent::create($order);
+
+    expect(StripePayment::count())->toBe(1);
+    expect(TestStripeOrder::first()->payment_intent_id)->not()->toBe($payment_intent_id);
+
+});
+
+it('will update a payment intent if the order amount has changed', function () {
+
+    (new MockStripeHttpClient())
+        ->with('amount', 2000);
 
     Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 

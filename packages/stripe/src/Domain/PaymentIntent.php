@@ -32,22 +32,28 @@ abstract class PaymentIntent
 
                 if(!$order->payment_intent_id)
                 {
-                    $payment_intent_response = static::getClient()->paymentIntents->create([
-                        'amount' => $order->total,
-                        'currency' => 'gbp',
-                        'payment_method_types' => ['card'],
-                        'description' => 'Order #'.$order->id,
-                        'metadata' => [
-                            'order_id' => $order->id
-                        ],
-                        'receipt_email' => $order->customer->email
-                    ]);
+                    $event = static::createPaymentIntent($order);
+                }
+                else
+                {
+                    //get existing payment intent and check it is valid
+                    $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->payment_intent_id);
 
-                    $order->payment_intent_id = json_decode($payment_intent_response->getLastResponse()->body)->id;
-                    $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
-                    $order->payment->save();
-                    $event = json_decode($payment_intent_response->getLastResponse()->body);
-                    self::logMessage($order, 'Payment Intent Created: '.$payment_intent_response->id, $event);
+                    $body = json_decode($payment_intent_response->getLastResponse()->body);
+
+                    if($body->canceled_at) {
+                        //payment intent cancelled generate a new one
+                        //dd('create a new payment intent');
+                        $event = static::createPaymentIntent($order);
+                    }
+
+                    if($body->amount != $order->total) {
+                        //amend the payment intent
+                        //dd('update the payment intent');
+                        $event = static::updatePaymentIntent($order);
+                    }
+
+
                 }
 
 
@@ -108,8 +114,41 @@ abstract class PaymentIntent
         ]);
     }
 
-    public static function retrieve(string $payment_intent_id)
+    public static function createPaymentIntent($order)
     {
-        return static::getClient()->paymentIntents->retrieve($payment_intent_id);
+        $payment_intent_response = static::getClient()->paymentIntents->create([
+            'amount' => $order->total,
+            'currency' => 'gbp',
+            'payment_method_types' => ['card'],
+            'description' => 'Order #'.$order->id,
+            'metadata' => [
+                'order_id' => $order->id
+            ],
+            'receipt_email' => $order->customer->email
+        ]);
+
+        $order->payment_intent_id = json_decode($payment_intent_response->getLastResponse()->body)->id;
+        $order->save();
+        $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
+        $order->payment->save();
+        $event = json_decode($payment_intent_response->getLastResponse()->body);
+        self::logMessage($order, 'Payment Intent Created: '.$payment_intent_response->id, $event);
+        return $event;
+    }
+
+    public static function updatePaymentIntent($order)
+    {
+        $payment_intent_response = static::getClient()->paymentIntents->update($order->payment_intent_id, [
+            'amount' => $order->total
+        ]);
+
+        //not amended payment intent id as it will be the same
+        //$order->payment_intent_id = json_decode($payment_intent_response->getLastResponse()->body)->id;
+        //$order->save();
+        $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
+        $order->payment->save();
+        $event = json_decode($payment_intent_response->getLastResponse()->body);
+        self::logMessage($order, 'Payment Intent Updated: '.$payment_intent_response->id, $event);
+        return $event;
     }
 }
