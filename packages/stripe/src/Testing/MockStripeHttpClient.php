@@ -63,7 +63,7 @@ class MockStripeHttpClient implements ClientInterface
         }
 
         return json_encode(array_merge([
-            'id' => 'xxx',
+            'id' => 'pi_'.$this->randomId(),
             'object' => 'payment_intent',
             'amount' => 2000,
             'amount_capturable' => 0,
@@ -121,5 +121,17 @@ class MockStripeHttpClient implements ClientInterface
             'transfer_data' => NULL,
             'transfer_group' => NULL,
         ], $this->params));
+    }
+
+    //@see https://stackoverflow.com/a/4356295
+    private function randomId($length = 24)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }
