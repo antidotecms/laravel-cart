@@ -16,7 +16,7 @@
         x-on:submit='
             $event.preventDefault();
 
-            fetch("/checkout/confirm", {
+            fetch("{{ config('laravel-cart.urls.checkout_confirm') }}", {
                 method: "get",
                 headers: {
                     "Content-Type": "application/json",
