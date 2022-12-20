@@ -31,5 +31,8 @@ return [
     'views' => [
         'order_complete' => 'shop.checkout.order_complete'
     ],
-    'tax_rate' => '0.2'
+    'tax_rate' => '0.2',
+    'emails' => [
+        'order_complete' => null
+    ]
 ];

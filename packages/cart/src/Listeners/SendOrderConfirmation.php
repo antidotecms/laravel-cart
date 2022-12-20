@@ -12,9 +12,10 @@ class SendOrderConfirmation
     public function handle(OrderCompleted $event)
     {
         $order_complete_mail = config('laravel-cart.classes.mails.order_complete') ?? OrderComplete::class;
+        $order_complete_recipient_email = config('laravel-cart.emails.order_complete');
 
         Mail::to($event->order->customer)
-            ->bcc('tcsmith1978@gmail.com')
+            ->bcc($order_complete_recipient_email)
             ->send(new $order_complete_mail($event->order));
 
         $event->order->log('Order complete mail sent to '.$event->order->customer->email);
