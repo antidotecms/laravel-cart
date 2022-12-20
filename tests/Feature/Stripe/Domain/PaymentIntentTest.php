@@ -180,7 +180,7 @@ it('will not generate a new payment intent if one already exists', function () {
 
     expect(StripePayment::count())->toBe(1);
 
-    Cart::initializePayment($order);
+    //Cart::initializePayment($order);
     PaymentIntent::create($order);
 
     expect(StripePayment::count())->toBe(1);
@@ -190,7 +190,7 @@ it('will not generate a new payment intent if one already exists', function () {
 
 it('will generate a new payment intent if the old one has been cancelled', function () {
 
-    new MockStripeHttpClient();
+    (new MockStripeHttpClient());
 
     Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
@@ -203,16 +203,16 @@ it('will generate a new payment intent if the old one has been cancelled', funct
 
     expect(TestStripeOrder::count())->toBe(1);
 
-    Cart::initializePayment($order);
+    //Cart::initializePayment($order);
     PaymentIntent::create($order);
 
     $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
 
     expect(StripePayment::count())->toBe(1);
 
-    Cart::initializePayment($order);
+    //Cart::initializePayment($order);
 
-    (new MockStripeHttpClient())->with('canceled_at', 'hello');
+    (new MockStripeHttpClient())->with('canceled_at', 'hello')->with('amount', $order->total);
     PaymentIntent::create($order);
 
     expect(StripePayment::count())->toBe(1);
@@ -236,14 +236,14 @@ it('will update a payment intent if the order amount has changed', function () {
 
     expect(TestStripeOrder::count())->toBe(1);
 
-    Cart::initializePayment($order);
+    //Cart::initializePayment($order);
     PaymentIntent::create($order);
 
     $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
 
     expect(StripePayment::count())->toBe(1);
 
-    Cart::initializePayment($order);
+    //Cart::initializePayment($order);
     PaymentIntent::create($order);
 
     expect(StripePayment::count())->toBe(1);

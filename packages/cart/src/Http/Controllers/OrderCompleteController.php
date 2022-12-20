@@ -24,4 +24,16 @@ class OrderCompleteController extends \Illuminate\Routing\Controller
 
         abort(404);
     }
+
+
+    /**
+     * Adds the items from this order to the cart
+     *
+     * @param int $order_id
+     * @return void
+     */
+    public function addOrderItemsToCart(int $order_id)
+    {
+
+    }
 }

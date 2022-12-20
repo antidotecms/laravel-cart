@@ -546,6 +546,7 @@ it('will set up a payment', function () {
     Cart::createOrder($customer);
 
     Cart::initializePayment($customer->orders()->first());
+    //PaymentIntent::create($customer->orders()->first());
 
     expect(TestOrder::count())->toBe(1);
     expect(get_class(TestOrder::first()->payment))->toBe(\Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment::class);

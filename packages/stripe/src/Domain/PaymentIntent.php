@@ -4,7 +4,10 @@ namespace Antidote\LaravelCartStripe\Domain;
 
 use Antidote\LaravelCartStripe\Concerns\HasStripeClient;
 use Antidote\LaravelCartStripe\Models\StripeOrder;
+use Antidote\LaravelCartStripe\Models\StripePayment;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\AuthenticationException;
@@ -37,6 +40,7 @@ abstract class PaymentIntent
                 else
                 {
                     //get existing payment intent and check it is valid
+                    Log::info('retrieving payment intent');
                     $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->payment_intent_id);
 
                     $body = json_decode($payment_intent_response->getLastResponse()->body);
@@ -44,6 +48,8 @@ abstract class PaymentIntent
                     if($body->canceled_at) {
                         //payment intent cancelled generate a new one
                         //dd('create a new payment intent');
+                        Log::info('payment intent cancelled, deleting old one - creating a new one');
+                        StripePayment::where(getKeyFor('order'), $order->id)->delete();
                         $event = static::createPaymentIntent($order);
                     }
 
@@ -88,9 +94,16 @@ abstract class PaymentIntent
 
                 //application error
                 //self::logMessage($order, 'Application Error: '.$e->getMessage());
-                \Log::error($e->getMessage(), $e->getTrace());
-                self::logError($order, 'Application Error', $e, $event);
-                //abort(500);
+                if(!App::environment(['testing']))
+                {
+                    \Log::error($e->getMessage(), $e->getTrace());
+                    self::logError($order, 'Application Error', $e, $event);
+                    //abort(500);
+                }
+                else
+                {
+                    throw $e;
+                }
 
             }
 
@@ -129,6 +142,27 @@ abstract class PaymentIntent
 
         $order->payment_intent_id = json_decode($payment_intent_response->getLastResponse()->body)->id;
         $order->save();
+
+        $order->refresh();
+
+        if(!$order->payment) {
+//            $result = $order->payment()->create([
+//                getKeyFor('order') => $order->id
+//            ]);
+            $payment = StripePayment::create([
+                getKeyFor('order') => $order->id
+            ]);
+
+            $order->payment_id = $payment->id;
+            $order->payment_type = get_class($payment);
+            $order->save();
+
+            //$payment->save();
+        }
+
+        $order->refresh();
+
+        //dump($order->payment);
         $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
         $order->payment->save();
         $event = json_decode($payment_intent_response->getLastResponse()->body);

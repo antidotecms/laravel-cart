@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\IpUtils;
 
 class WhitelistStripeIPAddresses
 {
@@ -23,7 +24,7 @@ class WhitelistStripeIPAddresses
         "54.187.205.235",
         "54.187.216.72",
         //internal for use in docker
-        "172.21.0.1"
+        "172.0.0.0/8"
     ];
     /**
      * Handle an incoming request.
@@ -40,7 +41,8 @@ class WhitelistStripeIPAddresses
         }
 
         Log::info($request->getClientIp());
-        if(!in_array($request->getClientIp(), $this->ip_addresses))
+        //if(!in_array($request->getClientIp(), $this->ip_addresses))
+        if(!IpUtils::checkIp($request->getClientIp(), $this->ip_addresses))
         {
             Log::info('Stripe Attempt from IP: '.$request->getClientIp());
             abort(403, "Unauthorized Access Stripe");

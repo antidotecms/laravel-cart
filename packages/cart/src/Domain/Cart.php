@@ -250,9 +250,10 @@ class Cart
 
     private function initializePayment(Order $order)
     {
+        //throw new Exception('not required');
         //create payment method to order
-        if(!$order->payment_intent_id)
-        {
+        //if(!$order->payment_intent_id)
+        //{
             $payment_class = getClassNameFor('payment');
 
             $payment_method = $payment_class::create([
@@ -265,6 +266,6 @@ class Cart
 
             $order->refresh();
             $order->payment->initialize();
-        }
+        //}
     }
 }
