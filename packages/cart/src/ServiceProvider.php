@@ -2,6 +2,8 @@
 
 namespace Antidote\LaravelCart;
 
+use Illuminate\Support\Facades\Config;
+
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function register()
@@ -14,6 +16,17 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->migrations();
         $this->configuration();
         $this->loadRoutesFrom(__DIR__.'../../routes/web.php');
+
+        //create customer guard
+        Config::set('auth.guards.customer', [
+            'driver' => 'session',
+            'provider' => 'customers'
+        ]);
+
+        Config::set('auth.providers.customers', [
+            'driver' => 'eloquent',
+            'model' => config('laravel-cart.classes.customer')
+        ]);
     }
 
     private function migrations()

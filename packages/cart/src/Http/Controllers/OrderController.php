@@ -29,4 +29,22 @@ class OrderController
 
         return redirect('/cart');
     }
+
+    /**
+     * Adds the items from this order to the cart
+     */
+    public function addOrderItemsToCart(int $order_id)
+    {
+        $existing_order = getClassNameFor('order')::where('id', $order_id)->first();
+
+        foreach($existing_order->items as $orderitem)
+        {
+            //dd($orderitem->attributesToArray());
+            Cart::add($orderitem->product, $orderitem->quantity, $orderitem->product_data);
+        }
+
+        Cart::setActiveOrder($order_id);
+
+        return redirect('/cart');
+    }
 }

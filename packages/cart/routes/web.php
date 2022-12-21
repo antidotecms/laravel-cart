@@ -8,4 +8,7 @@ Route::get(config('laravel-cart.urls.order_complete'), OrderCompleteController::
     ->middleware(['web', 'auth:customer']);
 
 Route::get('/checkout/replace_cart/{order_id}', [OrderController::class, 'setOrderItemsAsCart'])
-    ->middleware(['web', 'auth:customer,guest']);
+    ->middleware(['web', 'auth:customer']);
+
+Route::get('/checkout/add_to_cart/{order_id}', [OrderController::class, 'addOrderItemsToCart'])
+    ->middleware(['web', 'auth:customer']);
