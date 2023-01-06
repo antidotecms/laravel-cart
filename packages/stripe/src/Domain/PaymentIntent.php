@@ -193,4 +193,13 @@ abstract class PaymentIntent
         $order->status = json_decode($payment_intent_response->getLastResponse()->body)->status;
         $order->save();
     }
+
+    public static function getClientSecret($order)
+    {
+        $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->payment_intent_id);
+
+        $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
+        $order->payment->save();
+        return $order->payment->client_secret;
+    }
 }
