@@ -39,7 +39,7 @@ it('will record that a payment intent has been created', function() {
 
     expect($order->logItems()->count())->toBe(1);
 
-    expect($order->status)->toBe('Payment Intent Created');
+    expect($order->status)->toBe('requires_payment_method');
     expect($order->payment_intent_id)->toBe('payment_intent_identifier');
 
 });
@@ -71,7 +71,7 @@ it('will record that a payment intent was successful', function () {
 
     expect($order->logItems()->count())->toBe(1);
 
-    expect($order->status)->toBe('Payment Intent Succeeded');
+    expect($order->status)->toBe('requires_payment_method');
 });
 
 it('will record that a charge was successful', function () {
@@ -101,7 +101,7 @@ it('will record that a charge was successful', function () {
 
     expect($order->logItems()->count())->toBe(1);
 
-    expect($order->status)->toBe('Charge Succeeded');
+    expect($order->status)->toBe('succeeded');
 });
 
 it('will record that a payment intent was cancelled', function () {
@@ -131,7 +131,7 @@ it('will record that a payment intent was cancelled', function () {
 
     expect($order->logItems()->count())->toBe(1);
 
-    expect($order->status)->toBe('Payment Intent Canceled');
+    expect($order->status)->toBe('canceled');
 });
 
 it('will record that a payment intent payment failed', function () {
@@ -161,7 +161,7 @@ it('will record that a payment intent payment failed', function () {
 
     expect($order->logItems()->count())->toBe(1);
 
-    expect($order->status)->toBe('Payment Intent Payment Failed');
+    expect($order->status)->toBe('requires_payment_method');
 });
 
 it('will record an unknown event', function () {

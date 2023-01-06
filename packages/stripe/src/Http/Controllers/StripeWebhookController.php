@@ -51,7 +51,7 @@ class StripeWebhookController extends Controller
                 $order_log_item->save();
 
                 $order->payment_intent_id = $event->data->object->id;
-                $order->status = 'Payment Intent Created';
+                $order->status = $event->data->object->status;
                 $order->save();
             break;
 
@@ -60,7 +60,7 @@ class StripeWebhookController extends Controller
                 $order_log_item->event  = $event;
                 $order_log_item->save();
 
-                $order->status = 'Payment Intent Succeeded';
+                $order->status = $event->data->object->status;
                 $order->save();
             break;
 
@@ -69,7 +69,7 @@ class StripeWebhookController extends Controller
                 $order_log_item->event  = $event;
                 $order_log_item->save();
 
-                $order->status = 'Payment Intent Canceled';
+                $order->status = $event->data->object->status;
                 $order->save();
             break;
 
@@ -78,7 +78,7 @@ class StripeWebhookController extends Controller
                 $order_log_item->event  = $event;
                 $order_log_item->save();
 
-                $order->status = 'Payment Intent Payment Failed';
+                $order->status = $event->data->object->status;
                 $order->save();
             break;
 
@@ -88,7 +88,7 @@ class StripeWebhookController extends Controller
                 $order_log_item->event  = $event;
                 $order_log_item->save();
 
-                $order->status = 'Charge Succeeded';
+                $order->status = $event->data->object->status;
                 $order->save();
 
                 //send emails
