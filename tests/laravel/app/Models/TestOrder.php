@@ -16,4 +16,9 @@ class TestOrder extends Order
     {
         return TestOrderFactory::new();
     }
+
+    public function updateStatus()
+    {
+        return null;
+    }
 }

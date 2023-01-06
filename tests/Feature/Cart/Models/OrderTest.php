@@ -127,7 +127,9 @@ it('automatically populates the fillable fields', function () {
 
     class NewCustomer extends \Antidote\LaravelCart\Contracts\Customer {}
     Config::set('laravel-cart.classes.customer', NewCustomer::class);
-    $new_order = new class extends \Antidote\LaravelCart\Contracts\Order {};
+    $new_order = new class extends \Antidote\LaravelCart\Contracts\Order {
+        public function updateStatus() { return null; }
+    };
     expect($new_order->getFillable())->toBe([
        'new_customer_id'
     ]);

@@ -90,4 +90,6 @@ abstract class Order extends Model
             'message' => $message
         ]);
     }
+
+    public abstract function updateStatus();
 }

@@ -185,4 +185,12 @@ abstract class PaymentIntent
         self::logMessage($order, 'Payment Intent Updated: '.$payment_intent_response->id, $event);
         return $event;
     }
+
+    public static function retrievePaymentIntent($order)
+    {
+        $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->payment_intent_id);
+
+        $order->status = json_decode($payment_intent_response->getLastResponse()->body)->status;
+        $order->save();
+    }
 }

@@ -14,10 +14,13 @@ class OrderCompleteController extends \Illuminate\Routing\Controller
 
             $order = getClassNameFor('order')::where('id', $order_id)->first();
 
+            //if the order status is not completed, query it
+            $order->updateStatus();
+
             if ($order && $order->customer->id == auth()->guard('customer')->user()->id) {
                 return view(config('laravel-cart.views.order_complete'), [
                     'order' => $order,
-                    'completed' => $order->status == 'Charge Succeeded'
+                    'completed' => $order->status == 'succeeded'
                 ]);
             }
         }
