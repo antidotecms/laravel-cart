@@ -58,7 +58,7 @@ abstract class Order extends Model
     {
         return Attribute::make(
             get: function ($value) {
-                return ceil(($this->getSubtotal() - $this->getDiscountTotal()) * config('laravel-cart.tax_rate') * 100)/100;
+                return ceil(round(($this->getSubtotal() - $this->getDiscountTotal()) * config('laravel-cart.tax_rate')) * 100)/100;
             }
         );
     }

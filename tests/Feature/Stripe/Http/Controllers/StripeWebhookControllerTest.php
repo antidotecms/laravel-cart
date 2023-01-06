@@ -20,7 +20,7 @@ it('will record that a payment intent has been created', function() {
         ->forCustomer($customer)
         ->create();
 
-    expect($order->total)->toBe($product->getPrice() + (int)($product->getPrice() * config('laravel-cart.tax_rate')));
+    expect($order->total)->toBe($product->getPrice() + (int)(round($product->getPrice() * config('laravel-cart.tax_rate'))));
 
     $event = createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => $order->id], 'id' => 'payment_intent_identifier']]]);
 
@@ -56,7 +56,7 @@ it('will record that a payment intent was successful', function () {
         ->forCustomer($customer)
         ->create();
 
-    expect($order->total)->toBe($product->getPrice() + (int)($product->getPrice() * config('laravel-cart.tax_rate')));
+    expect($order->total)->toBe($product->getPrice() + (int)(round($product->getPrice() * config('laravel-cart.tax_rate'))));
 
     $event = createStripeEvent('payment_intent.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -86,7 +86,7 @@ it('will record that a charge was successful', function () {
         ->forCustomer($customer)
         ->create();
 
-    expect($order->total)->toBe($product->getPrice() + (int)($product->getPrice() * config('laravel-cart.tax_rate')));
+    expect($order->total)->toBe($product->getPrice() + (int)(round($product->getPrice() * config('laravel-cart.tax_rate'))));
 
     $event = createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -116,7 +116,7 @@ it('will record that a payment intent was cancelled', function () {
         ->forCustomer($customer)
         ->create();
 
-    expect($order->total)->toBe($product->getPrice() + (int)($product->getPrice() * config('laravel-cart.tax_rate')));
+    expect($order->total)->toBe($product->getPrice() + (int)(round($product->getPrice() * config('laravel-cart.tax_rate'))));
 
     $event = createStripeEvent('payment_intent.cancelled', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -146,7 +146,7 @@ it('will record that a payment intent payment failed', function () {
         ->forCustomer($customer)
         ->create();
 
-    expect($order->total)->toBe($product->getPrice() + (int)($product->getPrice() * config('laravel-cart.tax_rate')));
+    expect($order->total)->toBe($product->getPrice() + (int)(round($product->getPrice() * config('laravel-cart.tax_rate'))));
 
     $event = createStripeEvent('payment_intent.payment_failed', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -176,7 +176,7 @@ it('will record an unknown event', function () {
         ->forCustomer($customer)
         ->create();
 
-    expect($order->total)->toBe($product->getPrice() + (int)($product->getPrice() * config('laravel-cart.tax_rate')));
+    expect($order->total)->toBe($product->getPrice() + (int)(round($product->getPrice() * config('laravel-cart.tax_rate'))));
 
     $event = createStripeEvent('unknown_event', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -280,7 +280,7 @@ it('will generate an OrderCompleted event', function () {
         ->forCustomer($customer)
         ->create();
 
-    expect($order->total)->toBe($product->getPrice() + (int)($product->getPrice() * config('laravel-cart.tax_rate')));
+    expect($order->total)->toBe($product->getPrice() + (int)(round($product->getPrice() * config('laravel-cart.tax_rate'))));
 
     $event = createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 

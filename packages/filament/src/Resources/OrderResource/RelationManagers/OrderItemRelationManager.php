@@ -5,6 +5,7 @@ namespace Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
+use NumberFormatter;
 
 class OrderItemRelationManager extends RelationManager
 {
@@ -22,9 +23,11 @@ class OrderItemRelationManager extends RelationManager
                     ->getStateUsing(fn($record) => $record->getName())
                 ->description(fn($record) => $record->product->getDescription($record->product_data)),
                 TextColumn::make('quantity'),
-                TextColumn::make('price'),
+                TextColumn::make('price')
+                    ->formatStateUsing(fn($state) => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($state/100, 'GBP')),
                 TextColumn::make('cost')
                     ->getStateUsing(fn($record) => $record->getCost())
+                    ->formatStateUsing(fn($state) => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($state/100, 'GBP'))
             ]);
     }
 }

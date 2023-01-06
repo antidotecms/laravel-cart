@@ -14,6 +14,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
+use NumberFormatter;
 
 class OrderResource extends Resource
 {
@@ -40,13 +41,14 @@ class OrderResource extends Resource
                     ->columns(1)
                     ->schema([
                     TextInput::make('order_subtotal')
-                        ->afterStateHydrated(fn($component, $record) => $component->state($record->getSubtotal()))
+                        ->afterStateHydrated(fn($component, $record) => $component->state(NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($record->getSubtotal()/100, 'GBP')))
+                        //->formatStateUsing(fn($state) => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($state/100, 'GBP'))
                         ->disabled(),
                     TextInput::make('tax')
-                        ->afterStateHydrated(fn($component, $record) => $component->state($record->tax))
+                        ->afterStateHydrated(fn($component, $record) => $component->state(NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($record->tax/100, 'GBP')))
                         ->disabled(),
                     TextInput::make('order_total')
-                        ->afterStateHydrated(fn($component, $record) => $component->state($record->total))
+                        ->afterStateHydrated(fn($component, $record) => $component->state(NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($record->total/100, 'GBP')))
                         ->disabled(),
                 ]),
                 TextInput::make('status')
@@ -60,7 +62,9 @@ class OrderResource extends Resource
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('order_total')
-                    ->getStateUsing(fn($record) => $record->total),
+                    ->getStateUsing(fn($record) => $record->total)
+                    ->formatStateUsing(fn($state) => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($state/100, 'GBP')),
+                TextColumn::make('status'),
                 TextColumn::make('customer.name')
             ]);
     }
