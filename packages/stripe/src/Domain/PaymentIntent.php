@@ -33,7 +33,7 @@ abstract class PaymentIntent
 
             try {
 
-                if(!$order->payment_intent_id)
+                if(!$order->payment_intent_id && $order->status != 'succeeded')
                 {
                     $event = static::createPaymentIntent($order);
                 }
