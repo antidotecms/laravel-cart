@@ -19,16 +19,16 @@ class OrderFactory extends Factory
         return [];
     }
 
-    public function withProduct(Product $product, $quantity = 1)
+    public function withProduct(Product $product, $quantity = 1, $product_data = [])
     {
-        return $this->afterCreating(function(Order $order) use ($product, $quantity) {
+        return $this->afterCreating(function(Order $order) use ($product, $quantity, $product_data) {
             $order->items()->create([
-                'name' => $product->getName(),
+                'name' => $product->getName($product_data),
                 getKeyFor('product') => $product->id,
-                'price' => $product->getPrice(),
-                'product_data' => [],
+                'price' => $product->getPrice($product_data),
+                'product_data' => $product_data,
                 'quantity' => $quantity,
-                getKeyFor('order') => $order->id,
+                getKeyFor('order') => $order->id
             ]);
         });
     }
