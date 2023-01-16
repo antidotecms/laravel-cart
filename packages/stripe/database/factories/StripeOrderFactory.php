@@ -2,10 +2,10 @@
 
 namespace Antidote\LaravelCartStripe\Database\factories;
 
+use Antidote\LaravelCart\Database\Factories\OrderFactory;
 use Antidote\LaravelCartStripe\Models\StripeOrder;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
-class StripeOrderFactory extends Factory
+class StripeOrderFactory extends OrderFactory
 {
     protected $model = StripeOrder::class;
 
