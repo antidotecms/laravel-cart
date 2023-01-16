@@ -12,6 +12,7 @@
     "autoload": {
         "psr-4": {
             "Antidote\\LaravelCart\\": "packages/cart/src/",
+            "Antidote\\LaravelCart\\Database\\Factories\\": "packages/cart/database/factories/",
             "Antidote\\LaravelCartStripe\\": "packages/stripe/src/",
             "Antidote\\LaravelCartStripe\\Database\\factories\\": "packages/stripe/database/factories/",
             "Antidote\\LaravelCartFilament\\": "packages/filament/src/"
