@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('status')->nullable();
             $table->integer('test_customer_id');
+            $table->text('additional_field')->nullable();
             $table->string('payment_id')->nullable();
             $table->string('payment_type')->nullable();
             $table->softDeletes();

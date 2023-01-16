@@ -10,6 +10,10 @@ return [
         'payment' => \Antidote\LaravelCartStripe\Models\StripePayment::class,
         'order_log_item' => \App\Models\OrderLogItem::class
     ],
+    'filament' => [
+        'order' => \Antidote\LaravelCartFilament\Resources\OrderResource::class,
+        'customer' => \Antidote\LaravelCartFilament\Resources\CustomerResource::class
+    ],
     'stripe' => [
         'api_key' => env('STRIPE_API_KEY'),
         'secret_key' => env('STRIPE_SECRET_KEY'),
