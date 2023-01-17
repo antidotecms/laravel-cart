@@ -567,3 +567,57 @@ it('will not create an order if the amount is out of bounds', function () {
     expect($result)->toBeFalse();
     expect(TestOrder::count())->toBe(0);
 });
+
+it('can add a note to the cart', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1
+    ])->create();
+
+    $customer = TestCustomer::factory()->create();
+
+    Cart::add($simple_product);
+
+    Cart::addData('note', 'this is a note');
+
+    expect(Cart::getData('note'))->toBe('this is a note');
+
+    expect(Cart::getData('non_existant'))->toBe('');
+});
+
+it('can return all data', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 100
+    ])->create();
+
+    $customer = TestCustomer::factory()->create();
+
+    Cart::add($simple_product);
+
+    Cart::addData('note', 'this is a note');
+    Cart::addData('another_note', 'this is another note');
+
+    expect(count(Cart::getData()))->toBe(2);
+});
+
+it('can add a note to the order', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 100
+    ])->create();
+
+    $customer = TestCustomer::factory()->create();
+
+    Cart::add($simple_product);
+
+    Cart::addData('additional_field', 'this is a note');
+
+    $order = Cart::createOrder($customer);
+
+    //dump($order);
+
+    expect(TestOrder::count())->toBe(1);
+    expect(TestOrder::first()->additional_field)->toBe('this is a note');
+
+});

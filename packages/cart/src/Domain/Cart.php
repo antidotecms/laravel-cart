@@ -30,7 +30,9 @@ class Cart
             'createOrder',
             'initializePayment',
             'getActiveOrder',
-            'setActiveOrder'
+            'setActiveOrder',
+            'addData',
+            'getData'
         ];
 
         in_array($method, $allowedMethods) ?: throw new \BadMethodCallException();
@@ -218,7 +220,16 @@ class Cart
                 ]);
             });
 
-            //Cart::clear();
+            //saving additional cart/order data
+            //@todo possibly expand to allow "hooks" or events to trigger methods depending on keys/values set?
+            $cart_data = Cart::getData();
+
+            foreach($cart_data as $key => $data)
+            {
+                $order->$key = $data;
+            }
+
+            $order->save();
 
             static::setActiveOrder($order);
 
@@ -267,5 +278,24 @@ class Cart
             $order->refresh();
             $order->payment->initialize();
         //}
+    }
+
+    private function addData($key, $value)
+    {
+        $cart_data = session()->get('cart_data') ?? [];
+        $cart_data[$key] = $value;
+        session()->put('cart_data', $cart_data);
+    }
+
+    private function getData($key = null)
+    {
+        $cart_data = session()->get('cart_data') ?? [];
+
+        if($key)
+        {
+            return $cart_data[$key] ?? '';
+        }
+
+        return $cart_data;
     }
 }
