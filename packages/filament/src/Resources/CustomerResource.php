@@ -11,7 +11,6 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Support\Str;
 
 class CustomerResource extends Resource
 {
@@ -21,9 +20,7 @@ class CustomerResource extends Resource
 
     public static function getModel(): string
     {
-        return (string) Str::of(class_basename(getClassNameFor('customer')))
-            ->beforeLast('Resource')
-            ->prepend('App\\Models\\');
+        return (string) getClassNameFor('customer');
     }
 
     public static function table(Table $table): Table

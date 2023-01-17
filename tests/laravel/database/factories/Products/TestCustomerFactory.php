@@ -18,7 +18,7 @@ class TestCustomerFactory extends Factory
             'email' => $this->faker->email,
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
-            'remember_token' => Str::random(10),
+            'remember_token' => Str::random(10)
         ];
     }
 }
