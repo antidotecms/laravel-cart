@@ -99,7 +99,9 @@ it('will record that a charge was successful', function () {
 
     $order->refresh();
 
-    expect($order->logItems()->count())->toBe(1);
+    expect($order->logItems()->count())->toBe(2);
+    expect($order->logItems->first()->message)->toBe('Stripe Charge Succeeded');
+    expect($order->logItems->skip(1)->first()->message)->toBe('Order complete mail sent to '.$customer->email);
 
     expect($order->status)->toBe('succeeded');
 });
