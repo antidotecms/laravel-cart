@@ -24,8 +24,9 @@ class OrderComplete extends \Illuminate\Mail\Mailable
 
     public function content()
     {
+        //@todo create a very basic order email
         return new Content(
-            view: 'emails.order-complete'
+            view: 'laravel-cart::emails.order-complete'
         );
     }
 }
