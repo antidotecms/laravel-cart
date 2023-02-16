@@ -11,11 +11,13 @@ test('a product type has a product', function()
     ]);
 
     $product = TestProduct::create([
-        'name' => 'Simple Product Type'
+        'name' => 'Simple Product Type',
+        'product_type_type' => SimpleProductDataType::class,
+        'product_type_id' => $product_data->id
     ]);
 
-    $product->productType()->associate($product_data);
-    $product->save();
+//    $product->productType()->associate($product_data);
+//    $product->save();
 
     expect(get_class($product_data->product))->toBe(TestProduct::class);
     expect($product_data->product->id)->toBe($product->id);

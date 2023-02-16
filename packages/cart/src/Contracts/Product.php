@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Contracts;
 
+use Antidote\LaravelCart\Concerns\ConfiguresProduct;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,6 +10,8 @@ use Illuminate\Support\Str;
 
 abstract class Product extends Model
 {
+    use ConfiguresProduct;
+
     /**
      * @var array array of attributes that should be obtained from the Product Data Type
      */
