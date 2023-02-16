@@ -13,6 +13,8 @@ trait ConfiguresOrderItem
         $this->fillable[] = 'product_data';
         $this->fillable[] = 'price';
         $this->fillable[] = 'quantity';
+
+        $this->fillable[] = getKeyFor('order');
     }
 
     public function getCasts() : array

@@ -13,7 +13,8 @@ it('automatically populates the fillable fields', function () {
         'test_product_id',
         'product_data',
         'price',
-        'quantity'
+        'quantity',
+        'test_order_id'
     ]);
 
     class NewProduct extends \Antidote\LaravelCart\Contracts\Product {};
@@ -24,7 +25,8 @@ it('automatically populates the fillable fields', function () {
         'new_product_id',
         'product_data',
         'price',
-        'quantity'
+        'quantity',
+        'test_order_id'
     ]);
 
 });
