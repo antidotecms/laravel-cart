@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -9,6 +10,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function register()
     {
         $this->bindings();
+
+        Model::shouldBeStrict();
     }
 
     public function boot()
