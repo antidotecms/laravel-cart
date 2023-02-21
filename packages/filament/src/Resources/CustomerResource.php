@@ -11,6 +11,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
+use League\Uri\Exception;
 
 class CustomerResource extends Resource
 {
@@ -20,7 +21,13 @@ class CustomerResource extends Resource
 
     public static function getModel(): string
     {
-        return (string) getClassNameFor('customer');
+        $classname = '\App\Models\Customer';
+        try {
+            $classname =  (string) getClassNameFor('customer');
+        } catch (Exception $e) {}
+        finally {
+            return $classname;
+        }
     }
 
     public static function table(Table $table): Table
