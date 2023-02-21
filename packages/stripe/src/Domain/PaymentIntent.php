@@ -188,10 +188,12 @@ abstract class PaymentIntent
 
     public static function retrievePaymentIntent($order)
     {
-        $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->payment_intent_id);
+        if($order->payment_intent_id) {
+            $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->payment_intent_id);
 
-        $order->status = json_decode($payment_intent_response->getLastResponse()->body)->status;
-        $order->save();
+            $order->status = json_decode($payment_intent_response->getLastResponse()->body)->status;
+            $order->save();
+        }
     }
 
     public static function getClientSecret($order)
