@@ -2,17 +2,35 @@
 
 namespace Tests\Feature\Filament;
 
+use Antidote\LaravelCart\Contracts\Customer;
+use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
 
 class ServiceProviderTest extends \Antidote\LaravelCart\Tests\TestCase
 {
+    public function defaultFilamentResourcesEnvironment($app)
+    {
+        $this->configureModels($app);
+    }
+
     public function overrideFilamentResourcesEnvironment($app)
     {
-        $order_resource_class = new class extends \Filament\Resources\Resource {};
-        $customer_resource_class = new class extends \Filament\Resources\Resource {};
-
+        $this->configureModels($app);
         $app->config->set('laravel-cart.filament', $this->getResourceClasses());
+    }
+
+    public function configureModels($app)
+    {
+        $customer_class = new class extends Customer {};
+
+        $app->config->set('laravel-cart.classes.customer', $customer_class::class);
+
+        $order_class = new class extends Order {
+            public function updateStatus() {}
+        };
+
+        $app->config->set('laravel-cart.classes.order', $order_class::class);
     }
 
     public function getResourceClasses()
@@ -28,6 +46,7 @@ class ServiceProviderTest extends \Antidote\LaravelCart\Tests\TestCase
 
     /**
      * @test
+     * @define-env defaultFilamentResourcesEnvironment
      */
     public function it_will_provide_default_filament_resources()
     {
@@ -47,21 +66,3 @@ class ServiceProviderTest extends \Antidote\LaravelCart\Tests\TestCase
             ->toBe($this->getResourceClasses());
     }
 }
-
-//it('will provide default filament resources', function() {
-//
-//    expect(\Filament\Facades\Filament::getResources())->toBe([
-//        'order' => OrderResource::class,
-//        'customer' => CustomerResource::class
-//    ]);
-//});
-//
-///**
-// * @test
-// * @define-env overrideFilamentResourcesEnvironment
-// */
-//it('provides the ability to override resources', function () {
-//
-//    expect(\Filament\Facades\Filament::getResources())->toBe($this->getResourceClasses());
-//
-//});
