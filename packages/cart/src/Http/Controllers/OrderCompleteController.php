@@ -12,7 +12,7 @@ class OrderCompleteController extends \Illuminate\Routing\Controller
 
         if ($order_id = request()->get('order_id')) {
 
-            $order = getClassNameFor('order')::where('id', $order_id)->first();
+            $order = getClassNameFor('order')::where('id', $order_id)->first()->load('items.product.productType');
 
             //if the order status is not completed, query it
             $order->updateStatus();
