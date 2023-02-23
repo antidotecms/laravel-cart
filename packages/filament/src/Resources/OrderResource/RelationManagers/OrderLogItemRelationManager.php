@@ -2,7 +2,7 @@
 
 namespace Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers;
 
-use Antidote\LaravelCartStripe\Models\StripeOrderLogItem;
+use Antidote\LaravelCartStripe\Contracts\StripeOrderLogItem;
 use Filament\Resources\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;

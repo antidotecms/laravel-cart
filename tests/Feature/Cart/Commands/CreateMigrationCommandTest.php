@@ -1,10 +1,12 @@
 <?php
 
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrder;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
 use Carbon\Carbon;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Config;
 use Mockery\MockInterface;
+
+//@todo we may not need this as migratioins can be dynamically created using config
 
 it('will create the payments migration', function() {
 

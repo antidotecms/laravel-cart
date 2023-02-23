@@ -2,27 +2,27 @@
 
 namespace Antidote\LaravelCart\Http\Controllers;
 
+use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCart\Facades\Cart;
+use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
+use Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment;
 
 class OrderCompleteController extends \Illuminate\Routing\Controller
 {
-    public function __invoke()
+    public function __invoke(?Order $order)
     {
-        Cart::setActiveOrder(null);
+        //dump($order->attributesToArray());
 
-        if ($order_id = request()->get('order_id')) {
+        if($order)
+        {
+            Cart::setActiveOrder(null);
 
-            $order = getClassNameFor('order')::where('id', $order_id)->first()->load('items.product.productType');
-
-            //if the order status is not completed, query it
             $order->updateStatus();
 
-            if ($order && $order->customer->id == auth()->guard('customer')->user()->id) {
-                return view(config('laravel-cart.views.order_complete'), [
-                    'order' => $order,
-                    'completed' => $order->status == 'succeeded'
-                ]);
-            }
+            return view(config('laravel-cart.views.order_complete'), [
+                'order' => $order,
+                'completed' => $order->status == 'succeeded'
+            ]);
         }
 
         abort(404);

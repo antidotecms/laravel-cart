@@ -1,10 +1,10 @@
 <?php
 
 use Antidote\LaravelCart\Facades\Cart;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 
 it('has an order', function() {
 
@@ -28,7 +28,10 @@ it('has an order', function() {
         'test_order_id' => $order->id
     ]);
 
+    dump($payment->attributesToArray());
+
     $order->payment()->associate($payment);
+    //$payment->order()->attach($order);
     $order->save();
 
     //dump($payment_method->attributesToArray());

@@ -1,252 +1,346 @@
 <?php
 
+namespace Antidote\LaravelCart\Tests\Feature\Stripe\Domain;
+
 use Antidote\LaravelCart\Facades\Cart;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrder;
+use Antidote\LaravelCart\ServiceProvider;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
 use Antidote\LaravelCartStripe\Models\StripePayment;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
+
+class PaymentIntentTest extends \Orchestra\Testbench\TestCase
+{
+    use RefreshDatabase;
+
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../../../Fixtures/Cart/migrations');
+    }
+
+    protected function getPackageAliases($app)
+    {
+        return [
+            'cart' => \Antidote\LaravelCart\Domain\Cart::class
+        ];
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return [
+            ServiceProvider::class,
+            \Antidote\LaravelCartStripe\ServiceProvider::class
+        ];
+    }
+
+    protected function defineEnv($app)
+    {
+        $app->config->set('laravel-cart.classes.order', TestStripeOrder::class);
+        $app->config->set('laravel-cart.classes.order_item', TestOrderItem::class);
+        $app->config->set('laravel-cart.classes.customer', TestCustomer::class);
+        $app->config->set('laravel-cart.classes.payment', StripePayment::class);
+        $app->config->set('laravel-cart.classes.product', TestProduct::class);
+        $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
+        $app->config->set('laravel-cart.classes.order_log_item', TestStripeOrderLogItem::class);
+    }
+
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function it_will_return_a_payment_intent_object()
+    {
+        new MockStripeHttpClient();
+
+        $product = TestProduct::factory()->asSimpleProduct([
+            'price' => 1999
+        ])->create();
+
+        $order = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder::factory()
+            ->withProduct($product, 1)
+            ->create();
+
+        expect(get_class($order->payment))->toBe(StripePayment::class);
+    }
+
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function will_throw_an_exception_if_the_amount_is_too_low()
+    {
+        new MockStripeHttpClient();
+
+        $product = TestProduct::factory()->asSimpleProduct([
+            'price' => 1
+        ])->create();
+
+        $order = TestStripeOrder::factory()
+            ->withProduct($product, 1)
+            ->forCustomer(TestCustomer::factory()->create())
+            ->create();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
+
+        PaymentIntent::create($order);
+    }
+
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function it_will_throw_an_exception_if_the_amount_is_too_high()
+    {
+        new MockStripeHttpClient();
+
+        $product = TestProduct::factory()->asSimpleProduct([
+            'price' => 999999999
+        ])->create();
+
+        $order = TestStripeOrder::factory()
+            ->withProduct($product, 1)
+            ->create();
+
+        //->throws(InvalidArgumentException::class, 'The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
+
+        $payment_intent = PaymentIntent::create($order);
+    }
+
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function it_will_initialise_a_payment_intent_request()
+    {
+
+        new MockStripeHttpClient();
 
-beforeEach(function () {
-    Config::set('laravel-cart.classes.order', TestStripeOrder::class);
-    Config::set('laravel-cart.classes.payment', StripePayment::class);
-});
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+
+        $customer = TestCustomer::factory()->create();
 
-it('will return a payment intent object', function() {
+        $order = TestStripeOrder::factory()
+            ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
+            ->forCustomer($customer)
+            ->create();
 
-    new MockStripeHttpClient();
+        Cart::initializePayment($order);
+        PaymentIntent::create($order);
 
-    $product = TestProduct::factory()->asSimpleProduct([
-        'price' => 1999
-    ])->create();
+        expect(StripePayment::count())->toBe(1);
 
-    $order = TestStripeOrder::factory()
-        ->withProduct($product, 1)
-        ->create();
+    }
 
-    expect(get_class($order->payment))->toBe(StripePayment::class);
-});
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function it_will_set_up_a_payment()
+    {
 
-it('will throw an exception if the amount is too low', function () {
+        new MockStripeHttpClient();
 
-    new MockStripeHttpClient();
+        PaymentIntent::fake();
 
-    $product = TestProduct::factory()->asSimpleProduct([
-        'price' => 1
-    ])->create();
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-    $order = TestStripeOrder::factory()
-        ->withProduct($product, 1)
-        ->forCustomer(TestCustomer::factory()->create())
-        ->create();
+        $simple_product = TestProduct::factory()->asSimpleProduct([
+            'price' => 1000
+        ])->create();
 
-    $payment_intent = PaymentIntent::create($order);
-})
-->throws(InvalidArgumentException::class, 'The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
+        $customer = TestCustomer::factory()->create();
 
-it('will throw an exception if the amount is too high', function () {
+        Cart::add($simple_product);
 
-    new MockStripeHttpClient();
+        Config::set('laravel-cart.tax_rate', 0.2);
 
-    $product = TestProduct::factory()->asSimpleProduct([
-        'price' => 999999999
-    ])->create();
+        $order = Cart::createOrder($customer);
+        expect($order->total)->toBe(1200); //inc VAT of 20%
 
-    $order = TestStripeOrder::factory()
-        ->withProduct($product, 1)
-        ->create();
+        Cart::initializePayment($order);
 
-    $payment_intent = PaymentIntent::create($order);
-})
-->throws(InvalidArgumentException::class, 'The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
+        expect(TestStripeOrder::count())->toBe(1);
+        expect(get_class($order->payment))->toBe(StripePayment::class);
 
-it('will initialise a payment intent request', function () {
+        $order = TestStripeOrder::first();
+        expect($order->logItems()->count())->toBe(1);
+        expect($order->logItems()->first()->message)->toStartWith('Payment Intent Created');
+    }
 
-    new MockStripeHttpClient();
+    public static function orderLogErrorDataProvider(): array
+    {
+        return [
+            'Card Exception' => [
+                'exception_class' => \Stripe\Exception\CardException::class,
+                'expected_message' => 'Card Issue'
+            ],
+            'Invalid Request Exception' => [
+                'exception_class' => \Stripe\Exception\InvalidRequestException::class,
+                'expected_message' => 'Invalid API Request'
+            ],
+            'Authentication Exception' => [
+                'exception_class' => \Stripe\Exception\AuthenticationException::class,
+                'expected_message' => 'Unable to authenticate with Stripe API'
+            ],
+            'API Exception' => [
+                'exception_class' => \Stripe\Exception\OAuth\InvalidClientException::class,
+                'expected_message' => 'Stripe API Error'
+            ],
+            'Other Exception' => [
+                'exception_class' => \InvalidArgumentException::class,
+                'expected_message' => 'Application Error'
+            ]
+        ];
+    }
 
-    Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+    /**
+     * @test
+     * @define-env defineEnv
+     * @dataProvider orderLogErrorDataProvider
+     */
+    public function it_will_log_an_order_log_item($exception_class, $expected_message)
+    {
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-    $customer = TestCustomer::factory()->create();
+        (new MockStripeHttpClient())->throwException($exception_class);
 
-    $order = TestStripeOrder::factory()
-        ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
-        ->forCustomer($customer)
-        ->create();
+        $simple_product = TestProduct::factory()->asSimpleProduct([
+            'price' => 1000
+        ])->create();
 
-    Cart::initializePayment($order);
-    PaymentIntent::create($order);
+        $customer = TestCustomer::factory()->create();
 
-    expect(StripePayment::count())->toBe(1);
+        Cart::add($simple_product);
 
-});
+        Config::set('laravel-cart.tax_rate', 0.2);
 
-it('will set up a payment', function () {
+        $order = Cart::createOrder($customer);
+        expect($order->total)->toBe(1200); //with 20% tax
 
-    new MockStripeHttpClient();
+        $this->expectException(\Exception::class);
 
-    PaymentIntent::fake();
+        Cart::initializePayment($order);
 
-    Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+        expect($order->logItems()->count())->toBe(1)
+            ->and($order->logItems()->first()->message)->toStartWith($expected_message);
+    }
 
-    $simple_product = TestProduct::factory()->asSimpleProduct([
-        'price' => 1000
-    ])->create();
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function it_will_not_generate_a_new_payment_intent_if_one_already_exists()
+    {
 
-    $customer = TestCustomer::factory()->create();
+        new MockStripeHttpClient();
 
-    Cart::add($simple_product);
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
+        $customer = TestCustomer::factory()->create();
 
-    $order = Cart::createOrder($customer);
-    expect($order->total)->toBe(1200); //inc VAT of 20%
+        $order = TestStripeOrder::factory()
+            ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
+            ->forCustomer($customer)
+            ->create();
 
-    Cart::initializePayment($order);
+        expect(TestStripeOrder::count())->toBe(1);
 
-    expect(TestStripeOrder::count())->toBe(1);
-    expect(get_class($order->payment))->toBe(StripePayment::class);
+        Cart::initializePayment($order);
+        PaymentIntent::create($order);
 
-    $order = TestStripeOrder::first();
-    expect($order->logItems()->count())->toBe(1);
-    expect($order->logItems()->first()->message)->toStartWith('Payment Intent Created');
-});
+        $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
 
-it('will log an order log item', function ($exception_class, $expected_message) {
+        expect(StripePayment::count())->toBe(1);
 
-    (new MockStripeHttpClient())->throwException($exception_class);
+        //Cart::initializePayment($order);
+        PaymentIntent::create($order);
 
-    $simple_product = TestProduct::factory()->asSimpleProduct([
-        'price' => 1000
-    ])->create();
+        expect(StripePayment::count())->toBe(1);
+        expect(TestStripeOrder::first()->payment_intent_id)->toBe($payment_intent_id);
 
-    $customer = TestCustomer::factory()->create();
+    }
 
-    Cart::add($simple_product);
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function it_will_generate_a_new_payment_intent_if_the_old_one_has_been_cancelled()
+    {
 
+        (new MockStripeHttpClient());
 
-    $order = Cart::createOrder($customer);
-    expect($order->total)->toBe(1200); //with 20% tax
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-    Cart::initializePayment($order);
+        $customer = TestCustomer::factory()->create();
 
-    expect($order->logItems()->count())->toBe(1)
-        ->and($order->logItems()->first()->message)->toStartWith($expected_message);
+        $order = TestStripeOrder::factory()
+            ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
+            ->forCustomer($customer)
+            ->create();
 
+        expect(TestStripeOrder::count())->toBe(1);
 
-})
-->throws(\Exception::class)
-->with([
-    'Card Exception' => [
-        'exception_class' => \Stripe\Exception\CardException::class,
-        'expected_message' => 'Card Issue'
-    ],
-    'Invalid Request Exception' => [
-        'exception_class' => \Stripe\Exception\InvalidRequestException::class,
-        'expected_message' => 'Invalid API Request'
-    ],
-    'Authentication Exception' => [
-        'exception_class' => \Stripe\Exception\AuthenticationException::class,
-        'expected_message' => 'Unable to authenticate with Stripe API'
-    ],
-    'API Exception' => [
-        'exception_class' => \Stripe\Exception\OAuth\InvalidClientException::class,
-        'expected_message' => 'Stripe API Error'
-    ],
-    'Other Exception' => [
-        'exception_class' => InvalidArgumentException::class,
-        'expected_message' => 'Application Error'
-    ]
-]);
+        //Cart::initializePayment($order);
+        PaymentIntent::create($order);
 
-it('will not generate a new payment intent if one already exists', function () {
+        $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
 
-    new MockStripeHttpClient();
+        expect(StripePayment::count())->toBe(1);
 
-    Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+        //Cart::initializePayment($order);
 
-    $customer = TestCustomer::factory()->create();
+        (new MockStripeHttpClient())->with('canceled_at', 'hello')->with('amount', $order->total);
+        PaymentIntent::create($order);
 
-    $order = TestStripeOrder::factory()
-        ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
-        ->forCustomer($customer)
-        ->create();
+        expect(StripePayment::count())->toBe(1);
+        expect(TestStripeOrder::first()->payment_intent_id)->not()->toBe($payment_intent_id);
 
-    expect(TestStripeOrder::count())->toBe(1);
+    }
 
-    Cart::initializePayment($order);
-    PaymentIntent::create($order);
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function it_will_update_a_payment_intent_if_the_order_amount_has_changed()
+    {
 
-    $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
+        (new MockStripeHttpClient())
+            ->with('amount', 2000);
 
-    expect(StripePayment::count())->toBe(1);
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-    //Cart::initializePayment($order);
-    PaymentIntent::create($order);
+        $customer = TestCustomer::factory()->create();
 
-    expect(StripePayment::count())->toBe(1);
-    expect(TestStripeOrder::first()->payment_intent_id)->toBe($payment_intent_id);
+        $order = TestStripeOrder::factory()
+            ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
+            ->forCustomer($customer)
+            ->create();
 
-});
+        expect(TestStripeOrder::count())->toBe(1);
 
-it('will generate a new payment intent if the old one has been cancelled', function () {
+        //Cart::initializePayment($order);
+        PaymentIntent::create($order);
 
-    (new MockStripeHttpClient());
+        $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
 
-    Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+        expect(StripePayment::count())->toBe(1);
 
-    $customer = TestCustomer::factory()->create();
+        //Cart::initializePayment($order);
+        PaymentIntent::create($order);
 
-    $order = TestStripeOrder::factory()
-        ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
-        ->forCustomer($customer)
-        ->create();
+        expect(StripePayment::count())->toBe(1);
+        expect(TestStripeOrder::first()->payment_intent_id)->toBe($payment_intent_id);
 
-    expect(TestStripeOrder::count())->toBe(1);
+    }
 
-    //Cart::initializePayment($order);
-    PaymentIntent::create($order);
-
-    $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
-
-    expect(StripePayment::count())->toBe(1);
-
-    //Cart::initializePayment($order);
-
-    (new MockStripeHttpClient())->with('canceled_at', 'hello')->with('amount', $order->total);
-    PaymentIntent::create($order);
-
-    expect(StripePayment::count())->toBe(1);
-    expect(TestStripeOrder::first()->payment_intent_id)->not()->toBe($payment_intent_id);
-
-});
-
-it('will update a payment intent if the order amount has changed', function () {
-
-    (new MockStripeHttpClient())
-        ->with('amount', 2000);
-
-    Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
-
-    $customer = TestCustomer::factory()->create();
-
-    $order = TestStripeOrder::factory()
-        ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
-        ->forCustomer($customer)
-        ->create();
-
-    expect(TestStripeOrder::count())->toBe(1);
-
-    //Cart::initializePayment($order);
-    PaymentIntent::create($order);
-
-    $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
-
-    expect(StripePayment::count())->toBe(1);
-
-    //Cart::initializePayment($order);
-    PaymentIntent::create($order);
-
-    expect(StripePayment::count())->toBe(1);
-    expect(TestStripeOrder::first()->payment_intent_id)->toBe($payment_intent_id);
-
-});
+}

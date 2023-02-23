@@ -1,122 +1,172 @@
 <?php
 
+namespace Antidote\LaravelCart\Tests\Feature\Stripe\Listeners;
+
 use Antidote\LaravelCart\Mail\OrderComplete;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrder;
+use Antidote\LaravelCart\ServiceProvider;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
+use Antidote\LaravelCartStripe\Models\StripePayment;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 
-it('will generate a mail when an order is completed', function() {
+class SendOrderConfirmationTest2 extends \Orchestra\Testbench\TestCase
+{
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../../../Fixtures/Cart/migrations');
+    }
 
-    Config::set('laravel-cart.classes.order', TestStripeOrder::class);
-    Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrderLogItem::class);
-    Config::set('laravel-cart.stripe.log', false);
-    Config::set('laravel-cart.emails.order_complete', 'someone@somewhere.com');
+    protected function defineEnv($app)
+    {
+        $app->config->set('laravel-cart.classes.order', TestOrder::class);
+        $app->config->set('laravel-cart.classes.order_item', TestOrderItem::class);
+        $app->config->set('laravel-cart.classes.customer', TestCustomer::class);
+        $app->config->set('laravel-cart.classes.payment', StripePayment::class);
+        $app->config->set('laravel-cart.classes.product', TestProduct::class);
+        $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
+        $app->config->set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+    }
 
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = TestCustomer::factory()->create();
-    $order = TestStripeOrder::factory()
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
+    protected function getPackageProviders($app)
+    {
+        return [
+            ServiceProvider::class
+        ];
+    }
 
-    Mail::fake();
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function will_generate_a_mail_when_an_order_is_complete(){
 
-    (new \Antidote\LaravelCart\Listeners\SendOrderConfirmation())->handle(
-        new \Antidote\LaravelCart\Events\OrderCompleted($order)
-    );
+//        Config::set('laravel-cart.classes.order', TestStripeOrder::class);
+//        Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem::class);
+//        Config::set('laravel-cart.stripe.log', false);
+        Config::set('laravel-cart.emails.order_complete', 'someone@somewhere.com');
 
-    Mail::assertSent(OrderComplete::class, function(\Illuminate\Contracts\Mail\Mailable $mailable) use ($order) {
-        expect(get_class($mailable))->toBe(OrderComplete::class);
-        expect($mailable->bcc[0]['address'])->toBe('someone@somewhere.com');
-        expect($mailable->to[0]['address'])->toBe($order->customer->email);
-        return true;
-    });
-});
+        $product = TestProduct::factory()->asSimpleProduct()->create();
+        $customer = TestCustomer::factory()->create();
+        $order = TestOrder::factory()
+            ->withProduct($product)
+            ->forCustomer($customer)
+            ->create();
 
-it('can use a custom mailable for the OrderComplete event', function () {
+        Mail::fake();
 
-    Config::set('laravel-cart.classes.order', TestStripeOrder::class);
-    Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrderLogItem::class);
-    Config::set('laravel-cart.stripe.log', false);
-    Config::set('laravel-cart.classes.mails.order_complete', \Antidote\LaravelCart\Tests\laravel\app\Mails\TestOrderCompleteMail::class);
-    Config::set('laravel-cart.emails.order_complete', 'someone@somewhere.com');
+        (new \Antidote\LaravelCart\Listeners\SendOrderConfirmation())->handle(
+            new \Antidote\LaravelCart\Events\OrderCompleted($order)
+        );
 
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = TestCustomer::factory()->create();
-    $order = TestStripeOrder::factory()
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
+        Mail::assertSent(OrderComplete::class, function(\Illuminate\Contracts\Mail\Mailable $mailable) use ($order) {
+            expect(get_class($mailable))->toBe(OrderComplete::class);
+            expect($mailable->bcc[0]['address'])->toBe('someone@somewhere.com');
+            expect($mailable->to[0]['address'])->toBe($order->customer->email);
+            return true;
+        });
+    }
 
-    Mail::fake();
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function can_use_a_custom_mailable_for_the_OrderComplete_event(){
 
-    (new \Antidote\LaravelCart\Listeners\SendOrderConfirmation())->handle(
-        new \Antidote\LaravelCart\Events\OrderCompleted($order)
-    );
+//        Config::set('laravel-cart.classes.order', TestStripeOrder::class);
+//        Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem::class);
+//        Config::set('laravel-cart.stripe.log', false);
+        Config::set('laravel-cart.classes.mails.order_complete', \Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class);
+        Config::set('laravel-cart.emails.order_complete', 'someone@somewhere.com');
 
-    Mail::assertSent(\Antidote\LaravelCart\Tests\laravel\app\Mails\TestOrderCompleteMail::class, function(\Illuminate\Contracts\Mail\Mailable $mailable) use ($order) {
-        expect(get_class($mailable))->toBe(\Antidote\LaravelCart\Tests\laravel\app\Mails\TestOrderCompleteMail::class);
-        expect($mailable->bcc[0]['address'])->toBe('someone@somewhere.com');
-        expect($mailable->to[0]['address'])->toBe($order->customer->email);
-        return true;
-    });
-});
+        $product = TestProduct::factory()->asSimpleProduct()->create();
+        $customer = TestCustomer::factory()->create();
+        $order = TestOrder::factory()
+            ->withProduct($product)
+            ->forCustomer($customer)
+            ->create();
 
-it('will not bcc someone in if the email address is null', function () {
+        Mail::fake();
 
-    Config::set('laravel-cart.classes.order', TestStripeOrder::class);
-    Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrderLogItem::class);
-    Config::set('laravel-cart.stripe.log', false);
-    Config::set('laravel-cart.classes.mails.order_complete', \Antidote\LaravelCart\Tests\laravel\app\Mails\TestOrderCompleteMail::class);
-    Config::set('laravel-cart.emails.order_complete', null);
+        (new \Antidote\LaravelCart\Listeners\SendOrderConfirmation())->handle(
+            new \Antidote\LaravelCart\Events\OrderCompleted($order)
+        );
 
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = TestCustomer::factory()->create();
-    $order = TestStripeOrder::factory()
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
+        Mail::assertSent(\Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class, function(\Illuminate\Contracts\Mail\Mailable $mailable) use ($order) {
+            expect(get_class($mailable))->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class);
+            expect($mailable->bcc[0]['address'])->toBe('someone@somewhere.com');
+            expect($mailable->to[0]['address'])->toBe($order->customer->email);
+            return true;
+        });
+    }
 
-    Mail::fake();
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function will_not_bcc_someone_in_if_the_email_address_is_null(){
 
-    (new \Antidote\LaravelCart\Listeners\SendOrderConfirmation())->handle(
-        new \Antidote\LaravelCart\Events\OrderCompleted($order)
-    );
+        Config::set('laravel-cart.classes.order', TestOrder::class);
+        Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem::class);
+        Config::set('laravel-cart.stripe.log', false);
+        Config::set('laravel-cart.classes.mails.order_complete', \Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class);
+        Config::set('laravel-cart.emails.order_complete', null);
 
-    Mail::assertSent(\Antidote\LaravelCart\Tests\laravel\app\Mails\TestOrderCompleteMail::class, function(\Illuminate\Contracts\Mail\Mailable $mailable) use ($order) {
-        expect(get_class($mailable))->toBe(\Antidote\LaravelCart\Tests\laravel\app\Mails\TestOrderCompleteMail::class);
-        expect($mailable->bcc)->toBeEmpty();
-        expect($mailable->to[0]['address'])->toBe($order->customer->email);
-        return true;
-    });
-});
+        $product = TestProduct::factory()->asSimpleProduct()->create();
+        $customer = TestCustomer::factory()->create();
+        $order = TestOrder::factory()
+            ->withProduct($product)
+            ->forCustomer($customer)
+            ->create();
 
-it('will not bcc someone in if the email address is malformed', function () {
+        Mail::fake();
 
-    Config::set('laravel-cart.classes.order', TestStripeOrder::class);
-    Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\laravel\app\Models\TestStripeOrderLogItem::class);
-    Config::set('laravel-cart.stripe.log', false);
-    Config::set('laravel-cart.classes.mails.order_complete', \Antidote\LaravelCart\Tests\laravel\app\Mails\TestOrderCompleteMail::class);
-    Config::set('laravel-cart.emails.order_complete', 'not a valid email address');
+        (new \Antidote\LaravelCart\Listeners\SendOrderConfirmation())->handle(
+            new \Antidote\LaravelCart\Events\OrderCompleted($order)
+        );
 
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = TestCustomer::factory()->create();
-    $order = TestStripeOrder::factory()
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
+        Mail::assertSent(\Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class, function(\Illuminate\Contracts\Mail\Mailable $mailable) use ($order) {
+            expect(get_class($mailable))->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class);
+            expect($mailable->bcc)->toBeEmpty();
+            expect($mailable->to[0]['address'])->toBe($order->customer->email);
+            return true;
+        });
+    }
 
-    Mail::fake();
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function will_not_bcc_someone_in_if_the_email_address_is_malformed(){
 
-    (new \Antidote\LaravelCart\Listeners\SendOrderConfirmation())->handle(
-        new \Antidote\LaravelCart\Events\OrderCompleted($order)
-    );
+        Config::set('laravel-cart.classes.order', TestOrder::class);
+        Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem::class);
+        Config::set('laravel-cart.stripe.log', false);
+        Config::set('laravel-cart.classes.mails.order_complete', \Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class);
+        Config::set('laravel-cart.emails.order_complete', 'not a valid email address');
 
-    Mail::assertSent(\Antidote\LaravelCart\Tests\laravel\app\Mails\TestOrderCompleteMail::class, function(\Illuminate\Contracts\Mail\Mailable $mailable) use ($order) {
-        expect(get_class($mailable))->toBe(\Antidote\LaravelCart\Tests\laravel\app\Mails\TestOrderCompleteMail::class);
-        expect($mailable->bcc)->toBeEmpty();
-        expect($mailable->to[0]['address'])->toBe($order->customer->email);
-        return true;
-    });
-});
+        $product = TestProduct::factory()->asSimpleProduct()->create();
+        $customer = TestCustomer::factory()->create();
+        $order = TestOrder::factory()
+            ->withProduct($product)
+            ->forCustomer($customer)
+            ->create();
+
+        Mail::fake();
+
+        (new \Antidote\LaravelCart\Listeners\SendOrderConfirmation())->handle(
+            new \Antidote\LaravelCart\Events\OrderCompleted($order)
+        );
+
+        Mail::assertSent(\Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class, function(\Illuminate\Contracts\Mail\Mailable $mailable) use ($order) {
+            expect(get_class($mailable))->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class);
+            expect($mailable->bcc)->toBeEmpty();
+            expect($mailable->to[0]['address'])->toBe($order->customer->email);
+            return true;
+        });
+    }
+}

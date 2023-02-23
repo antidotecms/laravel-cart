@@ -2,8 +2,8 @@
 
 namespace Antidote\LaravelCart\Tests\Browser\Stripe\Components;
 
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Support\Facades\DB;
 use Laravel\Dusk\Browser;

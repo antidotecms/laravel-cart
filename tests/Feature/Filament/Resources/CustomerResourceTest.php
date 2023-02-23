@@ -1,7 +1,7 @@
 <?php
 
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestUser;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
 use function Pest\Livewire\livewire;
 
 it('will list the customers', function() {
@@ -61,7 +61,7 @@ it('has the required fields', function () {
 it('will allow overriding of the customer resource', function () {
 
     Config::set('laravel-cart.classes.customer', TestCustomer::class);
-    Config::set('laravel-cart.filament.order', \Antidote\LaravelCart\Tests\laravel\app\Filament\Resources\TestCustomerResource::class);
+    Config::set('laravel-cart.filament.order', \Antidote\LaravelCart\Tests\Fixtures\App\Filament\Resources\TestCustomerResource::class);
 
     $customer = TestCustomer::factory()->create();
 

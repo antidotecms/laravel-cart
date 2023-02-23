@@ -2,13 +2,14 @@
 
 namespace Antidote\LaravelCart\Tests;
 
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderAdjustment;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderItem;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderLogItem;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment;
+use Antidote\LaravelCart\ServiceProvider;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
@@ -26,29 +27,36 @@ class TestCase extends \Orchestra\Testbench\TestCase
 {
     use RefreshDatabase;
 
-    protected function migrateUsing()
-    {
-        return [
-            '--path' => [
-                './database/migrations/cart'
-            ]
-        ];
-    }
+//    protected function migrateUsing()
+//    {
+//        return [
+//            '--path' => [
+//                './database/migrations/cart'
+//            ]
+//        ];
+//    }
+
+//    protected function defineDatabaseMigrations()
+//    {
+//        $this->loadMigrationsFrom(__DIR__.'/laravel/database/migrations');
+//    }
 
     protected function defineDatabaseMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__.'/laravel/database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/Fixtures/Cart/migrations');
     }
 
     protected function defineRoutes($router)
     {
         $router->post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class);
+        $router->get('/login')->name('login');
     }
 
     protected function getPackageProviders($app): array
     {
         return [
-            'Antidote\LaravelCart\ServiceProvider',
+            //'Antidote\LaravelCart\ServiceProvider',
+            ServiceProvider::class,
             'Antidote\LaravelCartStripe\ServiceProvider',
             'Antidote\LaravelCartFilament\ServiceProvider',
             BladeCaptureDirectiveServiceProvider::class,
@@ -63,10 +71,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ];
     }
 
-    protected function getBasePath()
-    {
-        return __DIR__.'/laravel';
-    }
+//    protected function getBasePath()
+//    {
+//        return __DIR__.'/laravel';
+//    }
 
     protected function getEnvironmentSetUp($app)
     {
@@ -88,5 +96,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.tax_rate', 0.2);
 
         Config::set('laravel-cart.stripe.secret_key', 'secret_key');
+
+        Config::set('laravel-cart.urls.order_complete', '/order-complete');
+        Config::set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');
     }
+
 }

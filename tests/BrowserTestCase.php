@@ -2,13 +2,13 @@
 
 namespace Antidote\LaravelCart\Tests;
 
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderAdjustment;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderItem;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderLogItem;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Config;
 use Laravel\Dusk\DuskServiceProvider;
@@ -30,14 +30,14 @@ class BrowserTestCase extends \Orchestra\Testbench\Dusk\TestCase
     protected function defineDatabaseMigrations()
     {
         //$this->artisan('migrate:fresh');
-        $this->artisan('migrate:fresh', ['--database' => 'testbench'])->run();
+        //$this->artisan('migrate:fresh', ['--database' => 'testbench'])->run();
 
-        $this->beforeApplicationDestroyed(function () {
-            $this->artisan('migrate:rollback', ['--database' => 'testbench'])->run();
-        });
+//        $this->beforeApplicationDestroyed(function () {
+//            $this->artisan('migrate:rollback', ['--database' => 'testbench'])->run();
+//        });
 
-        $this->loadMigrationsFrom(__DIR__.'/laravel/database/migrations');
-        $this->loadLaravelMigrations(['--database' => 'testbench']);
+        //$this->loadMigrationsFrom(__DIR__.'/laravel/database/migrations');
+        //$this->loadLaravelMigrations(['--database' => 'testbench']);
     }
 
     protected function setUp(): void
@@ -118,10 +118,10 @@ class BrowserTestCase extends \Orchestra\Testbench\Dusk\TestCase
 //        //$app['config']->set('app.debug', true);
 //    }
 
-    protected function getBasePath()
-    {
-        return __DIR__.'/laravel';
-    }
+//    protected function getBasePath()
+//    {
+//        return __DIR__.'/laravel';
+//    }
 
 //    protected function driver() : RemoteWebDriver
 //    {

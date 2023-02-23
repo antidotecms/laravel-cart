@@ -1,10 +1,10 @@
 <?php
 
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderLogItem;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestUser;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
 use function Pest\Livewire\livewire;
 
 it('will list the orders', function () {
@@ -121,7 +121,7 @@ it('will allow overriding the order resource', function () {
     Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
     Config::set('laravel-cart.classes.customer', TestCustomer::class);
     Config::set('laravel-cart.stripe.log', false);
-    Config::set('laravel-cart.filament.order', \Antidote\LaravelCart\Tests\laravel\app\Filament\Resources\TestOrderResource::class);
+    Config::set('laravel-cart.filament.order', \Antidote\LaravelCart\Tests\Fixtures\App\Filament\Resources\TestOrderResource::class);
 
     $product = TestProduct::factory()->asSimpleProduct()->create();
     $customer = TestCustomer::factory()->create();

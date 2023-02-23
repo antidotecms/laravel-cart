@@ -1,8 +1,8 @@
 <?php
 
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\laravel\app\Models\ProductTypes\SimpleProductDataType;
-use Antidote\LaravelCart\Tests\laravel\app\Models\ProductTypes\VariableProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\VariableProductDataType;
 
 test('a product type has a product', function()
 {
@@ -220,7 +220,7 @@ it('will defer an attribute to the product data type', function() {
         ->and($product->getDescription())->toBe('This Description');
 });
 
-it('will throw an exception if a defered attribute is not defined', function () {
+it('will throw an exception if a deferred attribute is not defined', function () {
 
     $product = TestProduct::factory()->asSimpleProduct()->create([
         'name' => 'This Product',
@@ -229,4 +229,4 @@ it('will throw an exception if a defered attribute is not defined', function () 
 
     $product->getFoo();
 })
-->throws(Exception::class, "Define 'getFoo' on Antidote\LaravelCart\Tests\laravel\app\Models\ProductTypes\SimpleProductDataType");
+->throws(Exception::class, "Define 'getFoo' on ".SimpleProductDataType::class);

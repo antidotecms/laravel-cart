@@ -1,9 +1,9 @@
 <?php
 
 use Antidote\LaravelCart\Facades\Cart;
-use Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrderItem;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 use function Pest\Laravel\get;
 
 it('will replace the contents of the cart with an incomplete order', function() {
@@ -19,7 +19,7 @@ it('will replace the contents of the cart with an incomplete order', function() 
         'name' => 'cart product'
     ]);
 
-    $customer = \Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer::factory()->create();
 
     $order = TestOrder::factory()->withProduct($old_order_product)->forCustomer($customer)->create();
 
@@ -51,7 +51,7 @@ it('will add the contents of the cart with an incomplete order', function() {
         'name' => 'cart product'
     ]);
 
-    $customer = \Antidote\LaravelCart\Tests\laravel\app\Models\Products\TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer::factory()->create();
 
     $order = TestOrder::factory()->withProduct($old_order_product)->forCustomer($customer)->create();
 

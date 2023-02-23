@@ -19,7 +19,8 @@
     </coverage>
     <php>
         <env name="APP_ENV" value="testing"/>
-        <env name="APP_BASE_PATH" value="/var/www/docker/laravel-cart/packages/antidote/laravel-cart/tests/laravel"/>
+        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+<!--        <env name="APP_BASE_PATH" value="/var/www/docker/laravel-cart/packages/antidote/laravel-cart/tests/laravel"/>-->
         <env name="APP_URL" value="http://127.0.0.1:8001"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
