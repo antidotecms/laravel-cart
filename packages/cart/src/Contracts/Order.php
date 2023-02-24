@@ -34,9 +34,9 @@ abstract class Order extends Model
     {
         $subtotal = 0;
 
-        $this->items()->each(function($cart_item) use (&$subtotal)
+        $this->items()->each(function($order_item) use (&$subtotal)
         {
-            $subtotal += $cart_item->getCost();
+            $subtotal += $order_item->getCost();
         });
 
         return $subtotal;
