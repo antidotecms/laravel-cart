@@ -34,10 +34,12 @@ class Cart
             'getActiveOrder',
             'setActiveOrder',
             'addData',
-            'getData'
+            'getData',
+            'getAdjustmentsTotal',
+            'getValidAdjustments'
         ];
 
-        in_array($method, $allowedMethods) ?: throw new \BadMethodCallException();
+        in_array($method, $allowedMethods) ?: throw new \BadMethodCallException("Cannot call {$method}");
 
         return $this->$method(...$arguments);
     }
