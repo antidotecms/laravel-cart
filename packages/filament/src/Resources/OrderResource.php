@@ -14,7 +14,6 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
-use League\Uri\Exception;
 use NumberFormatter;
 
 class OrderResource extends Resource
@@ -30,7 +29,7 @@ class OrderResource extends Resource
         $classname = '\App\Models\Order';
         try {
             $classname =  (string) getClassNameFor('order');
-        } catch (Exception $e) {}
+        } catch (\Exception $e) {}
         finally {
             return $classname;
         }

@@ -4,6 +4,7 @@ namespace Tests\Feature\Filament;
 
 use Antidote\LaravelCart\Contracts\Customer;
 use Antidote\LaravelCart\Contracts\Order;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
 use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
 
@@ -52,7 +53,8 @@ class ServiceProviderTest extends \Antidote\LaravelCart\Tests\TestCase
     {
         expect(\Filament\Facades\Filament::getResources())->toBe([
             'order' => OrderResource::class,
-            'customer' => CustomerResource::class
+            'customer' => CustomerResource::class,
+            'adjustment' => AdjustmentResource::class
         ]);
     }
 

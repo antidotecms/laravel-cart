@@ -11,7 +11,6 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
-use League\Uri\Exception;
 
 class CustomerResource extends Resource
 {
@@ -24,7 +23,7 @@ class CustomerResource extends Resource
         $classname = '\App\Models\Customer';
         try {
             $classname =  (string) getClassNameFor('customer');
-        } catch (Exception $e) {}
+        } catch (\Exception $e) {}
         finally {
             return $classname;
         }
@@ -43,7 +42,7 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('id'),#
+                TextInput::make('id'),
                 TextInput::make('name'),
                 TextInput::make('email')
                     ->email()

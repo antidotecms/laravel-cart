@@ -13,7 +13,8 @@ return [
     ],
     'filament' => [
         'order' => \Antidote\LaravelCartFilament\Resources\OrderResource::class,
-        'customer' => \Antidote\LaravelCartFilament\Resources\CustomerResource::class
+        'customer' => \Antidote\LaravelCartFilament\Resources\CustomerResource::class,
+        'adjustment' => \Antidote\LaravelCartFilament\Resources\AdjustmentResource::class
     ],
     'stripe' => [
         'api_key' => env('STRIPE_API_KEY'),
@@ -39,5 +40,6 @@ return [
     'tax_rate' => '0.2',
     'emails' => [
         'order_complete' => null
-    ]
+    ],
+    'adjustments' => []
 ];

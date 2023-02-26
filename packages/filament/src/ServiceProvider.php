@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCartFilament;
 
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
 use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
 use Filament\PluginServiceProvider;
@@ -23,8 +24,9 @@ class ServiceProvider extends PluginServiceProvider
 //        ];
         return config('laravel-cart.filament') ?? [
             'order' => OrderResource::class,
-            'customer' => CustomerResource::class
-            ];
+            'customer' => CustomerResource::class,
+            'adjustment' => AdjustmentResource::class
+        ];
 //        return [
 //            'order' => \App\Filament\Cart\Resources\OrderResource::class,
 //            'customer' => \Antidote\LaravelCartFilament\Resources\CustomerResource::class
