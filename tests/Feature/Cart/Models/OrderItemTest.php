@@ -64,6 +64,34 @@ it('has a product', function () {
 
 });
 
+it('wil get the details of a product', function () {
+
+    $product_data = [
+        'width' => 10,
+        'height' => 10
+    ];
+
+    $variable_product = TestProduct::factory()->asVariableProduct()->create();
+
+    $customer = TestCustomer::factory()->create();
+
+    $test_order = TestOrder::factory()->create([
+        'test_customer_id' => $customer->id
+    ]);
+
+    $test_order_item = TestOrderItem::factory()
+        //->withProductData($product_data)
+        ->withProduct($variable_product, $product_data)
+        ->withQuantity(2)
+        ->forOrder($test_order)
+        ->create();
+
+    expect($test_order_item->product->id)->toBe($variable_product->id);
+    expect($test_order_item->getPrice())->toBe($variable_product->getPrice($product_data));
+    expect($test_order_item->getName())->toBe($variable_product->getName($product_data));
+    expect($test_order_item->getCost())->toBe($variable_product->getPrice($product_data) * 2);
+});
+
 it('will not change values of product after being created as an order', function () {
 
     $simple_product = TestProduct::factory()->asSimpleProduct([

@@ -101,6 +101,8 @@ it('can add a product and specify quantity', function () {
 
 it('can remove a product by product id', function () {
 
+    $customer = TestCustomer::factory()->create();
+
     $product_data = SimpleProductDataType::create([
         'price' => '2000'
     ]);
@@ -111,6 +113,8 @@ it('can remove a product by product id', function () {
 
     $product->productType()->associate($product_data);
     $product->save();
+
+    $this->be($customer, 'customer');
 
     Cart::add($product);
 

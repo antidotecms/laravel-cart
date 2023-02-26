@@ -34,10 +34,14 @@ abstract class Order extends Model
     {
         $subtotal = 0;
 
-        $this->items()->each(function($order_item) use (&$subtotal)
-        {
+        $this->items()->each(function($order_item) use (&$subtotal) {
             $subtotal += $order_item->getCost();
         });
+
+//        $this->adjustments()->where('is_in_subtotal', true)->each(function($order_adjustment) use (&$subtotal) {
+//            //$order_adjustment->load('adjustment');
+//            $subtotal += !$order_adjustment->adjustment->is_in_subtotal ?: $order_adjustment->amount;
+//        });
 
         return $subtotal;
     }
@@ -47,7 +51,8 @@ abstract class Order extends Model
         return Attribute::make(
             get: function($value) {
                 $total = $this->getSubtotal();
-                $total -= $this->getDiscountTotal();
+                $total += $this->getAdjustmentTotal(false);
+                $total += $this->getAdjustmentTotal(true);
                 $total += (int) $this->tax;
                 return $total;
             }
@@ -58,20 +63,22 @@ abstract class Order extends Model
     {
         return Attribute::make(
             get: function ($value) {
-                return ceil(round(($this->getSubtotal() - $this->getDiscountTotal()) * config('laravel-cart.tax_rate')) * 100)/100;
+                return ceil(round(($this->getSubtotal() + $this->getAdjustmentTotal(true)) * config('laravel-cart.tax_rate')) * 100)/100;
             }
         );
     }
 
-    public function getDiscountTotal()
+    public function getAdjustmentTotal(bool $is_in_subtotal)
     {
-        $discount_total = 0;
+        $adjustment_total = 0;
 
-        $this->adjustments()->each(function(OrderAdjustment $adjustment) use (&$discount_total) {
-            $discount_total += $adjustment->amount();
+        $this->load('adjustments');
+
+        $this->adjustments->each(function(OrderAdjustment $adjustment) use (&$adjustment_total, $is_in_subtotal) {
+            $adjustment_total += $adjustment->adjustment->isAppliedToSubtotal() == $is_in_subtotal ? $adjustment->amount : 0;
         });
 
-        return $discount_total;
+        return $adjustment_total;
     }
 
     public function payment() : MorphTo

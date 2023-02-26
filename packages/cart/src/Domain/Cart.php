@@ -2,10 +2,12 @@
 
 namespace Antidote\LaravelCart\Domain;
 
+use Antidote\LaravelCart\Contracts\Adjustment;
 use Antidote\LaravelCart\Contracts\Customer;
 use Antidote\LaravelCart\Contracts\Order;
+use Antidote\LaravelCart\Contracts\OrderAdjustment;
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
-use Antidote\LaravelCart\Models\CartAdjustment;
+use Antidote\LaravelCart\Tests\Feature\Cart\Models\TestAdjustment;
 use Antidote\LaravelCart\Types\ValidCartItem;
 use Illuminate\Support\Collection;
 
@@ -103,23 +105,29 @@ class Cart
     {
         $cart_items = $this->items();
 
-            $cart_items->transform(function($cart_item) use ($product, $quantity, $product_data) {
+        $cart_items->transform(function($cart_item) use ($product, $quantity, $product_data) {
 
-                if ($cart_item->product_id == $product->id && !$product_data)
-                {
-                    $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
-                }
-                elseif ($cart_item->product_id == $product->id && $product_data && $cart_item->product_data == $product_data)
-                {
-                    $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
-                }
+            if ($cart_item->product_id == $product->id && !$product_data)
+            {
+                $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
+            }
+            elseif ($cart_item->product_id == $product->id && $product_data && $cart_item->product_data == $product_data)
+            {
+                $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
+            }
 
-                return $cart_item;
-            });
+            return $cart_item;
+        });
 
-            $cart_items = $cart_items->reject(function($cart_item) {
-                 return $cart_item->quantity <= 0;
-            });
+        $cart_items = $cart_items->reject(function($cart_item) {
+             return $cart_item->quantity <= 0;
+        });
+
+        if(!$cart_items->count() && $this->getActiveOrder()) {
+            config('laravel-cart.classes.order_adjustment')::where(getKeyFor('order'), $this->getActiveOrder()->id)->delete();
+            $order = $this->getActiveOrder()->fresh();
+            $this->setActiveOrder($order);
+        }
 
         session()->put('cart_items', $cart_items->toArray());
     }
@@ -149,27 +157,45 @@ class Cart
     {
         $total = $this->getSubtotal();
 
-        $total -= $this->getDiscountTotal();
+        $total += $this->getAdjustmentsTotal(true);
+        $total += $this->getAdjustmentsTotal(false);
 
         return $total;
     }
 
-    private function getDiscountTotal()
+    private function getAdjustmentsTotal(bool $is_in_cart)
     {
         $discount_total = 0;
 
-        $this->getValidDiscounts()->each(function(CartAdjustment $adjustment) use (&$discount_total) {
-            $discount_total += $adjustment->amount();
+        $this->getValidAdjustments($is_in_cart)->each(function (OrderAdjustment|Adjustment $adjustment) use (&$discount_total) {
+            $discount_total += is_a($adjustment, OrderAdjustment::class) ? $adjustment->amount : $adjustment->calculated_amount;
         });
 
         return $discount_total;
     }
 
-    private function getValidDiscounts() : Collection
+    private function getValidAdjustments(bool $appled_to_subtotal) : Collection
     {
-        return CartAdjustment::all()->filter(function(CartAdjustment $adjustment) {
-            return $adjustment->isActive() && $adjustment->isValid();
-        });
+        $class = $this->getActiveOrder()
+            ? config('laravel-cart.classes.order_adjustment')
+            : config('laravel-cart.classes.adjustment');
+
+        return $class::all()
+            ->when($this->getActiveOrder(), function($query) {
+                $query->where(getKeyFor('order'), $this->getActiveOrder()->id);
+            })
+            //filter those that should or should not be applied to the subtotal
+            ->filter(function (OrderAdjustment|Adjustment $adjustment) use ($appled_to_subtotal) {
+                return $adjustment->isAppliedToSubtotal() == $appled_to_subtotal;
+            })
+            //filter those that are valid
+            ->filter(function (OrderAdjustment|Adjustment $adjustment) {
+                return $adjustment->isValid();
+            })
+            //filter those that are active
+            ->filter(function (OrderAdjustment|Adjustment $adjustment) {
+                return $adjustment->isActive();
+            });
     }
 
     private function isInCart($product_id) : bool
@@ -180,6 +206,10 @@ class Cart
             });
     }
 
+    /**
+     * @param Customer $customer
+     * @return Order|bool a created or false if no order created
+     */
     private function createOrder(Customer $customer) : Order | bool
     {
         if(Cart::getTotal() >= 30 && Cart::getTotal() <= 99999999) {
@@ -209,16 +239,16 @@ class Cart
                 ]);
             });
 
-            $validDiscounts = $this->getValidDiscounts();
-
-            $validDiscounts->each(function (CartAdjustment $adjustment) use ($order) {
-                $order->adjustments()->create([
-                    'name' => $adjustment->name,
-                    'class' => $adjustment->class,
-                    'parameters' => $adjustment->parameters,
-                    getKeyFor('order') => $order->id
-                ]);
-            });
+//            $validDiscounts = $this->getValidAdjustments();
+//
+//            $validDiscounts->each(function (CartAdjustment $adjustment) use ($order) {
+//                $order->adjustments()->create([
+//                    'name' => $adjustment->name,
+//                    'class' => $adjustment->class,
+//                    'parameters' => $adjustment->parameters,
+//                    getKeyFor('order') => $order->id
+//                ]);
+//            });
 
             //saving additional cart/order data
             //@todo possibly expand to allow "hooks" or events to trigger methods depending on keys/values set?

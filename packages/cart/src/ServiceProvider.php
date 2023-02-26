@@ -40,9 +40,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-cart');
 
-        $this->publishes([
-            __DIR__ . '/../database/migrations/' => database_path('migrations'),
-        ], 'laravel-cart-migrations');
+//        $this->publishes([
+//            __DIR__ . '/../database/migrations/' => database_path('migrations'),
+//        ], 'laravel-cart-migrations');
     }
 
     private function bindings()

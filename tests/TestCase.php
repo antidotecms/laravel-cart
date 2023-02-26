@@ -4,6 +4,7 @@ namespace Antidote\LaravelCart\Tests;
 
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
@@ -91,6 +92,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.classes.order', TestOrder::class);
         Config::set('laravel-cart.classes.order_item', TestOrderItem::class);
         Config::set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
+        Config::set('laravel-cart.classes.adjustment', TestAdjustment::class);
         Config::set('laravel-cart.classes.payment', TestPayment::class);
         Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
         Config::set('laravel-cart.tax_rate', 0.2);

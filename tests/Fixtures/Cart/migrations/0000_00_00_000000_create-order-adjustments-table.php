@@ -10,10 +10,10 @@ return new class extends Migration {
         Schema::create('test_order_adjustments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('class');
-            $table->json('parameters');
-            //$table->integer('test_order_id');
+            $table->integer('amount');
+            $table->json('original_parameters');
             $table->foreignIdFor(config('laravel-cart.classes.order'));
+            $table->foreignIdFor(config('laravel-cart.classes.adjustment'));
             $table->timestamps();
         });
     }

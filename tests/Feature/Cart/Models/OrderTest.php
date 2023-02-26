@@ -1,8 +1,6 @@
 <?php
 
-use Antidote\LaravelCart\Domain\Discount\PercentageDiscount;
 use Antidote\LaravelCart\Facades\Cart;
-use Antidote\LaravelCart\Models\CartAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
@@ -39,25 +37,36 @@ it('will create an order with discount', function () {
 
     $customer = TestCustomer::factory()->create();
 
-    $cart_adjustment = CartAdjustment::create([
-        'name' => '10% off',
-        'class' => PercentageDiscount::class,
+    $adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment::create([
+        'name' => '10% for all orders',
+        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
         'parameters' => [
-            'percentage' => 10
-        ],
-        'active' => true
+            'type' => 'percentage', //or fixed
+            'rate' => 10
+        ]
     ]);
 
 
     $order = Cart::createOrder($customer);
 
-    //even disabled, because the order was created before, it is still active on the order
-    $cart_adjustment->active = false;
-    $cart_adjustment->save();
+
+
+    $order_adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment::create([
+        'name' => $adjustment->name,
+        //'adjustment_type' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment::class,
+        'test_adjustment_id' => $adjustment->id,
+        'amount' => $adjustment->calculated_amount,
+        'test_order_id' => $order->id,
+        'original_parameters' => [
+            'type' => 'percentage',
+            'rate' => 10
+        ]
+    ]);
+
 
     expect($order->items()->count())->toBe(1);
     expect($order->adjustments()->count())->toBe(1);
-    expect($order->getSubtotal())->toBe(1000);
+    //expect($order->getSubtotal())->toBe(900);
 
     //subtotal with discount should be 900. Given tax rate of 20%, total should be 900 * 1.2 = 1080
     expect($order->total)->toBe(1080);
@@ -158,6 +167,40 @@ it('will get the subtotal', function () {
     TestOrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
 
     expect($order->getSubtotal())->toBe(1999);
+
+    TestOrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
+
+    expect($order->getSubtotal())->toBe(3998);
+
+});
+
+it('will get the subtotal 2', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1999
+    ])->create([
+        'name' => 'A Simple Product'
+    ]);
+
+    $customer = TestCustomer::factory()->create();
+
+    $order = TestOrder::factory()->forCustomer($customer)->create();
+
+    TestOrderItem::factory()
+        ->withProduct($simple_product)
+        ->withQuantity(1)
+        ->forOrder($order)
+        ->create();
+
+    expect($order->getSubtotal())->toBe(1999);
+
+    TestOrderItem::factory()
+        ->withProduct($simple_product)
+        ->withQuantity(1)
+        ->forOrder($order)
+        ->create();
+
+    expect($order->getSubtotal())->toBe(3998);
 
 });
 

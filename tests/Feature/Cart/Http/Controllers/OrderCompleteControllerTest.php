@@ -5,6 +5,7 @@ namespace Antidote\LaravelCart\Tests\Feature\Cart\Http\Controllers;
 use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
@@ -34,6 +35,7 @@ class OrderCompleteControllerTest extends TestCase
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
         $app->config->set('laravel-cart.classes.order_item', TestOrderItem::class);
         $app->config->set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+        $app->config->set('laravel-cart.classes.adjustment', TestAdjustment::class);
 
         $app->config->set('laravel-cart.urls.order_complete', '/order-complete');
         $app->config->set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');

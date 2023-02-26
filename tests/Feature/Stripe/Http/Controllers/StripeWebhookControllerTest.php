@@ -6,6 +6,7 @@ use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
@@ -38,6 +39,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
         $app->config->set('laravel-cart.classes.payment', StripePayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
         $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
+        $app->config->set('laravel-cart.classes.adjustment', TestAdjustment::class);
         $app->config->set('laravel-cart.classes.order_log_item', TestStripeOrderLogItem::class);
 
         $app->config->set('laravel-cart.urls.stripe.webhook_handler', '/stripe-webhook-handler');

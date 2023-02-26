@@ -18,10 +18,10 @@ class TestOrderItemFactory extends Factory
         ];
     }
 
-    public function withProduct(TestProduct $product) {
+    public function withProduct(TestProduct $product, ?array $product_data = []) {
         return $this->state([
-            'name' => $product->getName(),
-            'price' => $product->getPrice(),
+            'name' => $product->getName($product_data),
+            'price' => $product->getPrice($product_data),
             'test_product_id' => $product->id
         ]);
     }

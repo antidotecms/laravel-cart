@@ -5,6 +5,7 @@ namespace Antidote\LaravelCart\Tests\Feature\Stripe\Listeners;
 use Antidote\LaravelCart\Mail\OrderComplete;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
@@ -29,6 +30,7 @@ class SendOrderConfirmationTest2 extends \Orchestra\Testbench\TestCase
         $app->config->set('laravel-cart.classes.payment', StripePayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
         $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
+        $app->config->set('laravel-cart.classes.adjustment', TestAdjustment::class);
         $app->config->set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
     }
 
