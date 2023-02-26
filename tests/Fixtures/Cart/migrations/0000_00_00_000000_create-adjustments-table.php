@@ -12,11 +12,6 @@ return new class extends Migration {
             $table->string('name');
             $table->string('class');
             $table->json('parameters');
-//            $table->string('type');
-//            $table->string('rate');
-//            $table->integer('amount');
-//            $table->foreignIdFor(config('laravel-cart.classes.order'));
-//            $table->boolean('is_in_subtotal');
             $table->timestamps();
         });
     }
