@@ -12,6 +12,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 
 class AdjustmentResource extends Resource
@@ -37,7 +38,11 @@ class AdjustmentResource extends Resource
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('name'),
-                TextColumn::make('class')
+                TextColumn::make('class'),
+                IconColumn::make('is_active')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-badge-check')
+                    ->falseIcon('heroicon-o-x-circle')
             ]);
     }
 
@@ -51,14 +56,8 @@ class AdjustmentResource extends Resource
                     ->options(config('laravel-cart.adjustments'))
                     ->required()
                     ->reactive(),
-                Toggle::make('Applies To Subtotal?')
-                    ->disabled()
-                    ->visible(fn($get) => $get('class'))
-                    ->dehydrated(false)
-                    ->afterStateHydrated(function($get, $component) {
-                        $class = $get('class');
-                        $component->state((new $class)->applyToSubtotal());
-                    }),
+                Toggle::make('apply_to_subtotal'),
+                Toggle::make('is_active'),
                 Section::make('Setttings')
                     ->visible(fn($get) => $get('class') != "")
                     ->schema(fn($get) => $get('class') != "" ? $get('class')::getFilamentFields() : [])
