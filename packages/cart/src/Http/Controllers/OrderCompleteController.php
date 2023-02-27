@@ -20,8 +20,7 @@ class OrderCompleteController extends \Illuminate\Routing\Controller
             $order->updateStatus();
 
             return view(config('laravel-cart.views.order_complete'), [
-                'order' => $order,
-                'completed' => $order->status == 'succeeded'
+                'order' => $order
             ]);
         }
 
