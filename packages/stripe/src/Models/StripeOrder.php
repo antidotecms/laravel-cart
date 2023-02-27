@@ -19,6 +19,6 @@ class StripeOrder extends \Antidote\LaravelCart\Contracts\Order
 
     public function isCompleted()
     {
-        return $this->status == 'charge.succeeded';
+        return $this->status == 'succeeded';
     }
 }
