@@ -29,8 +29,8 @@ class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\R
     private static function getActions() : array
     {
         //@todo better way to determine payment provider needed?
-        return match(getClassNameFor('order_log_item')) {
-            StripeOrderLogItem::class => [
+        if(is_a(getClassNameFor('order_log_item'), StripeOrderLogItem::class)) {
+            return [
                 Action::make('event')
                     ->action(fn($record) => $record)
                     ->modalContent(function($record) {
@@ -38,7 +38,9 @@ class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\R
                         return view('laravel-cart-filament::stripe-event', [
                             'event_data' => \Illuminate\Support\Arr::dot($record->event)]);
                     })
-            ]
+            ];
         };
+
+        return [];
     }
 }
