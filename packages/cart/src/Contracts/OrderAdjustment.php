@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Contracts;
 
+use Antidote\LaravelCart\Collections\AdjustmentCollection;
 use Antidote\LaravelCart\Concerns\ConfiguresOrderAdjustment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,4 +27,9 @@ abstract class OrderAdjustment extends Model
 //    {
 //        return $this->belongsTo(config('laravel-cart.classes.adjustment'), getKeyFor('adjustment'));
 //    }
+
+    public function newCollection(array $models = [])
+    {
+        return new AdjustmentCollection($models);
+    }
 }
