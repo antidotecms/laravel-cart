@@ -3,6 +3,7 @@
 namespace Antidote\LaravelCart\Concerns;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Str;
 
 trait ConfiguresOrderAdjustment
 {
@@ -22,24 +23,35 @@ trait ConfiguresOrderAdjustment
         ]);
     }
 
+    //@todo refactor all the below into a trait to be shared between OrderAdjustment and Adjustment
     public function isValid(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->adjustment->is_valid
+            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('isValid', $value)
         );
     }
 
     public function isActive(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->adjustment->is_active
+            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('isActive', $value)
         );
     }
 
     public function applyToSubtotal(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->adjustment->apply_to_subtotal
+            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('applyToSubtotal', $value)
         );
+    }
+
+    private function getMethodOnAdjustmentIfDefined($attribute, $value)
+    {
+        if(method_exists($this->class, $attribute)) {
+            $attribute = Str::of($attribute)->studly()->lcfirst();
+            return (new $this->class)->{$attribute->value}($this->original_parameters);
+        } else {
+            return $value;
+        }
     }
 }
