@@ -37,14 +37,14 @@ it('will create an order with discount', function () {
 
     $customer = TestCustomer::factory()->create();
 
-    $adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment::create([
-        'name' => '10% for all orders',
-        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
-        'parameters' => [
-            'type' => 'percentage', //or fixed
-            'rate' => 10
-        ]
-    ]);
+//    $adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment::create([
+//        'name' => '10% for all orders',
+//        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
+//        'parameters' => [
+//            'type' => 'percentage', //or fixed
+//            'rate' => 10
+//        ]
+//    ]);
 
 
     $order = Cart::createOrder($customer);
@@ -52,10 +52,10 @@ it('will create an order with discount', function () {
 
 
     $order_adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment::create([
-        'name' => $adjustment->name,
-        //'adjustment_type' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment::class,
-        'test_adjustment_id' => $adjustment->id,
-        'amount' => $adjustment->calculated_amount,
+        'name' => '10% off',
+        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
+        //'test_adjustment_id' => $adjustment->id,
+        'amount' => -100,
         'test_order_id' => $order->id,
         'original_parameters' => [
             'type' => 'percentage',

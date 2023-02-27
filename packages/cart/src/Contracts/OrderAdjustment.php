@@ -22,8 +22,8 @@ abstract class OrderAdjustment extends Model
         return $adjustment->calculatedmount($this->order->getSubtotal());
     }
 
-    public function adjustment()
-    {
-        return $this->belongsTo(config('laravel-cart.classes.adjustment'), getKeyFor('adjustment'));
-    }
+//    public function adjustment()
+//    {
+//        return $this->belongsTo(config('laravel-cart.classes.adjustment'), getKeyFor('adjustment'));
+//    }
 }

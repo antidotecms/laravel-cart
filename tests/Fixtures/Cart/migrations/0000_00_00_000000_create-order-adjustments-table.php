@@ -13,7 +13,8 @@ return new class extends Migration {
             $table->integer('amount');
             $table->json('original_parameters');
             $table->foreignIdFor(config('laravel-cart.classes.order'));
-            $table->foreignIdFor(config('laravel-cart.classes.adjustment'));
+            //$table->foreignIdFor(config('laravel-cart.classes.adjustment'));
+            $table->string('class');
             $table->timestamps();
         });
     }

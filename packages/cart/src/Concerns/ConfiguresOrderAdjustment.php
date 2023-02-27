@@ -9,10 +9,10 @@ trait ConfiguresOrderAdjustment
     public function initializeConfiguresOrderAdjustment() : void
     {
         $this->fillable[] = 'name';
-        $this->fillable[] = getKeyFor('adjustment');
         $this->fillable[] = getKeyFor('order');
         $this->fillable[] = 'amount';
         $this->fillable[] = 'original_parameters';
+        $this->fillable[] = 'class';
     }
 
     public function getCasts() : array
