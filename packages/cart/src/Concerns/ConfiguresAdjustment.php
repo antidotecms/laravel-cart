@@ -3,15 +3,17 @@
 namespace Antidote\LaravelCart\Concerns;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Str;
 
 trait ConfiguresAdjustment
 {
     public function initializeConfiguresAdjustment()
     {
         $this->fillable[] = 'name';
-        //$this->fillable[] = 'is_in_subtotal';
         $this->fillable[] = 'class';
         $this->fillable[] = 'parameters';
+        $this->fillable[] = 'apply_to_subtotal';
+        $this->fillable[] = 'is_active';
     }
 
     public function getCasts() : array
@@ -21,30 +23,49 @@ trait ConfiguresAdjustment
         ]);
     }
 
+    //@todo is this used/needed?
     public function order_adjustment()
     {
         return $this->morphOne(config('laravel-cart.classes.order_adjustment'));
     }
 
-    public function calculatedAmount() : Attribute
+
+    protected function calculatedAmount() : Attribute
     {
         return Attribute::make(
-            get: fn() => (new $this->class)->calculatedAmount($this->parameters)
+        //get: fn($value) => (new $this->class($this))->calculatedAmount($this->parameters, $value ?? 0)
+            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('calculatedAmount', $value)
         );
     }
 
-    public function isValid() : bool
+    protected function isValid() : Attribute
     {
-        return true;
+        return Attribute::make(
+            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('isValid', $value)
+        );
     }
 
-    public function isActive()
+    protected function isActive() : Attribute
     {
-        return true;
+        return Attribute::make(
+            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('isActive', $value)
+        );
     }
 
-    public function isAppliedToSubtotal() : bool
+    protected function applyToSubtotal() : Attribute
     {
-        return true;
+        return Attribute::make(
+            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('applyToSubtotal', $value)
+        );
+    }
+
+    private function getMethodOnAdjustmentIfDefined($attribute, $value)
+    {
+        if(method_exists($this->class, $attribute)) {
+            $attribute = Str::of($attribute)->studly()->lcfirst();
+            return (new $this->class)->{$attribute->value}($this->parameters);
+        } else {
+            return $value;
+        }
     }
 }

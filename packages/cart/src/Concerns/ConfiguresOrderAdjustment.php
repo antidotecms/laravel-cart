@@ -2,6 +2,8 @@
 
 namespace Antidote\LaravelCart\Concerns;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 trait ConfiguresOrderAdjustment
 {
     public function initializeConfiguresOrderAdjustment() : void
@@ -20,18 +22,24 @@ trait ConfiguresOrderAdjustment
         ]);
     }
 
-    public final function isValid()
+    public function isValid(): Attribute
     {
-        return $this->adjustment->isValid();
+        return Attribute::make(
+            get: fn() => $this->adjustment->is_valid
+        );
     }
 
-    public final function isActive()
+    public function isActive(): Attribute
     {
-        return $this->adjustment->isActive();
+        return Attribute::make(
+            get: fn() => $this->adjustment->is_active
+        );
     }
 
-    public final function isAppliedToSubtotal()
+    public function applyToSubtotal(): Attribute
     {
-        return $this->adjustment->isAppliedToSubtotal();
+        return Attribute::make(
+            get: fn() => $this->adjustment->apply_to_subtotal
+        );
     }
 }
