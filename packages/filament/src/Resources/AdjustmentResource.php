@@ -57,7 +57,11 @@ class AdjustmentResource extends Resource
                     ->required()
                     ->reactive(),
                 Toggle::make('apply_to_subtotal'),
+                    //@todo disable this if the value derives from code and not the DB
+                    //->disabled()
                 Toggle::make('is_active'),
+                    //@todo disable this if the value derives from code and not the DB
+                    //->disabled(),
                 Section::make('Setttings')
                     ->visible(fn($get) => $get('class') != "")
                     ->schema(fn($get) => $get('class') != "" ? $get('class')::getFilamentFields() : [])
