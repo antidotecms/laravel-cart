@@ -188,15 +188,16 @@ class Cart
             })
             //filter those that should or should not be applied to the subtotal
             ->filter(function (OrderAdjustment|Adjustment $adjustment) use ($appled_to_subtotal) {
-                return $adjustment->isAppliedToSubtotal() == $appled_to_subtotal;
+
+                return $adjustment->apply_to_subtotal == $appled_to_subtotal;
             })
             //filter those that are valid
             ->filter(function (OrderAdjustment|Adjustment $adjustment) {
-                return $adjustment->isValid();
+                return $adjustment->is_valid;
             })
             //filter those that are active
             ->filter(function (OrderAdjustment|Adjustment $adjustment) {
-                return $adjustment->isActive();
+                return $adjustment->is_active;
             });
     }
 
