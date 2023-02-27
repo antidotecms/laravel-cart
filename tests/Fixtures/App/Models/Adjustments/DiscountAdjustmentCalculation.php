@@ -5,7 +5,7 @@ namespace Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments;
 use Antidote\LaravelCart\Contracts\AdjustmentCalculation;
 use Antidote\LaravelCart\Facades\Cart;
 
-class DiscountAdjustmentCalculation implements AdjustmentCalculation
+class DiscountAdjustmentCalculation extends AdjustmentCalculation
 {
     public function calculatedAmount(array $parameters) : int
     {
@@ -19,17 +19,12 @@ class DiscountAdjustmentCalculation implements AdjustmentCalculation
         };
     }
 
+    public static function getFilamentFields(): array
+    {
+        return [];
+    }
+
     public function isValid(): bool
-    {
-        return true;
-    }
-
-    public function isActive(): bool
-    {
-        return true;
-    }
-
-    public function allowMultipleApplications(): bool
     {
         return true;
     }
