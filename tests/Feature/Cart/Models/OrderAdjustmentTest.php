@@ -19,6 +19,7 @@ it('automatically populates the fillable fields', function () {
 
     class NewOrder extends \Antidote\LaravelCart\Contracts\Order {
         public function updateStatus() { return null; }
+        public function isCompleted() {}
     };
     Config::set('laravel-cart.classes.order', NewOrder::class);
     $new_order_adjustment = new class extends \Antidote\LaravelCart\Contracts\OrderAdjustment {};

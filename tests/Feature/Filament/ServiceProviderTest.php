@@ -29,6 +29,7 @@ class ServiceProviderTest extends \Antidote\LaravelCart\Tests\TestCase
 
         $order_class = new class extends Order {
             public function updateStatus() {}
+            public function isCompleted() {}
         };
 
         $app->config->set('laravel-cart.classes.order', $order_class::class);

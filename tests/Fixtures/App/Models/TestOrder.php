@@ -21,4 +21,9 @@ class TestOrder extends Order
     {
         return null;
     }
+
+    public function isCompleted()
+    {
+        //
+    }
 }
