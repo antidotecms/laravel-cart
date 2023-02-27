@@ -75,7 +75,7 @@ abstract class Order extends Model
         $this->load('adjustments');
 
         $this->adjustments->each(function(OrderAdjustment $adjustment) use (&$adjustment_total, $is_in_subtotal) {
-            $adjustment_total += $adjustment->adjustment->isAppliedToSubtotal() == $is_in_subtotal ? $adjustment->amount : 0;
+            $adjustment_total += $adjustment->adjustment->apply_to_subtotal == $is_in_subtotal ? $adjustment->amount : 0;
         });
 
         return $adjustment_total;
