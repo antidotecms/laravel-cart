@@ -16,4 +16,9 @@ class StripeOrder extends \Antidote\LaravelCart\Contracts\Order
     {
         PaymentIntent::retrievePaymentIntent($this);
     }
+
+    public function isCompleted()
+    {
+        return $this->status == 'charge.succeeded';
+    }
 }

@@ -178,7 +178,7 @@ class Cart
 
     private function getValidAdjustments(bool $appled_to_subtotal) : Collection
     {
-        $class = $this->getActiveOrder()
+        $class = $this->getActiveOrder() && $this->getActiveOrder()->isCompleted()
             ? config('laravel-cart.classes.order_adjustment')
             : config('laravel-cart.classes.adjustment');
 

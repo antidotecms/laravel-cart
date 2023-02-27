@@ -99,4 +99,6 @@ abstract class Order extends Model
     }
 
     public abstract function updateStatus();
+
+    public abstract function isCompleted();
 }
