@@ -10,4 +10,13 @@ class CreateAdjustment extends CreateRecord
     {
         return config('laravel-cart.filament.adjustment');
     }
+
+    protected function mutateFormDatabeforeCreate(array $data): array
+    {
+        if(!isset($data['parameters'])) {
+            $data['parameters'] = [];
+        }
+
+        return $data;
+    }
 }
