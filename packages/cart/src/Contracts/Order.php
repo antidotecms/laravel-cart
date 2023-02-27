@@ -74,12 +74,25 @@ abstract class Order extends Model
 
         $this->load('adjustments');
 
-        $this->adjustments->each(function(OrderAdjustment $adjustment) use (&$adjustment_total, $is_in_subtotal) {
-            //$adjustment_total += $adjustment->adjustment->apply_to_subtotal == $is_in_subtotal ? $adjustment->amount : 0;
-            $adjustment_total += (new $adjustment->class)->applyToSubtotal() == $is_in_subtotal ? $adjustment->amount : 0;
-        });
+//        $this->adjustments->each(function(OrderAdjustment $adjustment) use (&$adjustment_total, $is_in_subtotal) {
+//            //$adjustment_total += $adjustment->adjustment->apply_to_subtotal == $is_in_subtotal ? $adjustment->amount : 0;
+//            $adjustment_total += (new $adjustment->class)->applyToSubtotal() == $is_in_subtotal ? $adjustment->amount : 0;
+//        });
+
+        $this->getAdjustments($is_in_subtotal)
+            ->each(function(OrderAdjustment $adjustment) use (&$adjustment_total, $is_in_subtotal) {
+                $adjustment_total += $adjustment->amount;
+            });
 
         return $adjustment_total;
+    }
+
+    public function getAdjustments(bool $is_in_subtotal)
+    {
+        return $this->adjustments->when($is_in_subtotal,
+            fn($query) => $query->appliedToSubtotal(),
+            fn($query) => $query->appliedToTotal()
+        );
     }
 
     public function payment() : MorphTo

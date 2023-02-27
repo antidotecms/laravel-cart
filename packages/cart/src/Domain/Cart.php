@@ -176,7 +176,7 @@ class Cart
         return $discount_total;
     }
 
-    private function getValidAdjustments(bool $appled_to_subtotal) : Collection
+    private function getValidAdjustments(bool $applied_to_subtotal) : Collection
     {
         $class = $this->getActiveOrder() && $this->getActiveOrder()->isCompleted()
             ? config('laravel-cart.classes.order_adjustment')
@@ -186,19 +186,26 @@ class Cart
             ->when($this->getActiveOrder(), function($query) {
                 $query->where(getKeyFor('order'), $this->getActiveOrder()->id);
             })
-            //filter those that should or should not be applied to the subtotal
-            ->filter(function (OrderAdjustment|Adjustment $adjustment) use ($appled_to_subtotal) {
+            ->when($applied_to_subtotal,
+                fn($query) => $query->appliedToSubtotal(),
+                fn($query) => $query->appliedToTotal()
+            )
+            ->valid()
+            ->active();
 
-                return $adjustment->apply_to_subtotal == $appled_to_subtotal;
-            })
-            //filter those that are valid
-            ->filter(function (OrderAdjustment|Adjustment $adjustment) {
-                return $adjustment->is_valid;
-            })
-            //filter those that are active
-            ->filter(function (OrderAdjustment|Adjustment $adjustment) {
-                return $adjustment->is_active;
-            });
+        //filter those that should or should not be applied to the subtotal
+//            ->filter(function (OrderAdjustment|Adjustment $adjustment) use ($appled_to_subtotal) {
+//
+//                return $adjustment->apply_to_subtotal == $appled_to_subtotal;
+//            })
+        //filter those that are valid
+//            ->filter(function (OrderAdjustment|Adjustment $adjustment) {
+//                return $adjustment->is_valid;
+//            })
+        //filter those that are active
+//            ->filter(function (OrderAdjustment|Adjustment $adjustment) {
+//                return $adjustment->is_active;
+//            });
     }
 
     private function isInCart($product_id) : bool
