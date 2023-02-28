@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('name');
             $table->integer('amount');
             $table->json('original_parameters');
+            $table->boolean('apply_to_subtotal');
             $table->foreignIdFor(config('laravel-cart.classes.order'));
             //$table->foreignIdFor(config('laravel-cart.classes.adjustment'));
             $table->string('class');

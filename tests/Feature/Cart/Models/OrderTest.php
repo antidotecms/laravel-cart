@@ -60,7 +60,8 @@ it('will create an order with discount', function () {
         'original_parameters' => [
             'type' => 'percentage',
             'rate' => 10
-        ]
+        ],
+        'apply_to_subtotal' => true
     ]);
 
 

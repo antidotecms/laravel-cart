@@ -14,7 +14,8 @@ it('automatically populates the fillable fields', function () {
         'test_order_id',
         'amount',
         'original_parameters',
-        'class'
+        'class',
+        'apply_to_subtotal'
     ]);
 
     class NewOrder extends \Antidote\LaravelCart\Contracts\Order {
@@ -28,7 +29,8 @@ it('automatically populates the fillable fields', function () {
         'new_order_id',
         'amount',
         'original_parameters',
-        'class'
+        'class',
+        'apply_to_subtotal'
     ]);
 
 });
@@ -83,7 +85,8 @@ it('will add a discount to the order', function () {
         'original_parameters' => [
             'type' => 'percentage',
             'rate' => 10
-        ]
+        ],
+        'apply_to_subtotal' => true
     ]);
 
 //    $order_adjustment->adjustment->associate($adjustment);
@@ -144,7 +147,8 @@ it('will remove a discount if there are no order items', function () {
         'original_parameters' => [
             'type' => 'percentage',
             'rate' => 10
-        ]
+        ],
+        'apply_to_subtotal' => true
     ]);
 
     expect($order->adjustments->count())->toBe(1);

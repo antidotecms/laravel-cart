@@ -14,6 +14,7 @@ trait ConfiguresOrderAdjustment
         $this->fillable[] = 'amount';
         $this->fillable[] = 'original_parameters';
         $this->fillable[] = 'class';
+        $this->fillable[] = 'apply_to_subtotal';
     }
 
     public function getCasts() : array
@@ -38,12 +39,12 @@ trait ConfiguresOrderAdjustment
         );
     }
 
-    public function applyToSubtotal(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('applyToSubtotal', $value)
-        );
-    }
+//    public function applyToSubtotal(): Attribute
+//    {
+//        return Attribute::make(
+//            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('applyToSubtotal', $value)
+//        );
+//    }
 
     private function getMethodOnAdjustmentIfDefined($attribute, $value)
     {
