@@ -623,3 +623,49 @@ it('can add a note to the order', function () {
     expect(TestOrder::first()->additional_field)->toBe('this is a note');
 
 });
+
+it('will add order adjustments to the order when creating an order', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1000
+    ])->create();
+
+    $customer = TestCustomer::factory()->create();
+
+    $adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment::create([
+        'name' => '10 percent off',
+        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
+        'parameters' => [
+            'type' => 'percentage',
+            'rate' => 10
+        ],
+        'apply_to_subtotal' => true
+    ]);
+
+    Cart::add($simple_product);
+
+    expect(Cart::getSubtotal())->toBe(1000);
+    expect(Cart::getTotal())->toBe(900);
+    expect(Cart::getValidAdjustments(true)->count())->toBe(1);
+    expect(Cart::getValidAdjustments(false)->count())->toBe(0);
+
+    $order = Cart::createOrder($customer);
+
+    expect(TestOrder::count())->toBe(1);
+
+    $order = TestOrder::first();
+
+    expect($order->adjustments->count())->toBe(1);
+
+    $order_adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment::first();
+
+    expect($order_adjustment->name)->toBe('10 percent off');
+    expect($order_adjustment->class)->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class);
+    expect($order_adjustment->original_parameters)->toBe([
+        'type' => 'percentage',
+        'rate' => 10
+    ]);
+    expect($order_adjustment->apply_to_subtotal)->toBeTruthy();
+    expect($order->getSubtotal())->toBe(1000);
+    expect($order->total)->toBe(1080); //900 * 1.2 - 0.2 tax rate
+});

@@ -269,6 +269,19 @@ class Cart
                 $order->$key = $data;
             }
 
+            //@todo convert cart adjustments to order adjustments
+            //throw new \Exception('convert cart adjustments to order adjustments in Cart::createOrder');
+            foreach($this->getValidAdjustments(true)->concat($this->getValidAdjustments(false)) as $adjustment) {
+                config('laravel-cart.classes.order_adjustment')::create([
+                    'name' => $adjustment->name,
+                    'original_parameters' => $adjustment->parameters,
+                    getKeyFor('order') => $order->id,
+                    'class' => $adjustment->class,
+                    'amount' => $adjustment->calculated_amount,
+                    'apply_to_subtotal' => $adjustment->apply_to_subtotal
+                ]);
+            }
+
             $order->save();
 
             static::setActiveOrder($order);
