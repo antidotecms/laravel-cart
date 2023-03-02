@@ -2,7 +2,6 @@
 
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 
@@ -12,7 +11,7 @@ it('will create an order', function() {
 
     Cart::add($product);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     Cart::createOrder($customer);
 
@@ -35,7 +34,7 @@ it('will create an order with discount', function () {
 
     Cart::add($product);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
 //    $adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment::create([
 //        'name' => '10% for all orders',
@@ -80,7 +79,7 @@ test('a customer has an order', function () {
 
     Cart::add($product);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     Cart::createOrder($customer);
 
@@ -109,7 +108,7 @@ it('will detail an order item', function () {
 
     Cart::add($complex_product, 1, $product_data);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $order = Cart::createOrder($customer);
 
@@ -163,7 +162,7 @@ it('will get the subtotal', function () {
         'name' => 'A Simple Product'
     ]);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $order = TestOrder::factory()->forCustomer($customer)->create();
 
@@ -185,7 +184,7 @@ it('will get the subtotal 2', function () {
         'name' => 'A Simple Product'
     ]);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $order = TestOrder::factory()->forCustomer($customer)->create();
 
@@ -215,7 +214,7 @@ it('will get the total with VAT', function () {
         'name' => 'A Simple Product'
     ]);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $order = TestOrder::factory()->forCustomer($customer)->create();
 
@@ -230,7 +229,7 @@ it('will not create an order if an active order already exists', function () {
 
     Cart::add($product);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     Cart::createOrder($customer);
 

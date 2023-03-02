@@ -6,7 +6,6 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\ComplexProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\VariableProductDataType;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 
 /**
@@ -101,7 +100,7 @@ it('can add a product and specify quantity', function () {
 
 it('can remove a product by product id', function () {
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $product_data = SimpleProductDataType::create([
         'price' => '2000'
@@ -562,7 +561,7 @@ it('will not create an order if the amount is out of bounds', function () {
         'price' => 1
     ])->create();
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     Cart::add($simple_product);
 
@@ -578,7 +577,7 @@ it('can add a note to the cart', function () {
         'price' => 1
     ])->create();
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     Cart::add($simple_product);
 
@@ -595,7 +594,7 @@ it('can return all data', function () {
         'price' => 100
     ])->create();
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     Cart::add($simple_product);
 
@@ -613,7 +612,7 @@ it('can add a note to the order', function () {
         'price' => 100
     ])->create();
 
-    $customer = TestCustomer::factory()->create();
+    $customer = Customer::factory()->create();
 
     Cart::add($simple_product);
 
@@ -632,7 +631,7 @@ it('will add order adjustments to the order when creating an order', function ()
         'price' => 1000
     ])->create();
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment::create([
         'name' => '10 percent off',

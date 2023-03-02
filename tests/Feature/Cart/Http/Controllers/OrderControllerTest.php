@@ -19,7 +19,7 @@ it('will replace the contents of the cart with an incomplete order', function() 
         'name' => 'cart product'
     ]);
 
-    $customer = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $order = TestOrder::factory()->withProduct($old_order_product)->forCustomer($customer)->create();
 
@@ -51,7 +51,7 @@ it('will add the contents of the cart with an incomplete order', function() {
         'name' => 'cart product'
     ]);
 
-    $customer = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $order = TestOrder::factory()->withProduct($old_order_product)->forCustomer($customer)->create();
 

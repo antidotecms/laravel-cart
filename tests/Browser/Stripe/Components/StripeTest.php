@@ -3,7 +3,6 @@
 namespace Antidote\LaravelCart\Tests\Browser\Stripe\Components;
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Support\Facades\DB;
 use Laravel\Dusk\Browser;
@@ -21,7 +20,7 @@ class StripeTest extends \Antidote\LaravelCart\Tests\BrowserTestCase
             'price' => 1000
         ])->create();
 
-        $user = TestCustomer::factory()->create();
+        $user = Customer::factory()->create();
         //$user = UserFactory::new()->create();
         //dump(get_class($user)); // "Illuminate\Foundation\Auth\User"
         DB::commit();

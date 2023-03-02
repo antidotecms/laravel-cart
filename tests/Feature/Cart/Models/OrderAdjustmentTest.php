@@ -1,7 +1,6 @@
 <?php
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 
@@ -162,7 +161,7 @@ it('will remove a discount if there are no order items', function () {
 
 it('will show potential discounts in the cart', function () {
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000

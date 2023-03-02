@@ -3,7 +3,6 @@
 namespace Antidote\LaravelCart\Tests;
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
@@ -94,7 +93,7 @@ class BrowserTestCase extends \Orchestra\Testbench\Dusk\TestCase
         $app['config']->set('auth.providers', [
             'test_customers' => [
                 'driver' => 'eloquent',
-                'model' => TestCustomer::class,
+                'model' => Customer::class,
             ]
         ]);
         //$app['config']->set('database.connections.testbench', 'mysql');
@@ -102,7 +101,7 @@ class BrowserTestCase extends \Orchestra\Testbench\Dusk\TestCase
         //$app['config']->set('session.driver', 'file');
 
         Config::set('laravel-cart.classes.product', TestProduct::class);
-        Config::set('laravel-cart.classes.customer', TestCustomer::class);
+        Config::set('laravel-cart.classes.customer', Customer::class);
         Config::set('laravel-cart.classes.order', TestOrder::class);
         Config::set('laravel-cart.classes.order_item', TestOrderItem::class);
         Config::set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);

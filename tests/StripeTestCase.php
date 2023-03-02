@@ -5,7 +5,6 @@ namespace Antidote\LaravelCart\Tests;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
@@ -39,7 +38,7 @@ class StripeTestCase extends \Orchestra\Testbench\TestCase
         ]);
 
         Config::set('laravel-cart.classes.product', TestProduct::class);
-        Config::set('laravel-cart.classes.customer', TestCustomer::class);
+        Config::set('laravel-cart.classes.customer', Customer::class);
         Config::set('laravel-cart.classes.order', TestOrder::class);
         Config::set('laravel-cart.classes.order_item', TestOrderItem::class);
         Config::set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);

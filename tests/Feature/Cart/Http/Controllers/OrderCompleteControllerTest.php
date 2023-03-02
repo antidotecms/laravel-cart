@@ -8,7 +8,6 @@ use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
@@ -32,7 +31,7 @@ class OrderCompleteControllerTest extends TestCase
     public function defineEnv($app)
     {
         $app->config->set('laravel-cart.classes.order', TestOrder::class);
-        $app->config->set('laravel-cart.classes.customer', TestCustomer::class);
+        $app->config->set('laravel-cart.classes.customer', Customer::class);
         $app->config->set('laravel-cart.classes.payment', TestPayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
         $app->config->set('laravel-cart.classes.order_item', TestOrderItem::class);
@@ -50,7 +49,7 @@ class OrderCompleteControllerTest extends TestCase
 
         $app->config->set('auth.providers.test_customer', [
             'driver' => 'eloquent',
-            'model' => TestCustomer::class
+            'model' => Customer::class
         ]);
     }
 
@@ -120,8 +119,8 @@ class OrderCompleteControllerTest extends TestCase
     //@todo this fails I think because Order is abstract and not an interface so unable to bind correctly via the serveice provider. Need to sort this!!
     public function it_will_not_allow_access_to_an_order_if_the_logged_in_user_is_not_the_customer()
     {
-        $customer = TestCustomer::factory()->create();
-        $second_customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
+        $second_customer = Customer::factory()->create();
         $order = TestOrder::factory()
             ->forCustomer($customer)
             ->create();
@@ -156,7 +155,7 @@ class OrderCompleteControllerTest extends TestCase
      */
     function show_404_if_the_order_does_not_exist()
     {
-        $this->actingAs(TestCustomer::factory()->create())
+        $this->actingAs(Customer::factory()->create())
             ->get('/order-complete?order_id=1')
             ->assertRedirect(route('login'));
     }
@@ -169,7 +168,7 @@ class OrderCompleteControllerTest extends TestCase
      */
     public function redirect_to_login_if_the_user_is_not_logged_in()
     {
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
 
         $order = TestOrder::factory()
             ->forCustomer($customer)
@@ -195,7 +194,7 @@ class OrderCompleteControllerTest extends TestCase
     function it_will_display_the_view_with_the_correct_data()
     {
 
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
 
         $order = TestOrder::factory()
             ->forCustomer($customer)

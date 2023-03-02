@@ -2,13 +2,12 @@
 
 //order factory test
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 
 it('will correctly create an order with a simple product', function () {
 
     $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $order = TestOrder::factory()
         ->forCustomer($customer)
@@ -21,7 +20,7 @@ it('will correctly create an order with a simple product', function () {
 it('will correctly create an order with a complex product', function () {
 
     $product = TestProduct::factory()->asComplexProduct()->create();
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $order = TestOrder::factory()
         ->forCustomer($customer)
@@ -34,7 +33,7 @@ it('will correctly create an order with a complex product', function () {
 it('will correctly create an order with a variable product', function() {
 
     $product = TestProduct::factory()->asVariableProduct()->create();
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $order = TestOrder::factory()
         ->forCustomer($customer)

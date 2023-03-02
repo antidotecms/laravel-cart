@@ -8,7 +8,6 @@ use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
@@ -37,7 +36,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
     {
         $app->config->set('laravel-cart.classes.order', StripeOrder::class);
         $app->config->set('laravel-cart.classes.order_item', TestOrderItem::class);
-        $app->config->set('laravel-cart.classes.customer', TestCustomer::class);
+        $app->config->set('laravel-cart.classes.customer', Customer::class);
         $app->config->set('laravel-cart.classes.payment', StripePayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
         $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
@@ -145,7 +144,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
     public function will_record_that_a_payment_intent_was_successful()
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
         $order = TestStripeOrder::factory()
             ->withProduct($product)
             ->forCustomer($customer)
@@ -176,7 +175,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
     public function will_record_that_a_charge_was_successful()
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
         $order = TestStripeOrder::factory()
             ->withProduct($product)
             ->forCustomer($customer)
@@ -211,7 +210,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
     public function will_record_that_a_payment_intent_was_cancelled()
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
         $order = TestStripeOrder::factory()
             ->withProduct($product)
             ->forCustomer($customer)
@@ -244,7 +243,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
     public function will_record_that_a_payment_intent_payment_failed()
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
         $order = TestStripeOrder::factory()
             ->withProduct($product)
             ->forCustomer($customer)
@@ -277,7 +276,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
     public function will_record_an_unknown_event()
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
         $order = TestStripeOrder::factory()
             ->withProduct($product)
             ->forCustomer($customer)

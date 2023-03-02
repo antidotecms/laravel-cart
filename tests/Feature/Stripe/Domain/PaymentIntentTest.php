@@ -7,7 +7,6 @@ use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
@@ -89,7 +88,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         $order = TestStripeOrder::factory()
             ->withProduct($product, 1)
-            ->forCustomer(TestCustomer::factory()->create())
+            ->forCustomer(Customer::factory()->create())
             ->create();
 
         $this->expectException(\InvalidArgumentException::class);
@@ -221,7 +220,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
             'price' => 1000
         ])->create();
 
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
 
         Cart::add($simple_product);
 
@@ -249,7 +248,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
 
         $order = TestStripeOrder::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
@@ -284,7 +283,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
 
         $order = TestStripeOrder::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
@@ -322,7 +321,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
 
         $order = TestStripeOrder::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)

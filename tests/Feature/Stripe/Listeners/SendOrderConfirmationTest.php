@@ -3,10 +3,10 @@
 namespace Antidote\LaravelCart\Tests\Feature\Stripe\Listeners;
 
 use Antidote\LaravelCart\Mail\OrderComplete;
+use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
@@ -29,7 +29,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
     {
         $app->config->set('laravel-cart.classes.order', TestOrder::class);
         $app->config->set('laravel-cart.classes.order_item', TestOrderItem::class);
-        $app->config->set('laravel-cart.classes.customer', TestCustomer::class);
+        $app->config->set('laravel-cart.classes.customer', Customer::class);
         $app->config->set('laravel-cart.classes.payment', StripePayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
         $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
@@ -57,7 +57,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.emails.order_complete', 'someone@somewhere.com');
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
         $order = TestOrder::factory()
             ->withProduct($product)
             ->forCustomer($customer)
@@ -90,7 +90,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.emails.order_complete', 'someone@somewhere.com');
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
         $order = TestOrder::factory()
             ->withProduct($product)
             ->forCustomer($customer)
@@ -123,7 +123,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.emails.order_complete', null);
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
         $order = TestOrder::factory()
             ->withProduct($product)
             ->forCustomer($customer)
@@ -156,7 +156,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.emails.order_complete', 'not a valid email address');
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
         $order = TestOrder::factory()
             ->withProduct($product)
             ->forCustomer($customer)
