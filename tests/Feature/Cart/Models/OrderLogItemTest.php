@@ -1,7 +1,6 @@
 <?php
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 
 it('has an order log item', function() {
 
@@ -11,7 +10,7 @@ it('has an order log item', function() {
 
     $order = \Antidote\LaravelCart\Models\Order::factory()->withProduct($product)->create();
 
-    TestOrderLogItem::create([
+    \Antidote\LaravelCart\Models\OrderLogItem::create([
         'message' => 'test log item',
         'order_id' => $order->id
     ]);

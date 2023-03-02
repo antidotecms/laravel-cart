@@ -1,10 +1,10 @@
 <?php
 
-namespace Antidote\LaravelCart\Contracts;
+namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Concerns\ConfiguresOrderLogItem;
 
-abstract class OrderLogItem extends \Illuminate\Database\Eloquent\Model
+class OrderLogItem extends \Illuminate\Database\Eloquent\Model
 {
     use ConfiguresOrderLogItem;
 

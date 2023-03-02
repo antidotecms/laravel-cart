@@ -6,10 +6,10 @@ use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderItem;
+use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
@@ -93,7 +93,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
         $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);
         $app->config->set('laravel-cart.classes.payment', TestPayment::class);
-        $app->config->set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+        $app->config->set('laravel-cart.classes.order_log_item', OrderLogItem::class);
         $app->config->set('laravel-cart.tax_rate', 0.2);
 
 //        $app->config->set('laravel-cart.filament.order', OrderResource::class);

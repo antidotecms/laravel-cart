@@ -3,9 +3,9 @@
 namespace Antidote\LaravelCart\Tests;
 
 use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Config;
@@ -105,7 +105,7 @@ class BrowserTestCase extends \Orchestra\Testbench\Dusk\TestCase
         Config::set('laravel-cart.classes.order_item', OrderItem::class);
         Config::set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
         Config::set('laravel-cart.classes.payment', TestPayment::class);
-        Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+        Config::set('laravel-cart.classes.order_log_item', OrderLogItem::class);
         Config::set('laravel-cart.stripe.secret_key', 'not_a_real_key');
 
         //$app['config']->set('database.default', 'mysql');

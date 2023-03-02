@@ -4,7 +4,6 @@ namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Concerns\ConfiguresOrder;
 use Antidote\LaravelCart\Contracts\OrderAdjustment;
-use Antidote\LaravelCart\Contracts\OrderLogItem;
 use Antidote\LaravelCart\Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

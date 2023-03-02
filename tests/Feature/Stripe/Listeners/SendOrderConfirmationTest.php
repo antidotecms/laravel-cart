@@ -7,10 +7,10 @@ use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderItem;
+use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 use Antidote\LaravelCartStripe\Models\StripePayment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
@@ -34,7 +34,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
         $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
         $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);
-        $app->config->set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+        $app->config->set('laravel-cart.classes.order_log_item', OrderLogItem::class);
     }
 
     protected function getPackageProviders($app)
@@ -117,7 +117,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
     public function will_not_bcc_someone_in_if_the_email_address_is_null(){
 
         Config::set('laravel-cart.classes.order', Order::class);
-        Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem::class);
+        Config::set('laravel-cart.classes.order_log_item', OrderLogItem::class);
         Config::set('laravel-cart.stripe.log', false);
         Config::set('laravel-cart.classes.mails.order_complete', \Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class);
         Config::set('laravel-cart.emails.order_complete', null);
@@ -150,7 +150,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
     public function will_not_bcc_someone_in_if_the_email_address_is_malformed(){
 
         Config::set('laravel-cart.classes.order', Order::class);
-        Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem::class);
+        Config::set('laravel-cart.classes.order_log_item', OrderLogItem::class);
         Config::set('laravel-cart.stripe.log', false);
         Config::set('laravel-cart.classes.mails.order_complete', \Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class);
         Config::set('laravel-cart.emails.order_complete', 'not a valid email address');
