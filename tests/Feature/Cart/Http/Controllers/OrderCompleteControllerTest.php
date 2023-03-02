@@ -9,7 +9,6 @@ use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
@@ -30,7 +29,7 @@ class OrderCompleteControllerTest extends TestCase
 
     public function defineEnv($app)
     {
-        $app->config->set('laravel-cart.classes.order', TestOrder::class);
+        $app->config->set('laravel-cart.classes.order', Order::class);
         $app->config->set('laravel-cart.classes.customer', Customer::class);
         $app->config->set('laravel-cart.classes.payment', TestPayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
@@ -121,7 +120,7 @@ class OrderCompleteControllerTest extends TestCase
     {
         $customer = Customer::factory()->create();
         $second_customer = Customer::factory()->create();
-        $order = TestOrder::factory()
+        $order = Order::factory()
             ->forCustomer($customer)
             ->create();
 
@@ -170,7 +169,7 @@ class OrderCompleteControllerTest extends TestCase
     {
         $customer = Customer::factory()->create();
 
-        $order = TestOrder::factory()
+        $order = Order::factory()
             ->forCustomer($customer)
             ->create();
 
@@ -196,7 +195,7 @@ class OrderCompleteControllerTest extends TestCase
 
         $customer = Customer::factory()->create();
 
-        $order = TestOrder::factory()
+        $order = Order::factory()
             ->forCustomer($customer)
             ->create();
 

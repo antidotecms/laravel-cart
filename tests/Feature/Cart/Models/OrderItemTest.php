@@ -1,7 +1,6 @@
 <?php
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 
 it('automatically populates the fillable fields', function () {
 
@@ -45,7 +44,7 @@ it('has a product', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $test_order = TestOrder::factory()->create([
+    $test_order = \Antidote\LaravelCart\Models\Order::factory()->create([
         'customer_id' => $customer->id
     ]);
 

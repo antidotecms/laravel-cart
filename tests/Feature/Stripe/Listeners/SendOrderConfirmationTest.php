@@ -4,11 +4,11 @@ namespace Antidote\LaravelCart\Tests\Feature\Stripe\Listeners;
 
 use Antidote\LaravelCart\Mail\OrderComplete;
 use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 use Antidote\LaravelCartStripe\Models\StripePayment;
@@ -27,7 +27,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
 
     protected function defineEnv($app)
     {
-        $app->config->set('laravel-cart.classes.order', TestOrder::class);
+        $app->config->set('laravel-cart.classes.order', Order::class);
         $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
         $app->config->set('laravel-cart.classes.customer', Customer::class);
         $app->config->set('laravel-cart.classes.payment', StripePayment::class);
@@ -58,7 +58,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = TestOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -91,7 +91,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = TestOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -116,7 +116,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
      */
     public function will_not_bcc_someone_in_if_the_email_address_is_null(){
 
-        Config::set('laravel-cart.classes.order', TestOrder::class);
+        Config::set('laravel-cart.classes.order', Order::class);
         Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem::class);
         Config::set('laravel-cart.stripe.log', false);
         Config::set('laravel-cart.classes.mails.order_complete', \Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class);
@@ -124,7 +124,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = TestOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -149,7 +149,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
      */
     public function will_not_bcc_someone_in_if_the_email_address_is_malformed(){
 
-        Config::set('laravel-cart.classes.order', TestOrder::class);
+        Config::set('laravel-cart.classes.order', Order::class);
         Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem::class);
         Config::set('laravel-cart.stripe.log', false);
         Config::set('laravel-cart.classes.mails.order_complete', \Antidote\LaravelCart\Tests\Fixtures\App\Mails\TestOrderCompleteMail::class);
@@ -157,7 +157,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = TestOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();

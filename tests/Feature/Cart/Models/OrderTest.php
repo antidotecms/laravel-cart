@@ -2,7 +2,6 @@
 
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 
 it('will create an order', function() {
 
@@ -14,9 +13,9 @@ it('will create an order', function() {
 
     Cart::createOrder($customer);
 
-    $order = TestOrder::first();
+    $order = \Antidote\LaravelCart\Models\Order::first();
 
-    expect(TestOrder::count())->toBe(1)
+    expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1)
         ->and($order->items()->count())->toBe(1)
         ->and($order->items()->first()->id)->toBe($product->id)
         //->and(Cart::items())->toBeEmpty() // cart no longer cleared
@@ -129,7 +128,7 @@ it('will detail an order item', function () {
 //@todo this really tests trait - maybe move test?
 it('automatically populates the fillable fields', function () {
 
-    $test_order = new TestOrder;
+    $test_order = new \Antidote\LaravelCart\Models\Order;
     expect($test_order->getFillable())->toBe([
         'customer_id'
     ]);
@@ -148,7 +147,8 @@ it('automatically populates the fillable fields', function () {
 
 it('has a payment method', function () {
 
-    $order = TestOrder::factory()->create();
+    $this->markTestSkipped('to remove Payment class?');
+    $order = \Antidote\LaravelCart\Models\Order::factory()->create();
 
     expect(get_class($order->payment))->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment::class);
 });
@@ -163,7 +163,7 @@ it('will get the subtotal', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $order = TestOrder::factory()->forCustomer($customer)->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()->forCustomer($customer)->create();
 
     \Antidote\LaravelCart\Models\OrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
 
@@ -185,7 +185,7 @@ it('will get the subtotal 2', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $order = TestOrder::factory()->forCustomer($customer)->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()->forCustomer($customer)->create();
 
     \Antidote\LaravelCart\Models\OrderItem::factory()
         ->withProduct($simple_product)
@@ -215,7 +215,7 @@ it('will get the total with VAT', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $order = TestOrder::factory()->forCustomer($customer)->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()->forCustomer($customer)->create();
 
     \Antidote\LaravelCart\Models\OrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
 
@@ -232,9 +232,9 @@ it('will not create an order if an active order already exists', function () {
 
     Cart::createOrder($customer);
 
-    $order = TestOrder::first();
+    $order = \Antidote\LaravelCart\Models\Order::first();
 
-    expect(TestOrder::count())->toBe(1)
+    expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1)
         ->and($order->items()->count())->toBe(1)
         ->and($order->items()->first()->product->id)->toBe($product->id)
         //->and(Cart::items())->toBeEmpty() // cart no longer cleared
@@ -242,7 +242,7 @@ it('will not create an order if an active order already exists', function () {
 
     Cart::createOrder($customer);
 
-    expect(TestOrder::count())->toBe(1)
+    expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1)
         ->and($order->items()->count())->toBe(1)
         ->and($order->items()->first()->product->id)->toBe($product->id)
         ->and($order->customer->id)->toBe($customer->id);

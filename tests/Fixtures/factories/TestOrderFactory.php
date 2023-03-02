@@ -3,18 +3,17 @@
 namespace Antidote\LaravelCart\Tests\Fixtures\factories;
 
 use Antidote\LaravelCart\Database\Factories\OrderFactory;
+use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 
 class TestOrderFactory extends OrderFactory
 {
-    protected $model = TestOrder::class;
+    protected $model = Order::class;
 
     public function definition(): array
     {
         return [
-            'customer_id' => TestCustomer::factory(),
+            'customer_id' => Customer::factory(),
         ];
     }
 
@@ -32,7 +31,7 @@ class TestOrderFactory extends OrderFactory
             }
 
             if(!$order->customer) {
-                $customer = TestCustomer::factory()->make();
+                $customer = Customer::factory()->make();
                 $order->customer()->save($customer);
             }
 

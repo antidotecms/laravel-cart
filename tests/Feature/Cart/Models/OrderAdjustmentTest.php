@@ -1,12 +1,11 @@
 <?php
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 
 it('automatically populates the fillable fields', function () {
 
-    Config::set('laravel-cart.classes.order', TestOrder::class);
+    Config::set('laravel-cart.classes.order', \Antidote\LaravelCart\Models\Order::class);
     $test_order_item = new TestOrderAdjustment;
     expect($test_order_item->getFillable())->toBe([
         'name',

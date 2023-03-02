@@ -4,7 +4,6 @@ namespace Antidote\LaravelCart\Http\Controllers;
 
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Models\Order;
-use Antidote\LaravelCart\Tests\laravel\app\Models\TestOrder;
 use Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment;
 
 class OrderCompleteController extends \Illuminate\Routing\Controller

@@ -6,7 +6,6 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\ComplexProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\VariableProductDataType;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 
 /**
  * @covers \Antidote\LaravelCart\Domain\Cart
@@ -568,7 +567,7 @@ it('will not create an order if the amount is out of bounds', function () {
     $result = Cart::createOrder($customer);
 
     expect($result)->toBeFalse();
-    expect(TestOrder::count())->toBe(0);
+    expect(\Antidote\LaravelCart\Models\Order::count())->toBe(0);
 });
 
 it('can add a note to the cart', function () {
@@ -620,8 +619,8 @@ it('can add a note to the order', function () {
 
     Cart::createOrder($customer);
 
-    expect(TestOrder::count())->toBe(1);
-    expect(TestOrder::first()->additional_field)->toBe('this is a note');
+    expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
+    expect(\Antidote\LaravelCart\Models\Order::first()->additional_field)->toBe('this is a note');
 
 });
 
@@ -652,9 +651,9 @@ it('will add order adjustments to the order when creating an order', function ()
 
     $order = Cart::createOrder($customer);
 
-    expect(TestOrder::count())->toBe(1);
+    expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
 
-    $order = TestOrder::first();
+    $order = \Antidote\LaravelCart\Models\Order::first();
 
     expect($order->adjustments->count())->toBe(1);
 
@@ -673,4 +672,5 @@ it('will add order adjustments to the order when creating an order', function ()
 
 it('will update adjustments if an order has not been completed and items added back into the cart', function () {
 
+    $this->markTestIncomplete('To Do');
 });

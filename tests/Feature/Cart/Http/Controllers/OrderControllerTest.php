@@ -2,12 +2,11 @@
 
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use function Pest\Laravel\get;
 
 it('will replace the contents of the cart with an incomplete order', function() {
 
-    Config::set('laravel-cart.classes.order', TestOrder::class);
+    Config::set('laravel-cart.classes.order', \Antidote\LaravelCart\Models\Order::class);
     Config::set('laravel-cart.classes.order_item', \Antidote\LaravelCart\Models\OrderItem::class);
 
     $old_order_product = TestProduct::factory()->asSimpleProduct()->create([
@@ -20,7 +19,7 @@ it('will replace the contents of the cart with an incomplete order', function() 
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $order = TestOrder::factory()->withProduct($old_order_product)->forCustomer($customer)->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()->withProduct($old_order_product)->forCustomer($customer)->create();
 
     actingAsCustomer($customer, 'customer');
     Cart::add($cart_product);
@@ -39,7 +38,7 @@ it('will replace the contents of the cart with an incomplete order', function() 
 
 it('will add the contents of the cart with an incomplete order', function() {
 
-    Config::set('laravel-cart.classes.order', TestOrder::class);
+    Config::set('laravel-cart.classes.order', \Antidote\LaravelCart\Models\Order::class);
     Config::set('laravel-cart.classes.order_item', \Antidote\LaravelCart\Models\OrderItem::class);
 
     $old_order_product = TestProduct::factory()->asSimpleProduct()->create([
@@ -52,7 +51,7 @@ it('will add the contents of the cart with an incomplete order', function() {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $order = TestOrder::factory()->withProduct($old_order_product)->forCustomer($customer)->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()->withProduct($old_order_product)->forCustomer($customer)->create();
 
     actingAsCustomer($customer, 'customer');
     Cart::add($cart_product);
