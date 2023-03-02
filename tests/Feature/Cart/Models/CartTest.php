@@ -657,7 +657,7 @@ it('will add order adjustments to the order when creating an order', function ()
 
     expect($order->adjustments->count())->toBe(1);
 
-    $order_adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment::first();
+    $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::first();
 
     expect($order_adjustment->name)->toBe('10 percent off');
     expect($order_adjustment->class)->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class);

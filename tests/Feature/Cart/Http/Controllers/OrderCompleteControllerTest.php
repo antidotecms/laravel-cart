@@ -6,11 +6,11 @@ use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,7 +36,7 @@ class OrderCompleteControllerTest extends TestCase
         $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
         $app->config->set('laravel-cart.classes.order_log_item', OrderLogItem::class);
         $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);
-        $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
+        $app->config->set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
 
         $app->config->set('laravel-cart.urls.order_complete', '/order-complete');
         $app->config->set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');

@@ -6,7 +6,7 @@ return [
         'customer' => \Antidote\LaravelCart\Models\Customer::class,
         'order' => \Antidote\LaravelCart\Models\Order::class,
         'order_item' => \Antidote\LaravelCart\Models\OrderItem::class,
-        'order_adjustment' => \Antidote\LaravelCart\Contracts\OrderAdjustment::class,
+        'order_adjustment' => \Antidote\LaravelCart\Models\OrderAdjustment::class,
         'adjustment' => \Antidote\LaravelCart\Models\Adjustment::class,
         'payment' => \Antidote\LaravelCart\Contracts\Payment::class,
         'order_log_item' => \Antidote\LaravelCart\Models\OrderLogItem::class

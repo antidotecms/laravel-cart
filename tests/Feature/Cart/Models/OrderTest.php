@@ -24,7 +24,7 @@ it('will create an order', function() {
 
 it('will create an order with discount', function () {
 
-    Config::set('laravel-cart.classes.order_adjustment', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment::class);
+    Config::set('laravel-cart.classes.order_adjustment', \Antidote\LaravelCart\Models\OrderAdjustment::class);
 
     $product = TestProduct::factory()->asSimpleProduct([
         'price' => '1000'
@@ -48,7 +48,7 @@ it('will create an order with discount', function () {
 
 
 
-    $order_adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment::create([
+    $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::create([
         'name' => '10% off',
         'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
         //'test_adjustment_id' => $adjustment->id,

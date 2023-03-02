@@ -4,11 +4,11 @@ namespace Antidote\LaravelCart\Tests;
 
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Illuminate\Support\Facades\Config;
 
@@ -41,7 +41,7 @@ class StripeTestCase extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.classes.customer', Customer::class);
         Config::set('laravel-cart.classes.order', Order::class);
         Config::set('laravel-cart.classes.order_item', OrderItem::class);
-        Config::set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
+        Config::set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
         Config::set('laravel-cart.classes.payment', TestPayment::class);
         Config::set('laravel-cart.classes.order_log_item', OrderLogItem::class);
         Config::set('laravel-cart.tax_rate', 0.2);

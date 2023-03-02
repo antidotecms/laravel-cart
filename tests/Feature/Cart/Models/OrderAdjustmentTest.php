@@ -1,12 +1,11 @@
 <?php
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 
 it('automatically populates the fillable fields', function () {
 
     Config::set('laravel-cart.classes.order', \Antidote\LaravelCart\Models\Order::class);
-    $test_order_item = new TestOrderAdjustment;
+    $test_order_item = new \Antidote\LaravelCart\Models\OrderAdjustment;
     expect($test_order_item->getFillable())->toBe([
         'name',
         'order_id',
@@ -21,7 +20,7 @@ it('automatically populates the fillable fields', function () {
         public function isCompleted() {}
     };
     Config::set('laravel-cart.classes.order', NewOrder::class);
-    $new_order_adjustment = new class extends \Antidote\LaravelCart\Contracts\OrderAdjustment {};
+    $new_order_adjustment = new class extends \Antidote\LaravelCart\Models\OrderAdjustment {};
     expect($new_order_adjustment->getFillable())->toBe([
         'name',
         'order_id',
@@ -35,7 +34,7 @@ it('automatically populates the fillable fields', function () {
 
 it('populates the casts', function () {
 
-    $test_order_adjustment = new TestOrderAdjustment;
+    $test_order_adjustment = new \Antidote\LaravelCart\Models\OrderAdjustment();
 
     expect($test_order_adjustment->getCasts())->toHaveKey('original_parameters');
     expect($test_order_adjustment->getCasts()['original_parameters'])->toBe('array');
@@ -74,7 +73,7 @@ it('will add a discount to the order', function () {
 
     expect($order->getSubtotal())->toBe(1000);
 
-    $order_adjustment = TestOrderAdjustment::create([
+    $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::create([
         'name' => '10% off',
         'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
         //'test_adjustment_id' => $adjustment->id,
@@ -136,7 +135,7 @@ it('will remove a discount if there are no order items', function () {
 //        ]
 //    ]);
 
-    $order_adjustment = TestOrderAdjustment::create([
+    $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::create([
         'name' => '10% off',
         'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
         //'test_adjustment_id' => $adjustment->id,

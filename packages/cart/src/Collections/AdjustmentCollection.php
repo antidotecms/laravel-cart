@@ -2,8 +2,8 @@
 
 namespace Antidote\LaravelCart\Collections;
 
-use Antidote\LaravelCart\Contracts\OrderAdjustment;
 use Antidote\LaravelCart\Models\Adjustment;
+use Antidote\LaravelCart\Models\OrderAdjustment;
 use Illuminate\Database\Eloquent\Collection;
 
 class AdjustmentCollection extends Collection

@@ -1,6 +1,6 @@
 <?php
 
-namespace Antidote\LaravelCart\Contracts;
+namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Collections\AdjustmentCollection;
 use Antidote\LaravelCart\Concerns\ConfiguresOrderAdjustment;
@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\App;
 
-abstract class OrderAdjustment extends Model
+class OrderAdjustment extends Model
 {
     use ConfiguresOrderAdjustment;
 

@@ -6,11 +6,11 @@ use Antidote\LaravelCart\Mail\OrderComplete;
 use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCartStripe\Models\StripePayment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
@@ -32,7 +32,7 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
         $app->config->set('laravel-cart.classes.customer', Customer::class);
         $app->config->set('laravel-cart.classes.payment', StripePayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
-        $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
+        $app->config->set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
         $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);
         $app->config->set('laravel-cart.classes.order_log_item', OrderLogItem::class);
     }
