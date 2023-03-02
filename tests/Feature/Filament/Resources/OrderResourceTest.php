@@ -121,30 +121,3 @@ it('has the required fields', function () {
         'status' => $order->status
     ]);
 });
-
-it('will allow overriding the order resource', function () {
-
-    $this->markTestIncomplete('this is really testing that a resource can be overriden');
-//    Config::set('laravel-cart.classes.order', TestOrder::class);
-//    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
-//    Config::set('laravel-cart.classes.customer', TestCustomer::class);
-//    Config::set('laravel-cart.stripe.log', false);
-//    Config::set('laravel-cart.filament.order', \Antidote\LaravelCart\Tests\Fixtures\App\Filament\Resources\TestOrderResource::class);
-
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-    $order = \Antidote\LaravelCart\Models\Order::factory()
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
-
-    $order->additional_field= 'Additional field';
-    $order->save();
-
-    livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class, [
-        'record' => $order->getKey()
-    ])
-    ->assertFormSet([
-        'additional_field' => 'Additional field'
-    ]);
-});

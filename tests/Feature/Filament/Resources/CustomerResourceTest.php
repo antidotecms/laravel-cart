@@ -56,22 +56,3 @@ it('has the required fields', function () {
             'email' => $customer->email
         ]);
 });
-
-it('will allow overriding of the customer resource', function () {
-
-    $this->markTestIncomplete('really testing the ability to override a resource');
-    Config::set('laravel-cart.classes.customer', \Antidote\LaravelCart\Models\Customer::class);
-    Config::set('laravel-cart.filament.order', \Antidote\LaravelCart\Tests\Fixtures\App\Filament\Resources\TestCustomerResource::class);
-
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-
-    $customer->address = 'an address';
-    $customer->save();
-
-    livewire(\Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\EditCustomer::class, [
-        'record' => $customer->getKey()
-    ])
-        ->assertFormSet([
-            'address' => 'an address'
-        ]);
-});
