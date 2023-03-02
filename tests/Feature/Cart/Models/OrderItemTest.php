@@ -2,11 +2,10 @@
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 
 it('automatically populates the fillable fields', function () {
 
-    $test_order_item = new TestOrderItem;
+    $test_order_item = new \Antidote\LaravelCart\Models\OrderItem;
     expect($test_order_item->getFillable())->toBe([
         'name',
         'product_id',
@@ -32,7 +31,7 @@ it('automatically populates the fillable fields', function () {
 
 it('populates the casts', function () {
 
-    $test_order_item = new TestOrderItem;
+    $test_order_item = new \Antidote\LaravelCart\Models\OrderItem;
 
     expect($test_order_item->getCasts())->toHaveKey('product_data');
     expect($test_order_item->getCasts()['product_data'])->toBe('array');
@@ -50,7 +49,7 @@ it('has a product', function () {
         'customer_id' => $customer->id
     ]);
 
-    $test_order_item = TestOrderItem::factory()
+    $test_order_item = \Antidote\LaravelCart\Models\OrderItem::factory()
         ->withProduct($simple_product)
         ->withQuantity(2)
         ->forOrder($test_order)

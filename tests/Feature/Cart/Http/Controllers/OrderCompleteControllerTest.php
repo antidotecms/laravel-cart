@@ -5,12 +5,12 @@ namespace Antidote\LaravelCart\Tests\Feature\Cart\Http\Controllers;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
@@ -34,7 +34,7 @@ class OrderCompleteControllerTest extends TestCase
         $app->config->set('laravel-cart.classes.customer', Customer::class);
         $app->config->set('laravel-cart.classes.payment', TestPayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
-        $app->config->set('laravel-cart.classes.order_item', TestOrderItem::class);
+        $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
         $app->config->set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
         $app->config->set('laravel-cart.classes.adjustment', TestAdjustment::class);
         $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
@@ -100,7 +100,7 @@ class OrderCompleteControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        TestOrderItem::factory()
+        OrderItem::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct([
                 'price' => 1000
             ])->create())
@@ -125,7 +125,7 @@ class OrderCompleteControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        TestOrderItem::factory()
+        OrderItem::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct([
                 'price' => 1000
             ])->create())
@@ -174,7 +174,7 @@ class OrderCompleteControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        TestOrderItem::factory()
+        OrderItem::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct([
                 'price' => 1000
             ])->create())
@@ -200,7 +200,7 @@ class OrderCompleteControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        TestOrderItem::factory()
+        OrderItem::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct([
                 'price' => 1000
             ])->create())

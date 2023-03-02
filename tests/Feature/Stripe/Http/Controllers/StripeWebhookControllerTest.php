@@ -5,11 +5,11 @@ namespace Antidote\LaravelCart\Tests\Feature\Stripe\Http\Controllers;
 use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
@@ -35,7 +35,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
     protected function defineEnv($app)
     {
         $app->config->set('laravel-cart.classes.order', StripeOrder::class);
-        $app->config->set('laravel-cart.classes.order_item', TestOrderItem::class);
+        $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
         $app->config->set('laravel-cart.classes.customer', Customer::class);
         $app->config->set('laravel-cart.classes.payment', StripePayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);

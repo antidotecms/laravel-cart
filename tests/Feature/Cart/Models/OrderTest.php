@@ -3,7 +3,6 @@
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 
 it('will create an order', function() {
 
@@ -166,11 +165,11 @@ it('will get the subtotal', function () {
 
     $order = TestOrder::factory()->forCustomer($customer)->create();
 
-    TestOrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
+    \Antidote\LaravelCart\Models\OrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
 
     expect($order->getSubtotal())->toBe(1999);
 
-    TestOrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
+    \Antidote\LaravelCart\Models\OrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
 
     expect($order->getSubtotal())->toBe(3998);
 
@@ -188,7 +187,7 @@ it('will get the subtotal 2', function () {
 
     $order = TestOrder::factory()->forCustomer($customer)->create();
 
-    TestOrderItem::factory()
+    \Antidote\LaravelCart\Models\OrderItem::factory()
         ->withProduct($simple_product)
         ->withQuantity(1)
         ->forOrder($order)
@@ -196,7 +195,7 @@ it('will get the subtotal 2', function () {
 
     expect($order->getSubtotal())->toBe(1999);
 
-    TestOrderItem::factory()
+    \Antidote\LaravelCart\Models\OrderItem::factory()
         ->withProduct($simple_product)
         ->withQuantity(1)
         ->forOrder($order)
@@ -218,7 +217,7 @@ it('will get the total with VAT', function () {
 
     $order = TestOrder::factory()->forCustomer($customer)->create();
 
-    TestOrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
+    \Antidote\LaravelCart\Models\OrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
 
     expect($order->total)->toBe(2400);
 });

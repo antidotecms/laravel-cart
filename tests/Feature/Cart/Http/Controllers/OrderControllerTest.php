@@ -3,13 +3,12 @@
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 use function Pest\Laravel\get;
 
 it('will replace the contents of the cart with an incomplete order', function() {
 
     Config::set('laravel-cart.classes.order', TestOrder::class);
-    Config::set('laravel-cart.classes.order_item', TestOrderItem::class);
+    Config::set('laravel-cart.classes.order_item', \Antidote\LaravelCart\Models\OrderItem::class);
 
     $old_order_product = TestProduct::factory()->asSimpleProduct()->create([
         'name' => 'Product in old order'
@@ -41,7 +40,7 @@ it('will replace the contents of the cart with an incomplete order', function() 
 it('will add the contents of the cart with an incomplete order', function() {
 
     Config::set('laravel-cart.classes.order', TestOrder::class);
-    Config::set('laravel-cart.classes.order_item', TestOrderItem::class);
+    Config::set('laravel-cart.classes.order_item', \Antidote\LaravelCart\Models\OrderItem::class);
 
     $old_order_product = TestProduct::factory()->asSimpleProduct()->create([
         'name' => 'Product in old order'
