@@ -7,7 +7,7 @@ return [
         'order' => \Antidote\LaravelCart\Models\Order::class,
         'order_item' => \Antidote\LaravelCart\Models\OrderItem::class,
         'order_adjustment' => \Antidote\LaravelCart\Contracts\OrderAdjustment::class,
-        'adjustment' => \Antidote\LaravelCart\Contracts\Adjustment::class,
+        'adjustment' => \Antidote\LaravelCart\Models\Adjustment::class,
         'payment' => \Antidote\LaravelCart\Contracts\Payment::class,
         'order_log_item' => \Antidote\LaravelCart\Contracts\OrderLogItem::class
     ],

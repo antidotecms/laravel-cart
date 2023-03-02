@@ -1,6 +1,6 @@
 <?php
 
-namespace Antidote\LaravelCart\Contracts;
+namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Collections\AdjustmentCollection;
 use Antidote\LaravelCart\Concerns\ConfiguresAdjustment;
