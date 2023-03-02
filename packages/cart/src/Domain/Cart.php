@@ -263,9 +263,9 @@ class Cart
             //@todo possibly expand to allow "hooks" or events to trigger methods depending on keys/values set?
             $cart_data = Cart::getData();
 
-            foreach($cart_data as $key => $data)
+            foreach($cart_data as $key => $value)
             {
-                $order->$key = $data;
+                $order->setData($key, $value);
             }
 
             //@todo convert cart adjustments to order adjustments

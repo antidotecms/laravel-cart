@@ -605,8 +605,6 @@ it('can return all data', function () {
 
 it('can add a note to the order', function () {
 
-    $this->markTestIncomplete('Use OrderData to store data');
-
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 100
     ])->create();
@@ -620,7 +618,7 @@ it('can add a note to the order', function () {
     Cart::createOrder($customer);
 
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
-    expect(\Antidote\LaravelCart\Models\Order::first()->additional_field)->toBe('this is a note');
+    expect(\Antidote\LaravelCart\Models\Order::first()->getData('additional_field'))->toBe('this is a note');
 
 });
 
