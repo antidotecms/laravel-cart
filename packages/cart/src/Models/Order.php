@@ -128,4 +128,26 @@ class Order extends Model
     {
         return null;
     }
+
+    public function data()
+    {
+        return $this->hasMany(OrderData::class);
+    }
+
+    public function setData($key, $value)
+    {
+        $this->data()->create([
+            'key' => $key,
+            'value' => json_encode($value)
+        ]);
+    }
+
+    public function getData($key): null | string | array
+    {
+        if($data = $this->data()->where('key', $key)->first()) {
+            return json_decode($data->value, JSON_OBJECT_AS_ARRAY);
+        }
+
+        return null;
+    }
 }
