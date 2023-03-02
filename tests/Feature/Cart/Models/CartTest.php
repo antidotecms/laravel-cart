@@ -632,7 +632,7 @@ it('will add order adjustments to the order when creating an order', function ()
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $adjustment = \Antidote\LaravelCart\Models\Adjustment::create([
+    $adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->create([
         'name' => '10 percent off',
         'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
         'parameters' => [

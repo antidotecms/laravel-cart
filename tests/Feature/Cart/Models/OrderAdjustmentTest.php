@@ -168,7 +168,7 @@ it('will show potential discounts in the cart', function () {
 
     \Antidote\LaravelCart\Facades\Cart::add($product);
 
-    $adjustment = \Antidote\LaravelCart\Models\Adjustment::create([
+    $adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->create([
         'name' => '10% for all orders',
         'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
         'parameters' => [
