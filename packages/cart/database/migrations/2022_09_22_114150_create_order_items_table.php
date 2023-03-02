@@ -13,15 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('test_order_items', function (Blueprint $table) {
+        Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('test_product_id');
+            $table->foreignIdFor(\Antidote\LaravelCart\Models\Product::class);
             $table->json('product_data')->nullable();
             $table->integer('price');
             $table->integer('quantity');
             //$table->integer('test_order_id');
-            $table->foreignIdFor(config('laravel-cart.classes.order'));
+            $table->foreignIdFor(\Antidote\LaravelCart\Models\Order::class);
             $table->timestamps();
         });
     }

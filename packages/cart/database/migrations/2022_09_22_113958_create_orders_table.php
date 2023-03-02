@@ -13,19 +13,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create(app(config('laravel-cart.classes.order'))->getTable(), function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('status')->nullable();
-            $table->integer('test_customer_id');
+            $table->integer('customer_id');
+            //@todo change to $table->morphs();
             $table->string('payment_id')->nullable();
             $table->string('payment_type')->nullable();
 
-            match(config('laravel-cart.classes.order')) {
-                \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder::class => $table->string('additional_field')->nullable(),
-                \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder::class => $table->string('payment_intent_id')->nullable()
-            };
+            //@todo create facade to simplify comparing objects and classes - maybe package it
+            if(is_subclass_of(config('laravel-cart.classes.order'), \Antidote\LaravelCartStripe\Models\StripeOrder::class) ||
+                config('laravel-cart.classes.order') == \Antidote\LaravelCartStripe\Models\StripeOrder::class) {
+                $table->string('payment_intent_id')->nullable();
+            }
 
+            $table->timestamps();
             $table->softDeletes();
         });
     }

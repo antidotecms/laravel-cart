@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create(app(config('laravel-cart.classes.payment'))->getTable(), function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(config('laravel-cart.classes.order'));
+            $table->foreignIdFor(\Antidote\LaravelCart\Models\Order::class);
 
             match(config('laravel-cart.classes.payment')) {
                 \Antidote\LaravelCartStripe\Models\StripePayment::class => $table->string('client_secret')->default(''),
-                \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment::class => $table->json('body')->nullable()
+                //@todo remove below as only used for testing?
+                \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment::class => $table->json('body')->nullable(),
+                default => null
             };
 
             //$table->string('client_secret')->default('');

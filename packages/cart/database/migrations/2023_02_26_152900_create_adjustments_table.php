@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('test_adjustments', function (Blueprint $table) {
+        Schema::create('adjustments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('class');
