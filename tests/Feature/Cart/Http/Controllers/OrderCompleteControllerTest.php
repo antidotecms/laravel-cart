@@ -2,25 +2,27 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Cart\Http\Controllers;
 
-use Antidote\LaravelCart\Contracts\Order;
+use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
+use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Orchestra\Testbench\TestCase;
 
 class OrderCompleteControllerTest extends TestCase
 {
     use RefreshDatabase;
     use InteractsWithViews;
-    use WithoutMiddleware;
+    //use WithoutMiddleware;
 
     protected function defineDatabaseMigrations()
     {
@@ -36,6 +38,7 @@ class OrderCompleteControllerTest extends TestCase
         $app->config->set('laravel-cart.classes.order_item', TestOrderItem::class);
         $app->config->set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
         $app->config->set('laravel-cart.classes.adjustment', TestAdjustment::class);
+        $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
 
         $app->config->set('laravel-cart.urls.order_complete', '/order-complete');
         $app->config->set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');
@@ -84,26 +87,17 @@ class OrderCompleteControllerTest extends TestCase
      */
     public function it_will_update_the_order_status()
     {
-        $mock_order = $this->instance(TestOrder::class, $this->partialMock(TestOrder::class, function (\Mockery\MockInterface $mock_order) {
+        $mock_order = $this->instance(Order::class, $this->partialMock(Order::class, function (\Mockery\MockInterface $mock_order) {
             $mock_order->shouldReceive('updateStatus')->once();
         }));
 
-        $this->app->bind(
-            Order::class,
-//            function() {
-//                if($order_id = request()->get('order_id')) {
-//                    $order = getClassNameFor('order')::where('id', $order_id)->first()->load('items.product.productType');
-//                    if($order->customer->id == auth()->guard('customer')->user()->id) {
-//                        return $order;
-//                    }
-//                }
-//            }
-            fn() => $mock_order
-        );
+        $this->app->when(OrderCompleteController::class)
+            ->needs(Order::class)
+            ->give(fn() => $mock_order);
 
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
 
-        $order = TestOrder::factory()
+        $order = Order::factory()
             ->forCustomer($customer)
             ->create();
 
@@ -143,9 +137,17 @@ class OrderCompleteControllerTest extends TestCase
             ->get('/order-complete?order_id='.$order->id)
             ->assertSuccessful();
 
+        //needed if consecntuve http requests as the service provider is not called again
+        //@link https://stackoverflow.com/questions/28425830/multiple-http-requests-in-laravel-5-integration-tests
+        $this->refreshApplication();
+        $this->refreshInMemoryDatabase();
+        $this->setUpApplicationRoutes();
+
         $this->actingAs($second_customer)
             ->get('/order-complete?order_id='.$order->id)
-            ->assertNotFound();
+            ->assertRedirect(route('login'));
+
+
     }
 
     /**
@@ -156,7 +158,7 @@ class OrderCompleteControllerTest extends TestCase
     {
         $this->actingAs(TestCustomer::factory()->create())
             ->get('/order-complete?order_id=1')
-            ->assertNotFound();
+            ->assertRedirect(route('login'));
     }
 
     /**

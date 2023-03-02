@@ -12,11 +12,14 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 use Antidote\LaravelCartStripe\Models\StripePayment;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 
-class SendOrderConfirmationTest2 extends \Orchestra\Testbench\TestCase
+class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
 {
+    use RefreshDatabase;
+
     protected function defineDatabaseMigrations()
     {
         $this->loadMigrationsFrom(__DIR__.'/../../../Fixtures/Cart/migrations');
@@ -45,7 +48,8 @@ class SendOrderConfirmationTest2 extends \Orchestra\Testbench\TestCase
      * @test
      * @define-env defineEnv
      */
-    public function will_generate_a_mail_when_an_order_is_complete(){
+    public function will_generate_a_mail_when_an_order_is_complete()
+    {
 
 //        Config::set('laravel-cart.classes.order', TestStripeOrder::class);
 //        Config::set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem::class);

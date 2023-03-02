@@ -2,13 +2,13 @@
 
 namespace Antidote\LaravelCart\Tests;
 
+use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderAdjustment;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
@@ -20,7 +20,6 @@ use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Livewire\LivewireServiceProvider;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 
@@ -59,7 +58,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             //'Antidote\LaravelCart\ServiceProvider',
             ServiceProvider::class,
             'Antidote\LaravelCartStripe\ServiceProvider',
-            'Antidote\LaravelCartFilament\ServiceProvider',
+            \Antidote\LaravelCartFilament\ServiceProvider::class,
             BladeCaptureDirectiveServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
@@ -87,20 +86,25 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'prefix'   => '',
         ]);
 
-        Config::set('laravel-cart.classes.product', TestProduct::class);
-        Config::set('laravel-cart.classes.customer', TestCustomer::class);
-        Config::set('laravel-cart.classes.order', TestOrder::class);
-        Config::set('laravel-cart.classes.order_item', TestOrderItem::class);
-        Config::set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
-        Config::set('laravel-cart.classes.adjustment', TestAdjustment::class);
-        Config::set('laravel-cart.classes.payment', TestPayment::class);
-        Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
-        Config::set('laravel-cart.tax_rate', 0.2);
+        $app->config->set('laravel-cart.classes.product', TestProduct::class);
+        $app->config->set('laravel-cart.classes.customer', Customer::class);
+        $app->config->set('laravel-cart.classes.order', Order::class);
+        $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
+        $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
+        $app->config->set('laravel-cart.classes.adjustment', TestAdjustment::class);
+        $app->config->set('laravel-cart.classes.payment', TestPayment::class);
+        $app->config->set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+        $app->config->set('laravel-cart.tax_rate', 0.2);
 
-        Config::set('laravel-cart.stripe.secret_key', 'secret_key');
+//        $app->config->set('laravel-cart.filament.order', OrderResource::class);
+//        $app->config->set('laravel-cart.filament.customer', CustomerResource::class);
+//        $app->config->set('laravel-cart.filament.adjustment', AdjustmentResource::class);
 
-        Config::set('laravel-cart.urls.order_complete', '/order-complete');
-        Config::set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');
+
+        $app->config->set('laravel-cart.stripe.secret_key', 'secret_key');
+
+        $app->config->set('laravel-cart.urls.order_complete', '/order-complete');
+        $app->config->set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');
     }
 
 }

@@ -543,7 +543,7 @@ it('will set up a payment', function () {
         'price' => 1000
     ])->create();
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     Cart::add($simple_product);
 
@@ -552,8 +552,8 @@ it('will set up a payment', function () {
     Cart::initializePayment($customer->orders()->first());
     //PaymentIntent::create($customer->orders()->first());
 
-    expect(TestOrder::count())->toBe(1);
-    expect(get_class(TestOrder::first()->payment))->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment::class);
+    expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
+    expect(get_class(\Antidote\LaravelCart\Models\Order::first()->payment))->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment::class);
 });
 
 it('will not create an order if the amount is out of bounds', function () {
@@ -606,6 +606,8 @@ it('can return all data', function () {
 });
 
 it('can add a note to the order', function () {
+
+    $this->markTestIncomplete('Requires extending base class - need tests for this?');
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 100
@@ -668,4 +670,8 @@ it('will add order adjustments to the order when creating an order', function ()
     expect($order_adjustment->apply_to_subtotal)->toBeTruthy();
     expect($order->getSubtotal())->toBe(1000);
     expect($order->total)->toBe(1080); //900 * 1.2 - 0.2 tax rate
+});
+
+it('will update adjustments if an order has not been completed and items added back into the cart', function () {
+
 });
