@@ -13,19 +13,20 @@ class StripeWebhookController extends Controller
 {
     public function __invoke(Request $request)
     {
-        if(!app()->environment('testing')) {
+        //@todo mock here rather than do this
+        //if(!app()->environment('testing')) {
             Stripe::setApiKey(config('laravel-cart.stripe.secret_key'));
             $signature_header = $request->header('Stripe-Signature');
             $stripe_payment_intent_webhook_secret = config('laravel-cart.stripe.webhook_secret');
-        }
+        //}
         $payload = $request->getContent();
 
         try {
-            if(!app()->environment('testing')) {
+//            if(!app()->environment('testing')) {
                 $event = Webhook::constructEvent($payload, $signature_header, $stripe_payment_intent_webhook_secret);
-            } else {
-                $event = json_decode($payload);
-            }
+//            } else {
+//                $event = json_decode($payload);
+//            }
         }
         catch(\Stripe\Exception\SignatureVerificationException $e)
         {
