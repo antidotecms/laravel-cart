@@ -2,14 +2,14 @@
 
 return [
     'classes' => [
-        'product' => \App\Models\Product::class,
-        'customer' => \App\Models\Customer::class,
-        'order' => \App\Models\Order::class,
-        'order_item' => \App\Models\OrderItem::class,
-        'order_adjustment' => \App\Models\OrderAdjustment::class,
-        'adjustment' => \App\Models\Adjustment::class,
-        'payment' => \Antidote\LaravelCartStripe\Models\StripePayment::class,
-        'order_log_item' => \App\Models\OrderLogItem::class
+        'product' => \Antidote\LaravelCart\Models\Product::class,
+        'customer' => \Antidote\LaravelCart\Models\Customer::class,
+        'order' => \Antidote\LaravelCart\Models\Order::class,
+        'order_item' => \Antidote\LaravelCart\Models\OrderItem::class,
+        'order_adjustment' => \Antidote\LaravelCart\Contracts\OrderAdjustment::class,
+        'adjustment' => \Antidote\LaravelCart\Contracts\Adjustment::class,
+        'payment' => \Antidote\LaravelCart\Contracts\Payment::class,
+        'order_log_item' => \Antidote\LaravelCart\Contracts\OrderLogItem::class
     ],
     'filament' => [
         'order' => \Antidote\LaravelCartFilament\Resources\OrderResource::class,

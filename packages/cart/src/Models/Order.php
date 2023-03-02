@@ -1,8 +1,11 @@
 <?php
 
-namespace Antidote\LaravelCart\Contracts;
+namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Concerns\ConfiguresOrder;
+use Antidote\LaravelCart\Contracts\OrderAdjustment;
+use Antidote\LaravelCart\Contracts\OrderLogItem;
+use Antidote\LaravelCart\Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,26 +13,32 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-abstract class Order extends Model
+class Order extends Model
 {
     use ConfiguresOrder;
     use HasFactory;
 
+    protected static function newFactory()
+    {
+        return OrderFactory::new();
+    }
+
     public function items() : HasMany
     {
-        return $this->hasMany(getClassNameFor('order_item'));
+        return $this->hasMany(getClassNameFor('order_item'), 'order_id');
     }
 
     public function adjustments() : HasMany
     {
-        return $this->hasMany(getClassNameFor('order_adjustment'));
+        return $this->hasMany(getClassNameFor('order_adjustment'), 'order_id');
     }
 
     public function customer() : BelongsTo
     {
-        return $this->belongsTo(getClassNameFor('customer'), getKeyFor('customer'));
+        return $this->belongsTo(getClassNameFor('customer'), 'customer_id');
     }
 
+    //@todo convert to attribute
     public function getSubtotal() : int
     {
         $subtotal = 0;
@@ -63,7 +72,7 @@ abstract class Order extends Model
     {
         return Attribute::make(
             get: function ($value) {
-                return ceil(round(($this->getSubtotal() + $this->getAdjustmentTotal(true)) * config('laravel-cart.tax_rate')) * 100)/100;
+                return ceil(ceil(($this->getSubtotal() + $this->getAdjustmentTotal(true)) * config('laravel-cart.tax_rate')) * 100)/100;
             }
         );
     }
@@ -102,7 +111,7 @@ abstract class Order extends Model
 
     public function logItems() : hasMany
     {
-        return $this->hasMany(getClassNameFor('order_log_item'), getKeyFor('order'));
+        return $this->hasMany(getClassNameFor('order_log_item'), 'order_id');
     }
 
     public function log(string $message) : OrderLogItem
@@ -112,7 +121,13 @@ abstract class Order extends Model
         ]);
     }
 
-    public abstract function updateStatus();
+    public function updateStatus()
+    {
+        return null;
+    }
 
-    public abstract function isCompleted();
+    public function isCompleted()
+    {
+        return null;
+    }
 }

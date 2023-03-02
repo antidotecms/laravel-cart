@@ -2,8 +2,8 @@
 
 namespace Antidote\LaravelCart\Facades;
 
-use Antidote\LaravelCart\Contracts\Customer;
-use Antidote\LaravelCart\Contracts\Order;
+use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Facade;
 

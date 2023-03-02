@@ -11,14 +11,14 @@ it('automatically populates the fillable fields', function () {
     $test_order_item = new TestOrderAdjustment;
     expect($test_order_item->getFillable())->toBe([
         'name',
-        'test_order_id',
+        'order_id',
         'amount',
         'original_parameters',
         'class',
         'apply_to_subtotal'
     ]);
 
-    class NewOrder extends \Antidote\LaravelCart\Contracts\Order {
+    class NewOrder extends \Antidote\LaravelCart\Models\Order {
         public function updateStatus() { return null; }
         public function isCompleted() {}
     };
@@ -26,7 +26,7 @@ it('automatically populates the fillable fields', function () {
     $new_order_adjustment = new class extends \Antidote\LaravelCart\Contracts\OrderAdjustment {};
     expect($new_order_adjustment->getFillable())->toBe([
         'name',
-        'new_order_id',
+        'order_id',
         'amount',
         'original_parameters',
         'class',
@@ -45,7 +45,7 @@ it('populates the casts', function () {
 
 it('will add a discount to the order', function () {
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000
@@ -81,7 +81,7 @@ it('will add a discount to the order', function () {
         'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
         //'test_adjustment_id' => $adjustment->id,
         'amount' => -100,
-        'test_order_id' => $order->id,
+        'order_id' => $order->id,
         'original_parameters' => [
             'type' => 'percentage',
             'rate' => 10
@@ -107,7 +107,7 @@ it('will add a discount to the order', function () {
 
 it('will remove a discount if there are no order items', function () {
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000
@@ -143,7 +143,7 @@ it('will remove a discount if there are no order items', function () {
         'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
         //'test_adjustment_id' => $adjustment->id,
         'amount' => -100,
-        'test_order_id' => $order->id,
+        'order_id' => $order->id,
         'original_parameters' => [
             'type' => 'percentage',
             'rate' => 10

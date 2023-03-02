@@ -2,8 +2,8 @@
 
 namespace Antidote\LaravelCart\Tests\Fixtures\factories;
 
-use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCart\Database\Factories\OrderFactory;
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 
@@ -14,7 +14,7 @@ class TestOrderFactory extends OrderFactory
     public function definition(): array
     {
         return [
-            'test_customer_id' => TestCustomer::factory(),
+            'customer_id' => TestCustomer::factory(),
         ];
     }
 

@@ -35,7 +35,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
     {
         return array_merge([
             'products' => [
-                'table' => 'test_products',
+                'table' => 'products',
                 'included' => [
                     'id',
                     'name',
@@ -49,7 +49,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
             ],
 
             'order' => [
-                'table' => 'test_orders',
+                'table' => 'orders',
                 'included' => [
                     'id',
                     'status',
@@ -67,7 +67,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
             ],
 
             'order_items' => [
-                'table' => 'test_order_items',
+                'table' => 'order_items',
                 'included' => [
                     'id',
                     'name',
@@ -85,7 +85,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
             ],
 
             'order log items' => [
-                'table' => 'test_order_log_items',
+                'table' => 'order_log_items',
                 'included' => [
                     'id',
                     'message',
@@ -102,7 +102,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
             ],
 
             'order_adjustments' => [
-                'table' => 'test_order_adjustments',
+                'table' => 'order_adjustments',
                 'included' => [
                     'id',
                     'name',
@@ -118,7 +118,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
             ],
 
             'adjustments' => [
-                'table' => 'test_adjustments',
+                'table' => 'adjustments',
                 'included' => [
                     'id',
                     'name',
@@ -134,7 +134,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
             ],
 
             'customers' => [
-                'table' => 'test_customers',
+                'table' => 'customers',
                 'included' => [
                     'id',
                     'name',
@@ -181,7 +181,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
         $tables = collect($this->dataProviderColumns())->pluck('table');
 
         foreach($tables as $table) {
-            $this->assertTrue(Schema::hasTable($table));
+            $this->assertTrue(Schema::hasTable($table), "Failed asserting that database has table $table");
         }
     }
 

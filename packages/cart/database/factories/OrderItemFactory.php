@@ -1,15 +1,15 @@
 <?php
 
-namespace Antidote\LaravelCart\Tests\Fixtures\factories;
+namespace Antidote\LaravelCart\Database\Factories;
 
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
+use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\OrderItem;
+use Antidote\LaravelCart\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TestOrderItemFactory extends Factory
+class OrderItemFactory extends Factory
 {
-    protected $model = TestOrderItem::class;
+    protected $model = OrderItem::class;
 
     public function definition(): array
     {
@@ -18,11 +18,11 @@ class TestOrderItemFactory extends Factory
         ];
     }
 
-    public function withProduct(TestProduct $product, ?array $product_data = []) {
+    public function withProduct(Product $product, ?array $product_data = []) {
         return $this->state([
             'name' => $product->getName($product_data),
             'price' => $product->getPrice($product_data),
-            'test_product_id' => $product->id
+            'product_id' => $product->id
         ]);
     }
 
@@ -32,9 +32,9 @@ class TestOrderItemFactory extends Factory
         ]);
     }
 
-    public function forOrder(TestOrder $order) {
+    public function forOrder(Order $order) {
         return $this->state([
-            'test_order_id' => $order->id
+            'order_id' => $order->id
         ]);
     }
 

@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property $price
  * @property $productDataType
  */
-class TestProduct extends \Antidote\LaravelCart\Contracts\Product
+class TestProduct extends \Antidote\LaravelCart\Models\Product
 {
     use SoftDeletes;
     use HasFactory;

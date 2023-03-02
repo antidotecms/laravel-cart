@@ -3,6 +3,7 @@
 namespace Antidote\LaravelCart\Tests\Feature\Stripe\Domain;
 
 use Antidote\LaravelCart\Facades\Cart;
+use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment;
@@ -12,6 +13,7 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
+use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Antidote\LaravelCartStripe\Models\StripePayment;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,6 +25,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
     protected function defineDatabaseMigrations()
     {
+        //loads in product types
         $this->loadMigrationsFrom(__DIR__.'/../../../Fixtures/Cart/migrations');
     }
 
@@ -43,9 +46,9 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
     protected function defineEnv($app)
     {
-        $app->config->set('laravel-cart.classes.order', TestStripeOrder::class);
+        $app->config->set('laravel-cart.classes.order', StripeOrder::class);
         $app->config->set('laravel-cart.classes.order_item', TestOrderItem::class);
-        $app->config->set('laravel-cart.classes.customer', TestCustomer::class);
+        $app->config->set('laravel-cart.classes.customer', Customer::class);
         $app->config->set('laravel-cart.classes.payment', StripePayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
         $app->config->set('laravel-cart.classes.order_adjustment', TestOrderAdjustment::class);
@@ -124,14 +127,13 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
      */
     public function it_will_initialise_a_payment_intent_request()
     {
-
         new MockStripeHttpClient();
 
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
 
-        $order = TestStripeOrder::factory()
+        $order = StripeOrder::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
             ->forCustomer($customer)
             ->create();
@@ -149,7 +151,6 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
      */
     public function it_will_set_up_a_payment()
     {
-
         new MockStripeHttpClient();
 
         PaymentIntent::fake();
@@ -160,7 +161,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
             'price' => 1000
         ])->create();
 
-        $customer = TestCustomer::factory()->create();
+        $customer = Customer::factory()->create();
 
         Cart::add($simple_product);
 
@@ -171,10 +172,10 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         Cart::initializePayment($order);
 
-        expect(TestStripeOrder::count())->toBe(1);
+        expect(StripeOrder::count())->toBe(1);
         expect(get_class($order->payment))->toBe(StripePayment::class);
 
-        $order = TestStripeOrder::first();
+        $order = StripeOrder::first();
         expect($order->logItems()->count())->toBe(1);
         expect($order->logItems()->first()->message)->toStartWith('Payment Intent Created');
     }

@@ -1,15 +1,15 @@
 <?php
 
-namespace Antidote\LaravelCart\Tests\Fixtures\factories\Products;
+namespace Antidote\LaravelCart\Database\Factories;
 
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
+use Antidote\LaravelCart\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class TestCustomerFactory extends Factory
+class CustomerFactory extends Factory
 {
-    protected $model = TestCustomer::class;
+    protected $model = Customer::class;
 
     public function definition(): array
     {

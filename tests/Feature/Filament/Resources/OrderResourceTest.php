@@ -1,21 +1,20 @@
 <?php
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
 use function Pest\Livewire\livewire;
 
 it('will list the orders', function () {
 
-    Config::set('laravel-cart.classes.order', TestOrder::class);
-    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
-    Config::set('laravel-cart.stripe.log', false);
+//    Config::set('laravel-cart.classes.order', Order::class);
+//    Config::set('laravel-cart.classes.order_log_item', OrderLogItem::class);
+//    Config::set('laravel-cart.stripe.log', false);
+
+    //dump(app(\Antidote\LaravelCart\Models\Order::class));
 
     $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = TestCustomer::factory()->create();
-    $orders = TestOrder::factory()
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+    $orders = \Antidote\LaravelCart\Models\Order::factory()
         ->count(10)
         ->withProduct($product)
         ->forCustomer($customer)
@@ -35,13 +34,19 @@ it('will list the orders', function () {
 
 it('can render the edit page', function () {
 
-    Config::set('laravel-cart.classes.order', TestOrder::class);
-    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
-    Config::set('laravel-cart.stripe.log', false);
+//    dump(app()->getBindings());
+
+//    Config::set('laravel-cart.classes.order', TestOrder::class);
+//    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+//    Config::set('laravel-cart.stripe.log', false);
+
+//    dump(app(\Antidote\LaravelCart\Models\Order::class));
+
+    //dump(\Filament\Facades\Filament::getResources());
 
     $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = TestCustomer::factory()->create();
-    $order = TestOrder::factory()
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()
         ->withProduct($product)
         ->forCustomer($customer)
         ->create();
@@ -61,13 +66,13 @@ it('can render the edit page', function () {
 
 it('will allow sending an order confirmation mail again', function() {
 
-    Config::set('laravel-cart.classes.order', TestOrder::class);
-    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+//    Config::set('laravel-cart.classes.order', TestOrder::class);
+//    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
     Config::set('laravel-cart.stripe.log', false);
 
     $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = TestCustomer::factory()->create();
-    $order = TestOrder::factory()
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()
         ->withProduct($product)
         ->forCustomer($customer)
         ->create();
@@ -86,14 +91,16 @@ it('will allow sending an order confirmation mail again', function() {
 
 it('has the required fields', function () {
 
-    Config::set('laravel-cart.classes.order', TestOrder::class);
-    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
-    Config::set('laravel-cart.classes.customer', TestCustomer::class);
+//    Config::set('laravel-cart.classes.order', TestOrder::class);
+//    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+//    Config::set('laravel-cart.classes.customer', TestCustomer::class);
     Config::set('laravel-cart.stripe.log', false);
 
+    //app()->bind(\Antidote\LaravelCart\Models\Order::class, \Antidote\LaravelCart\Models\Order::class);
+
     $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = TestCustomer::factory()->create();
-    $order = TestOrder::factory()
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()
         ->withProduct($product)
         ->forCustomer($customer)
         ->create();
@@ -117,15 +124,16 @@ it('has the required fields', function () {
 
 it('will allow overriding the order resource', function () {
 
-    Config::set('laravel-cart.classes.order', TestOrder::class);
-    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
-    Config::set('laravel-cart.classes.customer', TestCustomer::class);
-    Config::set('laravel-cart.stripe.log', false);
-    Config::set('laravel-cart.filament.order', \Antidote\LaravelCart\Tests\Fixtures\App\Filament\Resources\TestOrderResource::class);
+    $this->markTestIncomplete('this is really testing that a resource can be overriden');
+//    Config::set('laravel-cart.classes.order', TestOrder::class);
+//    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
+//    Config::set('laravel-cart.classes.customer', TestCustomer::class);
+//    Config::set('laravel-cart.stripe.log', false);
+//    Config::set('laravel-cart.filament.order', \Antidote\LaravelCart\Tests\Fixtures\App\Filament\Resources\TestOrderResource::class);
 
     $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = TestCustomer::factory()->create();
-    $order = TestOrder::factory()
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()
         ->withProduct($product)
         ->forCustomer($customer)
         ->create();

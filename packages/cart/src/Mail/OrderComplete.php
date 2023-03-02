@@ -2,7 +2,7 @@
 
 namespace Antidote\LaravelCart\Mail;
 
-use Antidote\LaravelCart\Contracts\Order;
+use Antidote\LaravelCart\Models\Order;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 

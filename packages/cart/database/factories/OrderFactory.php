@@ -2,10 +2,11 @@
 
 namespace Antidote\LaravelCart\Database\Factories;
 
-use Antidote\LaravelCart\Contracts\Customer;
-use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCart\Contracts\Payment;
-use Antidote\LaravelCart\Contracts\Product;
+use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\OrderItem;
+use Antidote\LaravelCart\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderFactory extends Factory
@@ -16,19 +17,21 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
-        return [];
+        return [
+            'customer_id' => Customer::factory()
+        ];
     }
 
     public function withProduct(Product $product, $quantity = 1, $product_data = [])
     {
         return $this->afterCreating(function(Order $order) use ($product, $quantity, $product_data) {
-            $order->items()->create([
+            OrderItem::factory()->create([
                 'name' => $product->getName($product_data),
-                getKeyFor('product') => $product->id,
+                'product_id' => $product->id,
                 'price' => $product->getPrice($product_data),
                 'product_data' => $product_data,
                 'quantity' => $quantity,
-                getKeyFor('order') => $order->id
+                'order_id' => $order->id
             ]);
         });
     }
@@ -43,7 +46,7 @@ class OrderFactory extends Factory
 
     public function forCustomer(Customer $customer) {
         return $this->state([
-            getKeyFor('customer') => $customer->id
+            'customer_id' => $customer->id
         ]);
     }
 }

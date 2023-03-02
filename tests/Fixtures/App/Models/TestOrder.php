@@ -2,7 +2,7 @@
 
 namespace Antidote\LaravelCart\Tests\Fixtures\App\Models;
 
-use Antidote\LaravelCart\Contracts\Order;
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Tests\Fixtures\factories\TestOrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;

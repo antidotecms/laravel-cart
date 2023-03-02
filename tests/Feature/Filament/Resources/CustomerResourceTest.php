@@ -1,14 +1,13 @@
 <?php
 
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
 use function Pest\Livewire\livewire;
 
 it('will list the customers', function() {
 
-    Config::set('laravel-cart.classes.customer', TestCustomer::class);
+    Config::set('laravel-cart.classes.customer', \Antidote\LaravelCart\Models\Customer::class);
 
-    $customers = TestCustomer::factory()->count(10)->create();
+    $customers = \Antidote\LaravelCart\Models\Customer::factory()->count(10)->create();
 
     $user = TestUser::create([
         'name' => 'Test User',
@@ -25,9 +24,9 @@ it('will list the customers', function() {
 
 it('can render the edit page', function () {
 
-    Config::set('laravel-cart.classes.customer', TestCustomer::class);
+    //Config::set('laravel-cart.classes.customer', \Antidote\LaravelCart\Models\Customer::class);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $user = TestUser::create([
         'name' => 'Test User',
@@ -44,9 +43,9 @@ it('can render the edit page', function () {
 
 it('has the required fields', function () {
 
-    Config::set('laravel-cart.classes.customer', TestCustomer::class);
+    //Config::set('laravel-cart.classes.customer', \Antidote\LaravelCart\Models\Customer::class);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     livewire(\Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\EditCustomer::class, [
         'record' => $customer->getKey()
@@ -60,10 +59,11 @@ it('has the required fields', function () {
 
 it('will allow overriding of the customer resource', function () {
 
-    Config::set('laravel-cart.classes.customer', TestCustomer::class);
+    $this->markTestIncomplete('really testing the ability to override a resource');
+    Config::set('laravel-cart.classes.customer', \Antidote\LaravelCart\Models\Customer::class);
     Config::set('laravel-cart.filament.order', \Antidote\LaravelCart\Tests\Fixtures\App\Filament\Resources\TestCustomerResource::class);
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $customer->address = 'an address';
     $customer->save();

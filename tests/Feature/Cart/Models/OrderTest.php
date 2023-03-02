@@ -135,9 +135,9 @@ it('automatically populates the fillable fields', function () {
         'test_customer_id'
     ]);
 
-    class NewCustomer extends \Antidote\LaravelCart\Contracts\Customer {}
+    class NewCustomer extends \Antidote\LaravelCart\Models\Customer {}
     Config::set('laravel-cart.classes.customer', NewCustomer::class);
-    $new_order = new class extends \Antidote\LaravelCart\Contracts\Order {
+    $new_order = new class extends \Antidote\LaravelCart\Models\Order {
         public function updateStatus() { return null; }
         public function isCompleted() {}
     };

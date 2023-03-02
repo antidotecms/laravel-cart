@@ -1,7 +1,6 @@
 <?php
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderItem;
 
@@ -10,23 +9,23 @@ it('automatically populates the fillable fields', function () {
     $test_order_item = new TestOrderItem;
     expect($test_order_item->getFillable())->toBe([
         'name',
-        'test_product_id',
+        'product_id',
         'product_data',
         'price',
         'quantity',
-        'test_order_id'
+        'order_id'
     ]);
 
-    class NewProduct extends \Antidote\LaravelCart\Contracts\Product {};
+    class NewProduct extends \Antidote\LaravelCart\Models\Product {};
     Config::set('laravel-cart.classes.product', NewProduct::class);
-    $new_order_item = new class extends \Antidote\LaravelCart\Contracts\OrderItem {};
+    $new_order_item = new class extends \Antidote\LaravelCart\Models\OrderItem {};
     expect($new_order_item->getFillable())->toBe([
         'name',
-        'new_product_id',
+        'product_id',
         'product_data',
         'price',
         'quantity',
-        'test_order_id'
+        'order_id'
     ]);
 
 });
@@ -45,10 +44,10 @@ it('has a product', function () {
         'price' => 1999
     ])->create();
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $test_order = TestOrder::factory()->create([
-        'test_customer_id' => $customer->id
+        'customer_id' => $customer->id
     ]);
 
     $test_order_item = TestOrderItem::factory()
@@ -73,13 +72,13 @@ it('wil get the details of a product', function () {
 
     $variable_product = TestProduct::factory()->asVariableProduct()->create();
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $test_order = TestOrder::factory()->create([
-        'test_customer_id' => $customer->id
+    $test_order = \Antidote\LaravelCart\Models\Order::factory()->create([
+        'customer_id' => $customer->id
     ]);
 
-    $test_order_item = TestOrderItem::factory()
+    $test_order_item = \Antidote\LaravelCart\Models\OrderItem::factory()
         //->withProductData($product_data)
         ->withProduct($variable_product, $product_data)
         ->withQuantity(2)
@@ -98,13 +97,13 @@ it('will not change values of product after being created as an order', function
         'price' => 1999
     ])->create();
 
-    $customer = TestCustomer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $test_order = TestOrder::factory()->create([
-        'test_customer_id' => $customer->id
+    $test_order = \Antidote\LaravelCart\Models\Order::factory()->create([
+        'customer_id' => $customer->id
     ]);
 
-    $test_order_item = TestOrderItem::factory()
+    $test_order_item = \Antidote\LaravelCart\Models\OrderItem::factory()
         ->withProduct($simple_product)
         ->withQuantity(2)
         ->forOrder($test_order)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Antidote\LaravelCart\Contracts;
+namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Concerns\ConfiguresProduct;
 use Illuminate\Database\Eloquent\Model;
@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-abstract class Product extends Model
+class Product extends Model
 {
     use ConfiguresProduct;
+
+    protected $table = 'products';
 
     /**
      * @var array array of attributes that should be obtained from the Product Data Type
@@ -31,7 +33,11 @@ abstract class Product extends Model
     {
         static::deleted(function ($product) {
 
-            $product->productType->delete();
+            if($product->isForceDeleting()) {
+                $product->productType->forceDelete();
+            } else {
+                $product->productType->delete();
+            }
         });
 
         //@see https://stackoverflow.com/a/63902244
@@ -45,10 +51,10 @@ abstract class Product extends Model
 
         }
 
-        static::forceDeleted(function ($product) {
-
-            $product->productType->forceDelete();
-        });
+//        static::forceDeleted(function ($product) {
+//
+//            $product->productType->forceDelete();
+//        });
     }
 
     public function __call($method, $parameters)

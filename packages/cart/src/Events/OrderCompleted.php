@@ -2,7 +2,7 @@
 
 namespace Antidote\LaravelCart\Events;
 
-use Antidote\LaravelCart\Contracts\Order;
+use Antidote\LaravelCart\Models\Order;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
