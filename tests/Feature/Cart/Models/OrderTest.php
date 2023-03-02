@@ -128,6 +128,7 @@ it('will detail an order item', function () {
 
 });
 
+//@todo this really tests trait - maybe move test?
 it('automatically populates the fillable fields', function () {
 
     $test_order = new TestOrder;
