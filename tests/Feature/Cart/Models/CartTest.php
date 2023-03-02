@@ -605,13 +605,13 @@ it('can return all data', function () {
 
 it('can add a note to the order', function () {
 
-    $this->markTestIncomplete('Requires extending base class - need tests for this?');
+    $this->markTestIncomplete('Use OrderData to store data');
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 100
     ])->create();
 
-    $customer = Customer::factory()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     Cart::add($simple_product);
 
