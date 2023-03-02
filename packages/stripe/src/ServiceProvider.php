@@ -3,7 +3,7 @@
 namespace Antidote\LaravelCartStripe;
 
 
-use Antidote\LaravelCart\Commands\CreateMigrationCommand;
+//use Antidote\LaravelCart\Commands\CreateMigrationCommand;
 use Antidote\LaravelCart\Providers\EventServiceProvider;
 use Antidote\LaravelCartStripe\Components\StripeCheckoutClientScriptComponent;
 use Antidote\LaravelCartStripe\Http\Middleware\AllowStripeWebhooksDuringMaintenance;
@@ -17,11 +17,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function boot(Kernel $kernel)
     {
-        if($this->app->runningInConsole()) {
-            $this->commands([
-                CreateMigrationCommand::class
-            ]);
-        }
+//        if($this->app->runningInConsole()) {
+//            $this->commands([
+//                CreateMigrationCommand::class
+//            ]);
+//        }
 
         $this->loadRoutesFrom(__DIR__.'../../routes/web.php');
 
