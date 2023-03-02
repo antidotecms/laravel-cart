@@ -49,7 +49,7 @@ abstract class PaymentIntent
                         //payment intent cancelled generate a new one
                         //dd('create a new payment intent');
                         Log::info('payment intent cancelled, deleting old one - creating a new one');
-                        StripePayment::where(getKeyFor('order'), $order->id)->delete();
+                        StripePayment::where('order_id', $order->id)->delete();
                         $event = static::createPaymentIntent($order);
                     }
 
@@ -150,7 +150,7 @@ abstract class PaymentIntent
 //                getKeyFor('order') => $order->id
 //            ]);
             $payment = StripePayment::create([
-                getKeyFor('order') => $order->id
+                'order_id' => $order->id
             ]);
 
             $order->payment_id = $payment->id;

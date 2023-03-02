@@ -15,7 +15,7 @@ trait ConfiguresOrderAdjustment
     public function initializeConfiguresOrderAdjustment() : void
     {
         $this->fillable[] = 'name';
-        $this->fillable[] = getKeyFor('order');
+        $this->fillable[] = 'order_id';
         $this->fillable[] = 'amount';
         $this->fillable[] = 'original_parameters';
         $this->fillable[] = 'class';

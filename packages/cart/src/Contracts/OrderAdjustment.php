@@ -14,7 +14,7 @@ abstract class OrderAdjustment extends Model
 
     public function order() : BelongsTo
     {
-        return $this->belongsTo(getClassNameFor('order'), getKeyFor('order'));
+        return $this->belongsTo(getClassNameFor('order'), 'order_id');
     }
 
     public function calculatedAmount()

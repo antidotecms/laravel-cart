@@ -6,7 +6,7 @@ trait ConfiguresPayment
 {
     public function initializeConfiguresPayment() : void
     {
-        $this->fillable[] = getKeyFor('order');
+        $this->fillable[] = 'order_id';
     }
 
     public function getTable()

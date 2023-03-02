@@ -3,10 +3,10 @@
 namespace Antidote\LaravelCart\Domain;
 
 use Antidote\LaravelCart\Contracts\Adjustment;
-use Antidote\LaravelCart\Contracts\Customer;
-use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCart\Contracts\OrderAdjustment;
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
+use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Tests\Feature\Cart\Models\TestAdjustment;
 use Antidote\LaravelCart\Types\ValidCartItem;
 use Illuminate\Support\Collection;
@@ -126,7 +126,7 @@ class Cart
         });
 
         if(!$cart_items->count() && $this->getActiveOrder()) {
-            config('laravel-cart.classes.order_adjustment')::where(getKeyFor('order'), $this->getActiveOrder()->id)->delete();
+            config('laravel-cart.classes.order_adjustment')::where('order_id', $this->getActiveOrder()->id)->delete();
             $order = $this->getActiveOrder()->fresh();
             $this->setActiveOrder($order);
         }
@@ -184,7 +184,7 @@ class Cart
 
         return $class::all()
             ->when($this->getActiveOrder(), function($query) {
-                $query->where(getKeyFor('order'), $this->getActiveOrder()->id);
+                $query->where('order_id', $this->getActiveOrder()->id);
             })
             ->when($applied_to_subtotal,
                 fn($query) => $query->appliedToSubtotal(),
@@ -227,7 +227,7 @@ class Cart
             $order_class = getClassNameFor('order');
 
             $order = Cart::getActiveOrder() ?? $order_class::create([
-                    $customer->getForeignKey() => $customer->id
+                    'customer_id' => $customer->id
                 ]);
 
 //            $order = $order_class::create([
@@ -239,10 +239,10 @@ class Cart
             $cart_items = Cart::items();
 
             $cart_items->each(function ($cart_item) use ($order) {
-                $product_key = getKeyFor('product');
+                //$product_key = getKeyFor('product');
                 $order->items()->create([
                     'name' => $cart_item->getProduct()->getName($cart_item->product_data),
-                    $product_key => $cart_item->product_id,
+                    'product_id'=> $cart_item->product_id,
                     'product_data' => $cart_item->product_data,
                     'price' => $cart_item->getProduct()->getPrice($cart_item->product_data),
                     'quantity' => $cart_item->quantity
@@ -275,7 +275,7 @@ class Cart
                 config('laravel-cart.classes.order_adjustment')::create([
                     'name' => $adjustment->name,
                     'original_parameters' => $adjustment->parameters,
-                    getKeyFor('order') => $order->id,
+                    'order_id' => $order->id,
                     'class' => $adjustment->class,
                     'amount' => $adjustment->calculated_amount,
                     'apply_to_subtotal' => $adjustment->apply_to_subtotal
@@ -321,7 +321,7 @@ class Cart
             $payment_class = getClassNameFor('payment');
 
             $payment_method = $payment_class::create([
-                getKeyFor('order') => $order->id
+                'order_id' => $order->id
             ]);
 
             $order->payment()->associate($payment_method);

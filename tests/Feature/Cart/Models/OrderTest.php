@@ -56,7 +56,7 @@ it('will create an order with discount', function () {
         'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
         //'test_adjustment_id' => $adjustment->id,
         'amount' => -100,
-        'test_order_id' => $order->id,
+        'order_id' => $order->id,
         'original_parameters' => [
             'type' => 'percentage',
             'rate' => 10
@@ -132,7 +132,7 @@ it('automatically populates the fillable fields', function () {
 
     $test_order = new TestOrder;
     expect($test_order->getFillable())->toBe([
-        'test_customer_id'
+        'customer_id'
     ]);
 
     class NewCustomer extends \Antidote\LaravelCart\Models\Customer {}

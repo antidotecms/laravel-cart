@@ -25,7 +25,7 @@ class TestOrderFactory extends OrderFactory
             $payment_method_class = getClassNameFor('payment');
             if(!$order->paymentMethod) {
                 $payment_method = $payment_method_class::make([
-                    getKeyFor('order') => $order->id
+                    'order_id' => $order->id
                 ]);
                 $order->payment()->associate($payment_method);
                 //$payment_method->save();

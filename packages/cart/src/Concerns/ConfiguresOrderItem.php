@@ -13,13 +13,13 @@ trait ConfiguresOrderItem
     {
         $this->fillable[] = 'name';
 
-        $this->fillable[] = getKeyFor('product');
+        $this->fillable[] = 'product_id';
 
         $this->fillable[] = 'product_data';
         $this->fillable[] = 'price';
         $this->fillable[] = 'quantity';
 
-        $this->fillable[] = getKeyFor('order');
+        $this->fillable[] = 'order_id';
     }
 
     public function getCasts() : array

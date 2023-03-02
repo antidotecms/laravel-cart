@@ -10,6 +10,6 @@ abstract class OrderLogItem extends \Illuminate\Database\Eloquent\Model
 
     public function order()
     {
-        return $this->belongsTo(getClassNameFor('order'), getKeyFor('order'));
+        return $this->belongsTo(getClassNameFor('order'), 'order_id');
     }
 }
