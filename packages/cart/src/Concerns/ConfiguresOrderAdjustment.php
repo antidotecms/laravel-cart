@@ -7,6 +7,11 @@ use Illuminate\Support\Str;
 
 trait ConfiguresOrderAdjustment
 {
+    public function getTable()
+    {
+        return 'order_adjustments';
+    }
+
     public function initializeConfiguresOrderAdjustment() : void
     {
         $this->fillable[] = 'name';

@@ -4,6 +4,11 @@ namespace Antidote\LaravelCart\Concerns;
 
 trait ConfiguresOrderItem
 {
+    public function getTable()
+    {
+        return 'order_items';
+    }
+
     public function initializeConfiguresOrderItem() : void
     {
         $this->fillable[] = 'name';

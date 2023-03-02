@@ -8,4 +8,10 @@ trait ConfiguresPayment
     {
         $this->fillable[] = getKeyFor('order');
     }
+
+    public function getTable()
+    {
+        return 'payments';
+    }
+
 }

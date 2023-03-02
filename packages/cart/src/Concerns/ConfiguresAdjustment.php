@@ -7,6 +7,11 @@ use Illuminate\Support\Str;
 
 trait ConfiguresAdjustment
 {
+    public function getTable()
+    {
+        return 'adjustments';
+    }
+
     public function initializeConfiguresAdjustment()
     {
         $this->fillable[] = 'name';
