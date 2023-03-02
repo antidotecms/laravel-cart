@@ -7,7 +7,6 @@ use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
-use Antidote\LaravelCart\Tests\Feature\Cart\Models\TestAdjustment;
 use Antidote\LaravelCart\Types\ValidCartItem;
 use Illuminate\Support\Collection;
 
