@@ -17,20 +17,14 @@ class ServiceProvider extends PluginServiceProvider
 
     public function getResources(): array
     {
-        //dd(config('laravel-cart'));
-//        return [
-//            config('laravel-cart.filament.order'),
-//            config('laravel-cart.filament.customer')
-//        ];
-        return config('laravel-cart.filament') ?? [
-            'order' => OrderResource::class,
-            'customer' => CustomerResource::class,
-            'adjustment' => AdjustmentResource::class
-        ];
-//        return [
-//            'order' => \App\Filament\Cart\Resources\OrderResource::class,
-//            'customer' => \Antidote\LaravelCartFilament\Resources\CustomerResource::class
-//        ];
+        return array_merge(
+            [
+                'order' => OrderResource::class,
+                'customer' => CustomerResource::class,
+                'adjustment' => AdjustmentResource::class
+            ],
+            config('laravel-cart.filament')
+        );
     }
 
     public function configurePackage(Package $package): void

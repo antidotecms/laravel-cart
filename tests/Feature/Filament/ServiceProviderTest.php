@@ -2,47 +2,27 @@
 
 namespace Tests\Feature\Filament;
 
-use Antidote\LaravelCart\Contracts\Customer;
-use Antidote\LaravelCart\Contracts\Order;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
 use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
 
 class ServiceProviderTest extends \Antidote\LaravelCart\Tests\TestCase
 {
-    public function defaultFilamentResourcesEnvironment($app)
-    {
-        $this->configureModels($app);
-    }
-
     public function overrideFilamentResourcesEnvironment($app)
     {
-        $this->configureModels($app);
         $app->config->set('laravel-cart.filament', $this->getResourceClasses());
-    }
-
-    public function configureModels($app)
-    {
-        $customer_class = new class extends Customer {};
-
-        $app->config->set('laravel-cart.classes.customer', $customer_class::class);
-
-        $order_class = new class extends Order {
-            public function updateStatus() {}
-            public function isCompleted() {}
-        };
-
-        $app->config->set('laravel-cart.classes.order', $order_class::class);
     }
 
     public function getResourceClasses()
     {
         $order_resource_class = new class extends \Filament\Resources\Resource {};
         $customer_resource_class = new class extends \Filament\Resources\Resource {};
+        $adjustment_resource_class = new class extends \Filament\Resources\Resource {};
 
         return [
             'order' => $order_resource_class::class,
-            'customer' => $customer_resource_class::class
+            'customer' => $customer_resource_class::class,
+            'adjustment' => $adjustment_resource_class::class
         ];
     }
 
