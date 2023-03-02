@@ -21,15 +21,21 @@ class AdjustmentResource extends Resource
 
     protected static ?string $navigationGroup = 'Orders';
 
+//    public static function getModel(): string
+//    {
+////        $classname = '\App\Models\Adjustment';
+////        try {
+////            $classname =  (string) getClassNameFor('adjustment');
+////        } catch (\Exception $e) {}
+////        finally {
+////            return $classname;
+////        }
+//        return config('laravel-cart.classes.adjustment');
+//    }
+
     public static function getModel(): string
     {
-        $classname = '\App\Models\Adjustment';
-        try {
-            $classname =  (string) getClassNameFor('adjustment');
-        } catch (\Exception $e) {}
-        finally {
-            return $classname;
-        }
+        return config('laravel-cart.classes.adjustment');
     }
 
     public static function table(Table $table): Table

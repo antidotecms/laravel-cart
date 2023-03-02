@@ -24,15 +24,22 @@ class OrderResource extends Resource
 
     protected static ?string $navigationLabel = 'Orders';
 
+//    public static function getModel(): string
+//    {
+////        $classname = '\App\Models\Order';
+////        try {
+////            //$classname =  (string) getClassNameFor('order');
+////            $classname = config('laravel-cart.classes.order');
+////        } catch (\Exception $e) {}
+////        finally {
+////            return $classname;
+////        }
+//        return config('laravel-cart.classes.order');
+//    }
+
     public static function getModel(): string
     {
-        $classname = '\App\Models\Order';
-        try {
-            $classname =  (string) getClassNameFor('order');
-        } catch (\Exception $e) {}
-        finally {
-            return $classname;
-        }
+        return config('laravel-cart.classes.order');
     }
 
     public static function form(Form $form): Form
