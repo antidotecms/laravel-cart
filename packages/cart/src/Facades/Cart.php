@@ -26,8 +26,6 @@ use Illuminate\Support\Facades\Facade;
  * @method static bool isInCart($product)
  * @see \Antidote\LaravelCart\Domain\Cart::createOrder
  * @method static Order createOrder(Customer $customer)
- * @see \Antidote\LaravelCart\Domain\Cart::initializePayment
- * @method initializePayment(Order $order)
  * @see \Antidote\LaravelCart\Domain\Cart::getActiveOrder
  * @method getActiveOrder()
  * @see \Antidote\LaravelCart\Domain\Cart::setActiveOrder

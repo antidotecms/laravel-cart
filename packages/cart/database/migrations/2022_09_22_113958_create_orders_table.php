@@ -17,9 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('status')->nullable();
             $table->integer('customer_id');
-            //@todo change to $table->morphs();
-            $table->string('payment_id')->nullable();
-            $table->string('payment_type')->nullable();
 
             //@todo create facade to simplify comparing objects and classes - maybe package it
             if(is_subclass_of(config('laravel-cart.classes.order'), \Antidote\LaravelCartStripe\Models\StripeOrder::class) ||

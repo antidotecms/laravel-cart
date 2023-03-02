@@ -14,7 +14,6 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
 use Antidote\LaravelCartStripe\Models\StripeOrder;
-use Antidote\LaravelCartStripe\Models\StripePayment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Arr;
@@ -37,7 +36,6 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
         $app->config->set('laravel-cart.classes.order', StripeOrder::class);
         $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
         $app->config->set('laravel-cart.classes.customer', Customer::class);
-        $app->config->set('laravel-cart.classes.payment', StripePayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
         $app->config->set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
         $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);

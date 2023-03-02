@@ -8,7 +8,6 @@ return [
         'order_item' => \Antidote\LaravelCart\Models\OrderItem::class,
         'order_adjustment' => \Antidote\LaravelCart\Models\OrderAdjustment::class,
         'adjustment' => \Antidote\LaravelCart\Models\Adjustment::class,
-        'payment' => \Antidote\LaravelCart\Contracts\Payment::class,
         'order_log_item' => \Antidote\LaravelCart\Models\OrderLogItem::class
     ],
     'filament' => [

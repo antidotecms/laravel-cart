@@ -4,7 +4,6 @@ namespace Antidote\LaravelCartStripe\Domain;
 
 use Antidote\LaravelCartStripe\Concerns\HasStripeClient;
 use Antidote\LaravelCartStripe\Models\StripeOrder;
-use Antidote\LaravelCartStripe\Models\StripePayment;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
@@ -49,7 +48,6 @@ abstract class PaymentIntent
                         //payment intent cancelled generate a new one
                         //dd('create a new payment intent');
                         Log::info('payment intent cancelled, deleting old one - creating a new one');
-                        StripePayment::where('order_id', $order->id)->delete();
                         $event = static::createPaymentIntent($order);
                     }
 
@@ -145,26 +143,11 @@ abstract class PaymentIntent
 
         $order->refresh();
 
-        if(!$order->payment) {
-//            $result = $order->payment()->create([
-//                getKeyFor('order') => $order->id
-//            ]);
-            $payment = StripePayment::create([
-                'order_id' => $order->id
-            ]);
-
-            $order->payment_id = $payment->id;
-            $order->payment_type = get_class($payment);
-            $order->save();
-
-            //$payment->save();
-        }
-
         $order->refresh();
 
         //dump($order->payment);
-        $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
-        $order->payment->save();
+        $order->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
+        $order->save();
         $event = json_decode($payment_intent_response->getLastResponse()->body);
         self::logMessage($order, 'Payment Intent Created: '.$payment_intent_response->id, $event);
         return $event;
@@ -179,8 +162,8 @@ abstract class PaymentIntent
         //not amended payment intent id as it will be the same
         //$order->payment_intent_id = json_decode($payment_intent_response->getLastResponse()->body)->id;
         //$order->save();
-        $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
-        $order->payment->save();
+        $order->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
+        $order->save();
         $event = json_decode($payment_intent_response->getLastResponse()->body);
         self::logMessage($order, 'Payment Intent Updated: '.$payment_intent_response->id, $event);
         return $event;

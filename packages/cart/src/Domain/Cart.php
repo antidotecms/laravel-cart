@@ -29,7 +29,6 @@ class Cart
             'isInCart',
             'remove',
             'createOrder',
-            'initializePayment',
             'getActiveOrder',
             'setActiveOrder',
             'addData',
@@ -309,27 +308,6 @@ class Cart
         $order_id =  session()->get('active_order');
         $order_class = getClassNameFor('order');
         return $order_class::where('id', $order_id)->first();
-    }
-
-    private function initializePayment(Order $order)
-    {
-        //throw new Exception('not required');
-        //create payment method to order
-        //if(!$order->payment_intent_id)
-        //{
-            $payment_class = getClassNameFor('payment');
-
-            $payment_method = $payment_class::create([
-                'order_id' => $order->id
-            ]);
-
-            $order->payment()->associate($payment_method);
-            $order->save();
-
-
-            $order->refresh();
-            $order->payment->initialize();
-        //}
     }
 
     private function addData($key, $value)

@@ -11,7 +11,6 @@ use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCartStripe\Models\StripePayment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
@@ -30,7 +29,6 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
         $app->config->set('laravel-cart.classes.order', Order::class);
         $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
         $app->config->set('laravel-cart.classes.customer', Customer::class);
-        $app->config->set('laravel-cart.classes.payment', StripePayment::class);
         $app->config->set('laravel-cart.classes.product', TestProduct::class);
         $app->config->set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
         $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);

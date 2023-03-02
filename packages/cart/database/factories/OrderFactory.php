@@ -2,7 +2,6 @@
 
 namespace Antidote\LaravelCart\Database\Factories;
 
-use Antidote\LaravelCart\Contracts\Payment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderItem;
@@ -34,14 +33,6 @@ class OrderFactory extends Factory
                 'order_id' => $order->id
             ]);
         });
-    }
-
-    public function withPaymentMethod(?Payment $payment_method)
-    {
-        return $this->state([
-            'payment_method_id' => $payment_method->id,
-            'payment_method_class' => get_class($payment_method)
-        ]);
     }
 
     public function forCustomer(Customer $customer) {

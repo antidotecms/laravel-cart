@@ -535,25 +535,6 @@ it('will not allow a product to be added if it is invalid', function () {
 })
 ->throws(InvalidArgumentException::class, 'The cart item is invalid');
 
-it('will set up a payment', function () {
-
-    $simple_product = TestProduct::factory()->asSimpleProduct([
-        'price' => 1000
-    ])->create();
-
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-
-    Cart::add($simple_product);
-
-    Cart::createOrder($customer);
-
-    Cart::initializePayment($customer->orders()->first());
-    //PaymentIntent::create($customer->orders()->first());
-
-    expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
-    expect(get_class(\Antidote\LaravelCart\Models\Order::first()->payment))->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment::class);
-});
-
 it('will not create an order if the amount is out of bounds', function () {
 
     $simple_product = TestProduct::factory()->asSimpleProduct([

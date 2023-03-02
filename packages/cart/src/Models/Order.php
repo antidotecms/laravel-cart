@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Order extends Model
 {
@@ -102,11 +101,6 @@ class Order extends Model
         );
     }
 
-    public function payment() : MorphTo
-    {
-        return $this->morphTo();
-    }
-
     public function logItems() : hasMany
     {
         return $this->hasMany(getClassNameFor('order_log_item'), 'order_id');
@@ -131,7 +125,7 @@ class Order extends Model
 
     public function data()
     {
-        return $this->hasMany(OrderData::class);
+        return $this->hasMany(OrderData::class, 'order_id');
     }
 
     public function setData($key, $value)
