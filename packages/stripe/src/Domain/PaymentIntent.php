@@ -143,9 +143,6 @@ abstract class PaymentIntent
 
         $order->refresh();
 
-        $order->refresh();
-
-        //dump($order->payment);
         $order->setData('client_secret', json_decode($payment_intent_response->getLastResponse()->body)->client_secret);
         $order->save();
         $event = json_decode($payment_intent_response->getLastResponse()->body);
