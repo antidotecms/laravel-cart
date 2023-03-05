@@ -32,7 +32,7 @@ abstract class PaymentIntent
 
             try {
 
-                if(!$order->payment_intent_id && $order->status != 'succeeded')
+                if(!$order->getData('payment_intent_id') && $order->status != 'succeeded')
                 {
                     $event = static::createPaymentIntent($order);
                 }
@@ -40,7 +40,7 @@ abstract class PaymentIntent
                 {
                     //get existing payment intent and check it is valid
                     Log::info('retrieving payment intent');
-                    $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->payment_intent_id);
+                    $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->getData('payment_intent_id'));
 
                     $body = json_decode($payment_intent_response->getLastResponse()->body);
 
@@ -138,7 +138,7 @@ abstract class PaymentIntent
             'receipt_email' => $order->customer->email
         ]);
 
-        $order->payment_intent_id = json_decode($payment_intent_response->getLastResponse()->body)->id;
+        $order->setData('payment_intent_id', json_decode($payment_intent_response->getLastResponse()->body)->id);
         $order->save();
 
         $order->refresh();
@@ -146,7 +146,7 @@ abstract class PaymentIntent
         $order->refresh();
 
         //dump($order->payment);
-        $order->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
+        $order->setData('client_secret', json_decode($payment_intent_response->getLastResponse()->body)->client_secret);
         $order->save();
         $event = json_decode($payment_intent_response->getLastResponse()->body);
         self::logMessage($order, 'Payment Intent Created: '.$payment_intent_response->id, $event);
@@ -155,14 +155,14 @@ abstract class PaymentIntent
 
     public static function updatePaymentIntent($order)
     {
-        $payment_intent_response = static::getClient()->paymentIntents->update($order->payment_intent_id, [
+        $payment_intent_response = static::getClient()->paymentIntents->update($order->getData('payment_intent_id'), [
             'amount' => $order->total
         ]);
 
         //not amended payment intent id as it will be the same
         //$order->payment_intent_id = json_decode($payment_intent_response->getLastResponse()->body)->id;
         //$order->save();
-        $order->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
+        $order->setData('client_secret', json_decode($payment_intent_response->getLastResponse()->body)->client_secret);
         $order->save();
         $event = json_decode($payment_intent_response->getLastResponse()->body);
         self::logMessage($order, 'Payment Intent Updated: '.$payment_intent_response->id, $event);
@@ -181,10 +181,10 @@ abstract class PaymentIntent
 
     public static function getClientSecret($order)
     {
-        $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->payment_intent_id);
+        $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->getData('payment_intent_id'));
 
-        $order->payment->client_secret = json_decode($payment_intent_response->getLastResponse()->body)->client_secret;
-        $order->payment->save();
-        return $order->payment->client_secret;
+        $order->setData('client_secret', json_decode($payment_intent_response->getLastResponse()->body)->client_secret);
+        $order->save();
+        return $order->getData('client_secret');
     }
 }
