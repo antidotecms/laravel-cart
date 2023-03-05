@@ -33,3 +33,18 @@ it('can store and retrieve arrays as data', function () {
         'size' => 'XL'
     ]);
 });
+
+it('will overwrite data with the same key', function () {
+
+    $order = Order::factory()->create();
+
+    $order->setData('some_data', 'a value');
+
+    expect($order->data()->where('key', 'some_data')->count())->toBe(1);
+    expect($order->getData('some_data'))->toBe('a value');
+
+    $order->setData('some_data', 'a new value');
+
+    expect($order->data()->where('key', 'some_data')->count())->toBe(1);
+    expect($order->getData('some_data'))->toBe('a new value');
+});

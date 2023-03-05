@@ -130,10 +130,10 @@ class Order extends Model
 
     public function setData($key, $value)
     {
-        $this->data()->create([
-            'key' => $key,
-            'value' => json_encode($value)
-        ]);
+        $this->data()->updateOrCreate(
+            ['key' => $key],
+            ['value' => json_encode($value)]
+        );
     }
 
     public function getData($key): null | string | array
