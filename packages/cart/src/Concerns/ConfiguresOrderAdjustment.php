@@ -44,12 +44,12 @@ trait ConfiguresOrderAdjustment
         );
     }
 
-//    public function applyToSubtotal(): Attribute
-//    {
-//        return Attribute::make(
-//            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('applyToSubtotal', $value)
-//        );
-//    }
+    public function applyToSubtotal(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('applyToSubtotal', $value)
+        );
+    }
 
     private function getMethodOnAdjustmentIfDefined($attribute, $value)
     {
