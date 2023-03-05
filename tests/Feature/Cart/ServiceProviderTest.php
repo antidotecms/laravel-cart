@@ -54,8 +54,8 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
                     'id',
                     'status',
                     'customer_id',
-                    'payment_id',
-                    'payment_type',
+//                    'payment_id',
+//                    'payment_type',
                     'created_at',
                     'updated_at',
                     'deleted_at'
@@ -159,9 +159,9 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
                 'id',
                 'status',
                 'customer_id',
-                'payment_id',
-                'payment_type',
-                'payment_intent_id',
+//                'payment_id',
+//                'payment_type',
+//                'payment_intent_id',
                 'created_at',
                 'updated_at',
                 'deleted_at'

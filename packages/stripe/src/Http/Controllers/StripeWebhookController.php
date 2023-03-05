@@ -51,7 +51,7 @@ class StripeWebhookController extends Controller
                 $order_log_item->event  = $event;
                 $order_log_item->save();
 
-                $order->payment_intent_id = $event->data->object->id;
+                $order->setData('payment_intent_id', $event->data->object->id);
                 $order->status = $event->data->object->status;
                 $order->save();
             break;

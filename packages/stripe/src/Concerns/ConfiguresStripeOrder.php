@@ -2,8 +2,7 @@
 
 namespace Antidote\LaravelCartStripe\Concerns;
 
-use Antidote\LaravelCartStripe\Domain\PaymentIntent;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+/** @mixin \Illuminate\Database\Eloquent\Model */
 
 trait ConfiguresStripeOrder
 {

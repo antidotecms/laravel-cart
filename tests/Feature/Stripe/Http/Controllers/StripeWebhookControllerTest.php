@@ -130,7 +130,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
         expect($order->logItems()->count())->toBe(1);
 
         expect($order->status)->toBe('requires_payment_method');
-        expect($order->payment_intent_id)->toBe('payment_intent_identifier');
+        expect($order->getData('payment_intent_id'))->toBe('payment_intent_identifier');
 
         $this->forgetMock('alias:Stripe\Webhook');
     }

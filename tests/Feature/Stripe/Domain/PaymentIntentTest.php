@@ -179,11 +179,11 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         PaymentIntent::create($order);
 
-        $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
+        $payment_intent_id = TestStripeOrder::first()->getData('payment_intent_id');
 
         PaymentIntent::create($order);
 
-        expect(TestStripeOrder::first()->payment_intent_id)->toBe($payment_intent_id);
+        expect(TestStripeOrder::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
 
     }
 
@@ -193,7 +193,6 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
      */
     public function it_will_generate_a_new_payment_intent_if_the_old_one_has_been_cancelled()
     {
-
         (new MockStripeHttpClient());
 
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
@@ -210,12 +209,12 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
         //Cart::initializePayment($order);
         PaymentIntent::create($order);
 
-        $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
+        $payment_intent_id = TestStripeOrder::first()->getData('payment_intent_id');
 
         (new MockStripeHttpClient())->with('canceled_at', 'hello')->with('amount', $order->total);
         PaymentIntent::create($order);
 
-        expect(TestStripeOrder::first()->payment_intent_id)->not()->toBe($payment_intent_id);
+        expect(TestStripeOrder::first()->getData('payment_intent_id'))->not()->toBe($payment_intent_id);
 
     }
 
@@ -241,11 +240,11 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         PaymentIntent::create($order);
 
-        $payment_intent_id = TestStripeOrder::first()->payment_intent_id;
+        $payment_intent_id = TestStripeOrder::first()->getData('payment_intent_id');;
 
         PaymentIntent::create($order);
 
-        expect(TestStripeOrder::first()->payment_intent_id)->toBe($payment_intent_id);
+        expect(TestStripeOrder::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
     }
 
 }

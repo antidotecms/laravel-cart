@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('status')->nullable();
             $table->integer('customer_id');
 
-            //@todo create facade to simplify comparing objects and classes - maybe package it
-            if(is_subclass_of(config('laravel-cart.classes.order'), \Antidote\LaravelCartStripe\Models\StripeOrder::class) ||
-                config('laravel-cart.classes.order') == \Antidote\LaravelCartStripe\Models\StripeOrder::class) {
-                $table->string('payment_intent_id')->nullable();
-            }
+//            //@todo create facade to simplify comparing objects and classes - maybe package it
+//            if(is_subclass_of(config('laravel-cart.classes.order'), \Antidote\LaravelCartStripe\Models\StripeOrder::class) ||
+//                config('laravel-cart.classes.order') == \Antidote\LaravelCartStripe\Models\StripeOrder::class) {
+//                $table->string('payment_intent_id')->nullable();
+//            }
 
             $table->timestamps();
             $table->softDeletes();
