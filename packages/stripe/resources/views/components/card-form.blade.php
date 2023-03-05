@@ -1,5 +1,5 @@
 <div>
     <label for="card-element">Card</label>
     <div id="card-element"></div>
-    <x-button type='submit'>Submit</x-button>
+    <button type='submit'>Submit</button>
 </div>
