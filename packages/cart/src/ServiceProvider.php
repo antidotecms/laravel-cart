@@ -2,8 +2,6 @@
 
 namespace Antidote\LaravelCart;
 
-use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
-use Antidote\LaravelCart\Models\Order;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
@@ -51,20 +49,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->bind('cart', function () {
             return new \Antidote\LaravelCart\Domain\Cart();
         });
-
-        $this->app->when(OrderCompleteController::class)
-            ->needs(Order::class)
-            ->give(function($app) {
-                if($order_id = request()->get('order_id')) {
-                    $order = getClassNameFor('order')::where('id', $order_id)->first();
-                    if (auth('customer')->check() && $order && $order->customer->id == auth()->guard('customer')->user()->id) {
-                        $order->load('items.product.productType');
-                        return $order;
-                    }
-                }
-
-                return null;
-            });
     }
 
     private function configuration()

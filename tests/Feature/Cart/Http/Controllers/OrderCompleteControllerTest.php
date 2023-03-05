@@ -2,7 +2,6 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Cart\Http\Controllers;
 
-use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
@@ -85,13 +84,9 @@ class OrderCompleteControllerTest extends TestCase
      */
     public function it_will_update_the_order_status()
     {
-        $mock_order = $this->instance(Order::class, $this->partialMock(Order::class, function (\Mockery\MockInterface $mock_order) {
-            $mock_order->shouldReceive('updateStatus')->once();
-        }));
-
-        $this->app->when(OrderCompleteController::class)
-            ->needs(Order::class)
-            ->give(fn() => $mock_order);
+//        $mock_order = $this->instance(Order::class, $this->partialMock(Order::class, function (\Mockery\MockInterface $mock_order) {
+//            $mock_order->shouldReceive('updateStatus')->once();
+//        }));
 
         $customer = Customer::factory()->create();
 
@@ -105,6 +100,25 @@ class OrderCompleteControllerTest extends TestCase
             ])->create())
             ->forOrder($order)
             ->create();
+
+        $mock = \Mockery::mock(Order::class)->makePartial();
+        $mock->shouldReceive('updateStatus')->andReturnNull();
+        $this->app->instance(Order::class, $mock);
+
+//        $mocked_controller = $this->partialMock(OrderCompleteController::class, function(MockInterface $mock) use ($order) {
+//            $mock->shouldReceive('__construct')
+//                ->withNoArgs()
+//                ->once()
+//                ->andReturn($order);
+//
+//            $mock-shouldRecei
+//        });
+
+//        $this->app->when(OrderCompleteController::class)
+//            ->needs(Order::class)
+//            ->give(fn() => $mock_order);
+
+        //$this->app->bind(OrderCompleteController::class, $mocked_controller::class);
 
         $this->actingAs($customer, 'customer')
             ->get('/order-complete?order_id='.$order->id)
