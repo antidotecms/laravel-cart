@@ -57,6 +57,32 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
      * @test
      * @define-env defineEnv
      */
+    public function it_will_retrieve_a_payment_intents_status()
+    {
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+
+        (new MockStripeHttpClient())->with('status', 'a_status');
+
+        $product = TestProduct::factory()->asSimpleProduct([
+            'price' => 1000
+        ])->create();
+
+        $order = TestStripeOrder::factory()
+            ->withProduct($product, 1)
+            ->forCustomer(Customer::factory()->create())
+            ->create();
+
+        $order->setData('payment_intent_id', 'a_payment_intent_id');
+
+        PaymentIntent::retrieveStatus($order);
+
+        expect($order->status)->toBe('a_status');
+    }
+
+    /**
+     * @test
+     * @define-env defineEnv
+     */
     public function will_throw_an_exception_if_the_amount_is_too_low()
     {
         new MockStripeHttpClient();

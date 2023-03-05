@@ -169,10 +169,10 @@ abstract class PaymentIntent
         return $event;
     }
 
-    public static function retrievePaymentIntent($order)
+    public static function retrieveStatus($order)
     {
-        if($order->payment_intent_id) {
-            $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->payment_intent_id);
+        if($order->getData('payment_intent_id')) {
+            $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->getData('payment_intent_id'));
 
             $order->status = json_decode($payment_intent_response->getLastResponse()->body)->status;
             $order->save();
