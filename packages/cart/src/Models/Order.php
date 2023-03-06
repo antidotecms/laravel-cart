@@ -93,6 +93,7 @@ class Order extends Model
         return $adjustment_total;
     }
 
+    //@todo can this be rolled into the relationship?
     public function getAdjustments(bool $is_in_subtotal)
     {
         return $this->adjustments->when($is_in_subtotal,
