@@ -2,22 +2,12 @@
 
 namespace Tests\Feature\Cart;
 
-use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 
 class ServiceProviderTest extends \Orchestra\Testbench\TestCase
 {
     use RefreshDatabase;
-
-    //@todo define env for stripe
-    protected function defineEnvironmentWithStripeOrder($app)
-    {
-//        $extended_from_stripe_order = new class extends StripeOrder {};
-//        $app->config->set('laravel-cart.classes.order', $extended_from_stripe_order::class);
-
-        $app->config->set('laravel-cart.classes.order', StripeOrder::class);
-    }
 
     protected function getPackageProviders($app)
     {
@@ -54,8 +44,6 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
                     'id',
                     'status',
                     'customer_id',
-//                    'payment_id',
-//                    'payment_type',
                     'created_at',
                     'updated_at',
                     'deleted_at'
@@ -91,14 +79,9 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
                     'message',
                     'order_id',
                     'created_at',
-                    'updated_at',
-                    //no soft deleting of order log items
-                    //'deleted_at'
+                    'updated_at'
                 ],
-                //@todo run with StripeOrderLogItem
-                'excluded' => [
-                    'event'
-                ]
+                'excluded' => []
             ],
 
             'order_adjustments' => [
@@ -150,58 +133,12 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
         $merge);
     }
 
-    public function dataProviderColumnsWithStripeOrder()
-    {
-        $array = $this->getColumns(
-        ['stripe_order' => [
-            'table' => 'orders',
-            'included' => [
-                'id',
-                'status',
-                'customer_id',
-//                'payment_id',
-//                'payment_type',
-//                'payment_intent_id',
-                'created_at',
-                'updated_at',
-                'deleted_at'
-            ],
-            'excluded' => []
-        ]]);
-
-        return $array;
-    }
-
-    /**
-     * @test
-     * @dataProvider dataProviderColumnsWithStripeOrder
-     */
-    public function it_creates_all_the_necessary_tables()
-    {
-        $tables = collect($this->dataProviderColumns())->pluck('table');
-
-        foreach($tables as $table) {
-            $this->assertTrue(Schema::hasTable($table), "Failed asserting that database has table $table");
-        }
-    }
-
     /**
      * @test
      * @dataProvider dataProviderColumns
      */
     public function it_will_correctly_create_the_tables($table, $included = [], $excluded = [])
     {
-        $this->assertDatabaseStructure($table, $included, $excluded);
-    }
-
-    /**
-     * @test
-     * @dataProvider dataProviderColumnsWithStripeOrder
-     * @define-env defineEnvironmentWithStripeOrder
-     */
-    public function it_will_correctly_create_the_tables_with_stripe_order($table, $included = [], $excluded = [])
-    {
-        $this->markTestIncomplete('payment id to be put into a OrderData model');
         $this->assertDatabaseStructure($table, $included, $excluded);
     }
 
