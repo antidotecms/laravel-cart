@@ -535,7 +535,7 @@ it('will not allow a product to be added if it is invalid', function () {
 })
 ->throws(InvalidArgumentException::class, 'The cart item is invalid');
 
-it('will not create an order if the amount is out of bounds', function () {
+it('will throw an exception if the amount is out of bounds', function () {
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1
@@ -547,9 +547,10 @@ it('will not create an order if the amount is out of bounds', function () {
 
     $result = Cart::createOrder($customer);
 
-    expect($result)->toBeFalse();
+    //expect($result)->toBeFalse();
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(0);
-});
+})
+->throws(\Exception::class, 'The order total must be greater than £0.30 and less that £999,999.99');
 
 it('can add a note to the cart', function () {
 

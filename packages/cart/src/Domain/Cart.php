@@ -288,7 +288,7 @@ class Cart
         }
         else
         {
-            return false;
+            throw new \Exception('The order total must be greater than £0.30 and less that £999,999.99');
         }
     }
 
