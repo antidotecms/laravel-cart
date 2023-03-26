@@ -20,7 +20,8 @@ it('will create an order', function() {
         ->and($order->items()->first()->id)->toBe($product->id)
         //->and(Cart::items())->toBeEmpty() // cart no longer cleared
         ->and($order->customer->id)->toBe($customer->id);
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
 
 it('will create an order with discount', function () {
 
@@ -69,7 +70,8 @@ it('will create an order with discount', function () {
     //subtotal with discount should be 900. Given tax rate of 20%, total should be 900 * 1.2 = 1080
     expect($order->total)->toBe(1080);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
 
 test('a customer has an order', function () {
 
@@ -83,7 +85,8 @@ test('a customer has an order', function () {
 
     expect($customer->orders()->count())->toBe(1);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
 
 it('will detail an order item', function () {
 
@@ -123,7 +126,8 @@ it('will detail an order item', function () {
         ->and($order->items()->skip(1)->first()->getQuantity())->toBe(1)
         ->and($order->items()->skip(1)->first()->getCost())->toBe(100);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
 
 //@todo this really tests trait - maybe move test?
 it('automatically populates the fillable fields', function () {
@@ -143,7 +147,8 @@ it('automatically populates the fillable fields', function () {
        'new_customer_id'
     ]);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
 
 it('has a payment method', function () {
 
@@ -151,7 +156,8 @@ it('has a payment method', function () {
     $order = \Antidote\LaravelCart\Models\Order::factory()->create();
 
     expect(get_class($order->payment))->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment::class);
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
 
 it('will get the subtotal', function () {
 
@@ -173,7 +179,8 @@ it('will get the subtotal', function () {
 
     expect($order->getSubtotal())->toBe(3998);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
 
 it('will get the subtotal 2', function () {
 
@@ -203,7 +210,8 @@ it('will get the subtotal 2', function () {
 
     expect($order->getSubtotal())->toBe(3998);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
 
 it('will get the total with VAT', function () {
 
@@ -220,7 +228,8 @@ it('will get the total with VAT', function () {
     \Antidote\LaravelCart\Models\OrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
 
     expect($order->total)->toBe(2400);
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
 
 it('will not create an order if an active order already exists', function () {
 
@@ -246,4 +255,5 @@ it('will not create an order if an active order already exists', function () {
         ->and($order->items()->count())->toBe(1)
         ->and($order->items()->first()->product->id)->toBe($product->id)
         ->and($order->customer->id)->toBe($customer->id);
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);

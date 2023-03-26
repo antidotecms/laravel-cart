@@ -5,6 +5,9 @@ namespace Antidote\LaravelCart\Tests\Feature\Stripe\Http\Controllers;
 use Antidote\LaravelCartStripe\ServiceProvider;
 use Illuminate\Support\Arr;
 
+/**
+ * @covers \Antidote\LaravelCartStripe\ServiceProvider
+ */
 class ServiceProviderTest extends \Orchestra\Testbench\TestCase
 {
     protected function getPackageProviders($app)

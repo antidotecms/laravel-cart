@@ -15,6 +15,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * @covers \Antidote\LaravelCart\Listeners\SendOrderConfirmation
+ */
 class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
 {
     use RefreshDatabase;

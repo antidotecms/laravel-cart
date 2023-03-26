@@ -6,6 +6,9 @@ use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
 use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
 
+/**
+ * @covers \Antidote\LaravelCartFilament\ServiceProvider
+ */
 class ServiceProviderTest extends \Antidote\LaravelCart\Tests\TestCase
 {
     public function overrideFilamentResourcesEnvironment($app)

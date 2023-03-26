@@ -20,7 +20,12 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
+use Stripe\Exception\SignatureVerificationException;
+use Stripe\Exception\UnexpectedValueException;
 
+/**
+ * @covers \Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController
+ */
 class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
 {
     use RefreshDatabase;
@@ -431,36 +436,130 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
         Event::assertDispatched(OrderCompleted::class);
     }
 
-//    private function do_log($bool)
-//    {
-//        if($bool) {
-//            Log::info('hello');
-//        } else {
-//            Log::channel('somewhere')->info('hello');
-//        }
-//    }
-//
-//    /**
-//     * @test
-//     */
-//    public function it_do_log()
-//    {
-//        Log::shouldReceive('info')
-//            ->with('hello')
-//            ->once();
-//
-//        $this->do_log(true);
-//
-//        Log::shouldReceive('channel')
-//            ->with('somewhere')
-//            ->once()
-//            ->andReturnSelf()
-//            ->shouldReceive('info')
-//            ->with('hello')
-//            ->once();
-//
-//        $this->do_log(false);
-//
-//
-//    }
+    /**
+     * @test
+     */
+    public function it_will_return_an_empty_response_and_error_400_if_the_signature_is_invalid()
+    {
+        Config::set('laravel-cart.stripe.log', false);
+
+        $product = TestProduct::factory()->asSimpleProduct()->create();
+        $customer = Customer::factory()->create();
+        $order = StripeOrder::factory()
+            ->withProduct($product)
+            ->forCustomer($customer)
+            ->create();
+
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+
+        $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
+
+        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
+            $mock->shouldReceive('constructEvent')
+                ->andThrow(SignatureVerificationException::class);
+        });
+
+        Event::fake();
+
+        $response = $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event);
+
+        $response->assertStatus(400);
+        $response->assertContent('');
+
+    }
+
+    /**
+     * @test
+     */
+    public function it_will_return_an_empty_response_and_error_400_if_the_payload_is_not_valid_json()
+    {
+        Config::set('laravel-cart.stripe.log', false);
+
+        $product = TestProduct::factory()->asSimpleProduct()->create();
+        $customer = Customer::factory()->create();
+        $order = StripeOrder::factory()
+            ->withProduct($product)
+            ->forCustomer($customer)
+            ->create();
+
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+
+        $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
+
+        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
+            $mock->shouldReceive('constructEvent')
+                ->andThrow(UnexpectedValueException::class);
+        });
+
+        Event::fake();
+
+        $response = $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event);
+
+        $response->assertStatus(400);
+        $response->assertContent('');
+
+    }
+
+    /**
+     * @test
+     */
+    public function it_will_return_an_empty_response_and_error_400_if_some_other_exception_occurs()
+    {
+        Config::set('laravel-cart.stripe.log', false);
+
+        $product = TestProduct::factory()->asSimpleProduct()->create();
+        $customer = Customer::factory()->create();
+        $order = StripeOrder::factory()
+            ->withProduct($product)
+            ->forCustomer($customer)
+            ->create();
+
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+
+        $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
+
+        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
+            $mock->shouldReceive('constructEvent')
+                ->andThrow(\Exception::class);
+        });
+
+        Event::fake();
+
+        $response = $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event);
+
+        $response->assertStatus(400);
+        $response->assertContent('');
+
+    }
+
+    /**
+     * @test
+     */
+    public function it_will_log_an_event_for_an_unknown_stripe_event()
+    {
+        $product = TestProduct::factory()->asSimpleProduct()->create();
+        $customer = Customer::factory()->create();
+        $order = TestStripeOrder::factory()
+            ->withProduct($product)
+            ->forCustomer($customer)
+            ->create();
+
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+
+        $event = $this->createStripeEvent('unknown_event', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
+
+        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
+            $mock->shouldReceive('constructEvent')
+                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
+        });
+
+        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event);
+
+        $order->refresh();
+
+        expect($order->logItems()->count())->toBe(1);
+        expect($order->logItems->first()->message)->toBe('Unknown Event');
+
+        //expect($order->status)->toBe('requires_payment_method');
+    }
 }

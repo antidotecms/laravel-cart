@@ -26,7 +26,8 @@ it('automatically populates the fillable fields', function () {
         'order_id'
     ]);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderItem::class);
 
 it('populates the casts', function () {
 
@@ -34,7 +35,8 @@ it('populates the casts', function () {
 
     expect($test_order_item->getCasts())->toHaveKey('product_data');
     expect($test_order_item->getCasts()['product_data'])->toBe('array');
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderItem::class);
 
 it('has a product', function () {
 
@@ -59,7 +61,8 @@ it('has a product', function () {
     expect($test_order_item->getName())->toBe($simple_product->getName());
     expect($test_order_item->getCost())->toBe($simple_product->getPrice() * 2);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderItem::class);
 
 it('wil get the details of a product', function () {
 
@@ -87,7 +90,8 @@ it('wil get the details of a product', function () {
     expect($test_order_item->getPrice())->toBe($variable_product->getPrice($product_data));
     expect($test_order_item->getName())->toBe($variable_product->getName($product_data));
     expect($test_order_item->getCost())->toBe($variable_product->getPrice($product_data) * 2);
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderItem::class);
 
 it('will not change values of product after being created as an order', function () {
 
@@ -116,4 +120,5 @@ it('will not change values of product after being created as an order', function
     expect($test_order_item->getName())->toBe('A Simple Product');
     expect($test_order_item->getCost())->toBe(3998);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderItem::class);

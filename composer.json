@@ -40,19 +40,19 @@
         }
     },
     "require-dev": {
-        "orchestra/testbench": "^7.5",
-        "phpunit/phpunit": "^9.5",
-        "pestphp/pest": "^1.21",
-        "pestphp/pest-plugin-laravel": "^1.2",
-        "orchestra/testbench-dusk": "^7.8",
-        "laravel/framework": "^9.34",
-        "pestphp/pest-plugin-livewire": "^1.0"
+        "orchestra/testbench": "^8.0",
+        "phpunit/phpunit": "^10.0",
+        "pestphp/pest": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "laravel/framework": "^10.0",
+        "pestphp/pest-plugin-livewire": "^2.0",
+        "laravel/sail": "^1.21"
     },
     "scripts": {
         "post-autoload-dump": [
             "@php ./vendor/bin/testbench package:discover --ansi"
         ],
-        "coverage": "XDEBUG_MODE=coverage ./vendor/bin/pest --coverage --coverage-html ./coverage --path-coverage"
+        "coverage" : "sail php ./vendor/bin/pest -p6 --verbose --runner=WrapperRunner --coverage-html ./coverage -c ./phpunit.xml"
     },
     "require": {
         "spatie/data-transfer-object": "^3.8",

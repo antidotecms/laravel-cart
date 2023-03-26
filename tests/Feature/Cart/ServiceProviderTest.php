@@ -5,6 +5,9 @@ namespace Tests\Feature\Cart;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * @covers \Antidote\LaravelCart\ServiceProvider
+ */
 class ServiceProviderTest extends \Orchestra\Testbench\TestCase
 {
     use RefreshDatabase;

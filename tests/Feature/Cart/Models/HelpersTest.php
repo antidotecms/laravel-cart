@@ -7,4 +7,5 @@ it('will return the correct class', function() {
     $class_name = getClassNameFor('product');
 
     expect($class_name)->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct::class);
-});
+})
+->coversFunction('getClassNameFor');

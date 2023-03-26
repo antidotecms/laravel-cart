@@ -21,7 +21,8 @@ test('a product type has a product', function()
 
     expect(get_class($product_data->product))->toBe(TestProduct::class);
     expect($product_data->product->id)->toBe($product->id);
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Product::class);
 
 it('it can create a product and associated product data', function()
 {
@@ -42,7 +43,8 @@ it('it can create a product and associated product data', function()
     $this->assertEquals('A Simple Product', $product->getName());
     $this->assertEquals('It\'s really very simple', $product->getDescription());
     $this->assertEquals(100, $product->getPrice());
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Product::class);
 
 it('can utilize product data to determine name, price and specification', function()
 {
@@ -69,7 +71,8 @@ it('can utilize product data to determine name, price and specification', functi
         'height' => 10
     ]));
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Product::class);
 
 it('products_will_return_the_correct_name_and_price', function () {
 
@@ -111,7 +114,8 @@ it('products_will_return_the_correct_name_and_price', function () {
     //$this->assertEquals('A Variable Product with width of 20 and height of 10', $variable_product->getName($product_data));
     //$this->assertEquals(200, $variable_product->getPrice($specification));
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Product::class);
 
 it('will soft delete, force delete and restore product data type when soft deleted, force deleted and restored', function() {
 
@@ -151,7 +155,8 @@ it('will soft delete, force delete and restore product data type when soft delet
     expect(TestProduct::count())->toBe(0)
         ->and(VariableProductDataType::count())->toBe(0);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Product::class);
 
 it('will not allow soft deletion of a product type if the product is not soft deleted', function () {
 
@@ -187,7 +192,8 @@ it('will not allow soft deletion of a product type if the product is not soft de
     expect(TestProduct::count())->toBe(0)
         ->and(VariableProductDataType::count())->toBe(0);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Product::class);
 
 it('will not allow restoration of a product data type if the product is soft deleted', function() {
 
@@ -207,7 +213,8 @@ it('will not allow restoration of a product data type if the product is soft del
 
     expect(TestProduct::count())->toBe(1)
         ->and(VariableProductDataType::count())->toBe(1);
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Product::class);
 
 it('will defer an attribute to the product data type', function() {
 
@@ -218,7 +225,8 @@ it('will defer an attribute to the product data type', function() {
 
     expect($product->getName())->toBe('A Simple Product')
         ->and($product->getDescription())->toBe('This Description');
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\Product::class);
 
 it('will throw an exception if a deferred attribute is not defined', function () {
 
@@ -229,4 +237,5 @@ it('will throw an exception if a deferred attribute is not defined', function ()
 
     $product->getFoo();
 })
+->coversClass(\Antidote\LaravelCart\Models\Product::class)
 ->throws(Exception::class, "Define 'getFoo' on ".SimpleProductDataType::class);

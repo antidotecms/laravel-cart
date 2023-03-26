@@ -30,7 +30,8 @@ it('automatically populates the fillable fields', function () {
         'apply_to_subtotal'
     ]);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderAdjustment::class);
 
 it('populates the casts', function () {
 
@@ -38,7 +39,8 @@ it('populates the casts', function () {
 
     expect($test_order_adjustment->getCasts())->toHaveKey('original_parameters');
     expect($test_order_adjustment->getCasts()['original_parameters'])->toBe('array');
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderAdjustment::class);
 
 it('will add a discount to the order', function () {
 
@@ -100,7 +102,8 @@ it('will add a discount to the order', function () {
     expect($order->getAdjustmentTotal(false))->toBe(0);
     expect($order->total)->toBe(1080); // 1000 with 10% off plus tax at 20%
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderAdjustment::class);
 
 it('will remove a discount if there are no order items', function () {
 
@@ -155,7 +158,8 @@ it('will remove a discount if there are no order items', function () {
     $order->refresh();
 
     expect($order->adjustments->count())->toBe(0);
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderAdjustment::class);
 
 it('will show potential discounts in the cart', function () {
 
@@ -177,4 +181,5 @@ it('will show potential discounts in the cart', function () {
     ]);
 
     expect(\Antidote\LaravelCart\Facades\Cart::getTotal())->toBe(900);
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderAdjustment::class);

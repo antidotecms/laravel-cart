@@ -14,6 +14,9 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
+/**
+ * @covers \Antidote\LaravelCartStripe\Components\StripeCheckoutClientScriptComponent
+ */
 class StripeCheckoutClientScriptTest extends TestCase
 {
     use RefreshDatabase;

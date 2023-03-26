@@ -34,7 +34,8 @@ it('will replace the contents of the cart with an incomplete order', function() 
 
     expect(Cart::items()->count())->toBe(1);
     expect(Cart::items()->first()->getProduct()->name)->toBe('Product in old order');
-});
+})
+->coversClass(\Antidote\LaravelCart\Http\Controllers\OrderController::class);
 
 it('will add the contents of the cart with an incomplete order', function() {
 
@@ -66,4 +67,5 @@ it('will add the contents of the cart with an incomplete order', function() {
 
     expect(Cart::items()->count())->toBe(2);
     //expect(Cart::items()->first()->getProduct()->name)->toBe('Product in old order');
-});
+})
+->coversClass(\Antidote\LaravelCart\Http\Controllers\OrderController::class);

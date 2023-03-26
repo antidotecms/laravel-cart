@@ -37,7 +37,8 @@ it('can add a product to the cart', function() {
 
     $this->assertEquals($product_data, Cart::items()->first());
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will get a cart items cost', function() {
 
@@ -74,7 +75,8 @@ it('will get a cart items cost', function() {
 
     expect(Cart::items()->first()->getCost())->toBe(600);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('can add a product and specify quantity', function () {
 
@@ -95,7 +97,8 @@ it('can add a product and specify quantity', function () {
     $this->assertEquals(3, Cart::items()->first()->quantity);
     $this->assertEquals(6000, Cart::items()->first()->getCost());
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('can remove a product by product id', function () {
 
@@ -123,7 +126,8 @@ it('can remove a product by product id', function () {
 
     $this->assertEquals(0, Cart::items()->count());
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('it can remove a product by product id and product data', function () {
 
@@ -171,7 +175,8 @@ it('it can remove a product by product id and product data', function () {
     ]);
 
     $this->assertEquals($expected_product, Cart::items()->first());
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('it can remove a product by product id and product data specifying quantity', function () {
 
@@ -197,7 +202,8 @@ it('it can remove a product by product id and product data specifying quantity',
     $this->assertEquals(1, Cart::items()->count());
     $this->assertEquals(3, Cart::items()->first()->quantity);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('can clear the contents of the cart', function () {
 
@@ -223,7 +229,8 @@ it('can clear the contents of the cart', function () {
 
     $this->assertEquals(0, Cart::items()->count());
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('provide the subtotal', function () {
 
@@ -257,7 +264,8 @@ it('provide the subtotal', function () {
 
     $this->assertEquals(2300, Cart::getSubtotal());
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('provides the correct subtotal when a price of a product is calculated', function () {
 
@@ -289,7 +297,8 @@ it('provides the correct subtotal when a price of a product is calculated', func
 
     $this->assertEquals(2400, Cart::getSubtotal());
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will state whether a product is in the cart', function () {
 
@@ -320,7 +329,8 @@ it('will state whether a product is in the cart', function () {
     $this->assertTrue(Cart::isInCart($complex_product->id));
     $this->assertFalse(Cart::isInCart($simple_product->id));
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('can add a product with product data', function () {
 
@@ -348,7 +358,8 @@ it('can add a product with product data', function () {
     $this->assertTrue(Cart::isInCart($variable_product->id));
     $this->assertEquals(100, Cart::getSubtotal());
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will increment the quantity of a cart item if the cart already has a product with the same data', function()
 {
@@ -405,7 +416,8 @@ it('will increment the quantity of a cart item if the cart already has a product
     $this->assertEquals(2, Cart::items()->first()->quantity);
     $this->assertEquals(1, Cart::items()->skip(1)->first()->quantity);
     $this->assertEquals(1, Cart::items()->skip(2)->first()->quantity);
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will amend the quantity of a cart item', function () {
 
@@ -434,7 +446,8 @@ it('will amend the quantity of a cart item', function () {
 
     $this->assertEquals(3, Cart::items()->first()->quantity);
     $this->assertEquals(1, Cart::items()->skip(1)->first()->quantity);
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will remove a product if it is asked to remove more than is in the cart', function () {
 
@@ -460,7 +473,8 @@ it('will remove a product if it is asked to remove more than is in the cart', fu
     Cart::remove($variable_product, 2, $product_data);
 
     $this->assertEquals(0, Cart::items()->count());
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will add two cart items if the product data is different', function () {
 
@@ -496,7 +510,8 @@ it('will add two cart items if the product data is different', function () {
 
     expect(Cart::items()->count())->toBe(2);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 test('the facade will throw an error if the method does not exist', function () {
 
@@ -504,7 +519,8 @@ test('the facade will throw an error if the method does not exist', function () 
 
     Cart::nonExistantMethod();
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will not allow adding a product with a negative quantity', function() {
 
@@ -512,6 +528,7 @@ it('will not allow adding a product with a negative quantity', function() {
 
     Cart::add($product, -1);
 })
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class)
 ->throws(InvalidArgumentException::class, 'Quantity must be greater than or equal to one');
 
 it('will not allow adding a product without a product type', function() {
@@ -520,6 +537,7 @@ it('will not allow adding a product without a product type', function() {
 
     Cart::add($product, 1);
 })
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class)
 ->throws(InvalidArgumentException::class, 'Product has no product data type associated');
 
 it('will not allow a product to be added if it is invalid', function () {
@@ -533,6 +551,7 @@ it('will not allow a product to be added if it is invalid', function () {
 
     expect(Cart::items()->count())->toBe(0);
 })
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class)
 ->throws(InvalidArgumentException::class, 'The cart item is invalid');
 
 it('will throw an exception if the amount is out of bounds', function () {
@@ -550,6 +569,7 @@ it('will throw an exception if the amount is out of bounds', function () {
     //expect($result)->toBeFalse();
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(0);
 })
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class)
 ->throws(\Exception::class, 'The order total must be greater than £0.30 and less that £999,999.99');
 
 it('can add a note to the cart', function () {
@@ -567,7 +587,8 @@ it('can add a note to the cart', function () {
     expect(Cart::getData('note'))->toBe('this is a note');
 
     expect(Cart::getData('non_existant'))->toBe('');
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('can return all data', function () {
 
@@ -583,7 +604,8 @@ it('can return all data', function () {
     Cart::addData('another_note', 'this is another note');
 
     expect(count(Cart::getData()))->toBe(2);
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('can add a note to the order', function () {
 
@@ -602,7 +624,8 @@ it('can add a note to the order', function () {
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
     expect(\Antidote\LaravelCart\Models\Order::first()->getData('additional_field'))->toBe('this is a note');
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will add order adjustments to the order when creating an order', function () {
 
@@ -648,9 +671,11 @@ it('will add order adjustments to the order when creating an order', function ()
     expect($order_adjustment->apply_to_subtotal)->toBeTruthy();
     expect($order->getSubtotal())->toBe(1000);
     expect($order->total)->toBe(1080); //900 * 1.2 - 0.2 tax rate
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will update adjustments if an order has not been completed and items added back into the cart', function () {
 
     $this->markTestIncomplete('To Do');
-});
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);

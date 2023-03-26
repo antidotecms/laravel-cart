@@ -17,4 +17,5 @@ it('has an order log item', function() {
 
     expect($order->logItems()->count())->toBe(1);
     expect($order->logItems()->first()->message)->toBe('test log item');
-});
+})
+->coversClass(\Antidote\LaravelCart\Models\OrderLogItem::class);

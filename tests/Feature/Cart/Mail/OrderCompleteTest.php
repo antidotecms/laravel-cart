@@ -21,4 +21,5 @@ it('will display the order details', function() {
     $mailable = new \Antidote\LaravelCart\Mail\OrderComplete($order);
 
     $mailable->assertSeeInHtml('Please override config with a custom mailable.');
-});
+})
+->coversClass(\Antidote\LaravelCart\Mail\OrderComplete::class);

@@ -12,7 +12,8 @@ it('will prevent access to stripe webhook path if in maintenance', function() {
 
     app()->maintenanceMode()->deactivate();
 
-});
+})
+->coversClass(\Antidote\LaravelCartStripe\Http\Middleware\AllowStripeWebhooksDuringMaintenance::class);
 
 it('will allow access to the stripe webhook path if in maintenance', function () {
 
@@ -31,4 +32,5 @@ it('will allow access to the stripe webhook path if in maintenance', function ()
     $this->assertTrue($response);
 
     app()->maintenanceMode()->deactivate();
-});
+})
+->coversClass(\Antidote\LaravelCartStripe\Http\Middleware\AllowStripeWebhooksDuringMaintenance::class);

@@ -13,8 +13,12 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase;
 
+/**
+ * @covers \Antidote\LaravelCart\Http\Controllers\OrderCompleteController
+ */
 class OrderCompleteControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -74,7 +78,8 @@ class OrderCompleteControllerTest extends TestCase
     protected function getPackageProviders($app)
     {
         return [
-            ServiceProvider::class
+            ServiceProvider::class,
+            LivewireServiceProvider::class
         ];
     }
 

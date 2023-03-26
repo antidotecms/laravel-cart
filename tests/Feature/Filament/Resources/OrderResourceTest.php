@@ -4,6 +4,7 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
 use function Pest\Livewire\livewire;
 
+
 it('will list the orders', function () {
 
 //    Config::set('laravel-cart.classes.order', Order::class);
@@ -30,7 +31,8 @@ it('will list the orders', function () {
 
     livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders::class)
         ->assertCanSeeTableRecords($orders);
-});
+})
+->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
 
 it('can render the edit page', function () {
 
@@ -62,7 +64,8 @@ it('can render the edit page', function () {
     ]))->assertSuccessful();
 
     //dump($response);
-});
+})
+->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
 
 it('will allow sending an order confirmation mail again', function() {
 
@@ -87,7 +90,8 @@ it('will allow sending an order confirmation mail again', function() {
     \Illuminate\Support\Facades\Event::assertDispatched(\Antidote\LaravelCart\Events\OrderCompleted::class);
 
     //expect($order->logitems->count())->toBe(1);
-});
+})
+->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
 
 it('has the required fields', function () {
 
@@ -120,4 +124,5 @@ it('has the required fields', function () {
         'tax' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($order->tax/100, 'GBP'),
         'status' => $order->status
     ]);
-});
+})
+->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);

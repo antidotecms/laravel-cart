@@ -6,6 +6,7 @@ use Antidote\LaravelCart\Events\OrderCompleted;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use Stripe\Exception\UnexpectedValueException;
 use Stripe\Stripe;
 use Stripe\Webhook;
 
@@ -13,22 +14,20 @@ class StripeWebhookController extends Controller
 {
     public function __invoke(Request $request)
     {
-        //@todo mock here rather than do this
-        //if(!app()->environment('testing')) {
-            Stripe::setApiKey(config('laravel-cart.stripe.secret_key'));
-            $signature_header = $request->header('Stripe-Signature');
-            $stripe_payment_intent_webhook_secret = config('laravel-cart.stripe.webhook_secret');
-        //}
+        Stripe::setApiKey(config('laravel-cart.stripe.secret_key'));
+        $signature_header = $request->header('Stripe-Signature');
+        $stripe_payment_intent_webhook_secret = config('laravel-cart.stripe.webhook_secret');
         $payload = $request->getContent();
 
         try {
-//            if(!app()->environment('testing')) {
-                $event = Webhook::constructEvent($payload, $signature_header, $stripe_payment_intent_webhook_secret);
-//            } else {
-//                $event = json_decode($payload);
-//            }
+            $event =  Webhook::constructEvent($payload, $signature_header, $stripe_payment_intent_webhook_secret);
         }
         catch(\Stripe\Exception\SignatureVerificationException $e)
+        {
+            Log::info($e->getMessage());
+            return response('', 400);
+        }
+        catch(UnexpectedValueException $e)
         {
             Log::info($e->getMessage());
             return response('', 400);
@@ -40,68 +39,53 @@ class StripeWebhookController extends Controller
             return response('', 400);
         }
 
-        $order = getClassNameFor('order')::where('id', $event->data->object->metadata->order_id)->first();
-
         $this->logStripeEvent($event);
 
-        switch($event->type) {
+        $this->handleEvent($event);
+    }
 
-            case "payment_intent.created":
-                $order_log_item = $order->log('Stripe Payment Intent Created');
-                $order_log_item->event  = $event;
-                $order_log_item->save();
+    private function handleEvent(\stdClass $event)
+    {
+        $order = getClassNameFor('order')::where('id', $event->data->object->metadata->order_id)->first();
 
+        match($event->type) {
+            'payment_intent.created' => call_user_func(function() use ($event, $order) {
+                $this->createOrderLogItem('Stripe Payment Intent Created', $event, $order);
                 $order->setData('payment_intent_id', $event->data->object->id);
-                $order->status = $event->data->object->status;
-                $order->save();
-            break;
+                $this->updateOrderStatus($event, $order);
+            }),
+            'payment_intent.succeeded' => call_user_func(function() use ($event, $order) {
+                $this->createOrderLogItem('Stripe Payment Intent Succeeded', $event, $order);
+                $this->updateOrderStatus($event, $order);
+            }),
+            'payment_intent.canceled' => call_user_func(function() use ($event, $order) {
+                $this->createOrderLogItem('Stripe Payment Intent Cancelled', $event, $order);
+                $this->updateOrderStatus($event, $order);
+            }),
+            'payment_intent.payment_failed' => call_user_func(function() use ($event, $order) {
+                $this->createOrderLogItem('Stripe Payment Intent Failed', $event, $order);
+                $this->updateOrderStatus($event, $order);
+            }),
+            'charge.succeeded' => call_user_func(function() use ($event, $order) {
+                $this->createOrderLogItem('Stripe Charge Succeeded', $event, $order);
+                $this->updateOrderStatus($event, $order);
+                event(new OrderCompleted($order));
+            }),
+            default => $this->createOrderLogItem('Unknown Event', $event, $order)
+        };
+    }
 
-            case "payment_intent.succeeded":
-                $order_log_item = $order->log('Stripe Payment Intent Succeeded');
-                $order_log_item->event  = $event;
-                $order_log_item->save();
+    private function createOrderLogItem($event_name, $event, $order)
+    {
+        $order_log_item = $order->log($event_name);
+        $order_log_item->event  = $event;
+        $order_log_item->save();
+    }
 
-                $order->status = $event->data->object->status;
-                $order->save();
-            break;
-
-            case 'payment_intent.canceled':
-                $order_log_item = $order->log('Stripe Payment Intent Canceled');
-                $order_log_item->event  = $event;
-                $order_log_item->save();
-
-                $order->status = $event->data->object->status;
-                $order->save();
-            break;
-
-            case 'payment_intent.payment_failed':
-                $order_log_item = $order->log('Stripe Payment Intent Failed');
-                $order_log_item->event  = $event;
-                $order_log_item->save();
-
-                $order->status = $event->data->object->status;
-                $order->save();
-            break;
-
-            case "charge.succeeded":
-                //order successful
-                $order_log_item = $order->log('Stripe Charge Succeeded');
-                $order_log_item->event  = $event;
-                $order_log_item->save();
-
-                $order->status = $event->data->object->status;
-                $order->save();
-
-                //send emails
-            event(new OrderCompleted($order));
-            break;
-
-            default:
-                $order_log_item = $order->log('Unknown Event');
-                $order_log_item->event  = $event;
-                $order_log_item->save();
-            break;
-        }
+    private function updateOrderStatus($event, $order)
+    {
+        $order->status = $event->data->object->status;
+        $order->save();
     }
 
     private function logStripeEvent($event)

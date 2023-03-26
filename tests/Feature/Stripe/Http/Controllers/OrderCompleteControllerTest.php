@@ -7,6 +7,9 @@ use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 
+/**
+ * @covers \Antidote\LaravelCart\Http\Controllers\OrderCompleteController
+ */
 class OrderCompleteControllerTest extends \Antidote\LaravelCart\Tests\TestCase
 {
     /**

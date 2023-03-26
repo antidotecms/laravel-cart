@@ -17,6 +17,9 @@ use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 
+/**
+ * @covers \Antidote\LaravelCartStripe\Domain\PaymentIntent
+ */
 class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 {
     use RefreshDatabase;

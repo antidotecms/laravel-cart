@@ -20,7 +20,8 @@ it('will list the customers', function() {
     livewire(\Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\ListCustomers::class)
         ->assertCanSeeTableRecords($customers);
 
-});
+})
+->coversClass(\Antidote\LaravelCartFilament\Resources\CustomerResource::class);
 
 it('can render the edit page', function () {
 
@@ -39,7 +40,8 @@ it('can render the edit page', function () {
     ]))->assertSuccessful();
 
     //dump($response);
-});
+})
+->coversClass(\Antidote\LaravelCartFilament\Resources\CustomerResource::class);
 
 it('has the required fields', function () {
 
@@ -55,4 +57,5 @@ it('has the required fields', function () {
             'name' => $customer->name,
             'email' => $customer->email
         ]);
-});
+})
+->coversClass(\Antidote\LaravelCartFilament\Resources\CustomerResource::class);
