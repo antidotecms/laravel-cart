@@ -46,13 +46,16 @@
         "pestphp/pest-plugin-laravel": "^2.0",
         "laravel/framework": "^10.0",
         "pestphp/pest-plugin-livewire": "^2.0",
-        "laravel/sail": "^1.21"
+        "laravel/sail": "^1.21",
+        "phpstan/phpstan": "^1.10",
+        "nunomaduro/larastan": "^2.0"
     },
     "scripts": {
         "post-autoload-dump": [
             "@php ./vendor/bin/testbench package:discover --ansi"
         ],
-        "coverage" : "sail php ./vendor/bin/pest -p6 --verbose --runner=WrapperRunner --coverage-html ./coverage -c ./phpunit.xml"
+        "coverage" : "sail php ./vendor/bin/pest -p6 --verbose --runner=WrapperRunner --coverage-html ./coverage -c ./phpunit.xml",
+        "phpstan": "./vendor/bin/phpstan analyse"
     },
     "require": {
         "spatie/data-transfer-object": "^3.8",
