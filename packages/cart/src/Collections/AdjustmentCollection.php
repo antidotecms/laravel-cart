@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class AdjustmentCollection extends Collection
 {
-    public function appliedToSubtotal()
+    public function appliedToSubtotal() : Collection
     {
         return $this->filter(function (OrderAdjustment|Adjustment $adjustment) {
             return $adjustment->apply_to_subtotal;
