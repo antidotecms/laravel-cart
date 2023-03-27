@@ -7,6 +7,7 @@ use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 
 class OrderFactory extends Factory
 {
@@ -23,7 +24,8 @@ class OrderFactory extends Factory
 
     public function withProduct(Product $product, $quantity = 1, $product_data = [])
     {
-        return $this->afterCreating(function(Order $order) use ($product, $quantity, $product_data) {
+        return $this->afterCreating(function(Model $order) use ($product, $quantity, $product_data) {
+            /** @var Order $order */
             OrderItem::factory()->create([
                 'name' => $product->getName($product_data),
                 'product_id' => $product->id,

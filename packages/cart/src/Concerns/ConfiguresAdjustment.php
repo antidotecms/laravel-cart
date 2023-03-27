@@ -5,6 +5,12 @@ namespace Antidote\LaravelCart\Concerns;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Str;
 
+/**
+ * @property string $class
+ * @property array $parameters
+ * @property int $calculated_amount
+ */
+
 trait ConfiguresAdjustment
 {
     public function getTable()
@@ -31,7 +37,7 @@ trait ConfiguresAdjustment
     //@todo is this used/needed?
     public function order_adjustment()
     {
-        return $this->morphOne(config('laravel-cart.classes.order_adjustment'));
+        return $this->morphOne(config('laravel-cart.classes.order_adjustment'), 'order_adjustment');
     }
 
 
@@ -67,8 +73,8 @@ trait ConfiguresAdjustment
     private function getMethodOnAdjustmentIfDefined($attribute, $value)
     {
         if(method_exists($this->class, $attribute)) {
-            $attribute = Str::of($attribute)->studly()->lcfirst();
-            return (new $this->class)->{$attribute->value}($this->parameters);
+            $attribute = Str::of($attribute)->studly()->lcfirst()->value();
+            return (new $this->class)->{$attribute}($this->parameters);
         } else {
             return $value;
         }

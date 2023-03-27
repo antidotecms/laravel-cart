@@ -5,6 +5,14 @@ namespace Antidote\LaravelCart\Concerns;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Str;
 
+/**
+ * @property bool $apply_to_subtotal
+ * @property bool $is_valid
+ * @property bool $is_active
+ * @property string $class
+ * @property array $original_parameters
+ * @property int $amount
+ */
 trait ConfiguresOrderAdjustment
 {
     public function getTable()
@@ -54,8 +62,8 @@ trait ConfiguresOrderAdjustment
     private function getMethodOnAdjustmentIfDefined($attribute, $value)
     {
         if(method_exists($this->class, $attribute)) {
-            $attribute = Str::of($attribute)->studly()->lcfirst();
-            return (new $this->class)->{$attribute->value}($this->original_parameters);
+            $attribute = Str::of($attribute)->studly()->lcfirst()->value();
+            return (new $this->class)->{$attribute}($this->original_parameters);
         } else {
             return $value;
         }

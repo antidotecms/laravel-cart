@@ -10,9 +10,6 @@ use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Types\ValidCartItem;
 use Illuminate\Support\Collection;
 
-/**
- * @method
- */
 class Cart
 {
     public function __call($method, $arguments) : mixed
@@ -69,13 +66,13 @@ class Cart
         else
         {
 
-            $cart_items->filter(function($cart_item) use ($product, $quantity, $product_data) {
+            $cart_items->filter(function($cart_item) use ($product, $product_data) {
                     return $cart_item->getProduct()->product_type_type == get_class($product->productType) &&
                         $cart_item->product_id == $product->id &&
                         $cart_item->product_data == $product_data;
                 })
-                ->whenNotEmpty(function($collection) use ($quantity, $cart_items, $product_data) {
-                    return $collection->map(function($cart_item) use ($quantity, $product_data) {
+                ->whenNotEmpty(function($collection) use ($quantity) {
+                    return $collection->map(function($cart_item) use ($quantity) {
                         //if($cart_item->product_data == $product_data) {
                             $cart_item->quantity +=  $quantity;
                         //}
@@ -282,7 +279,7 @@ class Cart
 
             $order->save();
 
-            static::setActiveOrder($order);
+            self::setActiveOrder($order);
 
             return $order;
         }
