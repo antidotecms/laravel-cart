@@ -12,7 +12,8 @@ it('will return those adjustments which should be applied to the subtotal', func
     ]);
 
     expect(\Antidote\LaravelCart\Models\Adjustment::all()->appliedToSubtotal()->count())->toBe(1);
-});
+})
+->coversClass(\Antidote\LaravelCart\Collections\AdjustmentCollection::class);
 
 it('will return those adjustments which should be applied to the total', function() {
 
@@ -27,7 +28,8 @@ it('will return those adjustments which should be applied to the total', functio
 
     expect(\Antidote\LaravelCart\Models\Adjustment::all()->appliedToTotal()->count())->toBe(1);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Collections\AdjustmentCollection::class);
 
 it('will return those adjustments which are valid', function() {
 
@@ -42,7 +44,8 @@ it('will return those adjustments which are valid', function() {
 
     expect(\Antidote\LaravelCart\Models\Adjustment::all()->valid()->count())->toBe(1);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Collections\AdjustmentCollection::class);
 
 it('will return those adjustments which are active', function() {
 
@@ -57,4 +60,5 @@ it('will return those adjustments which are active', function() {
 
     expect(\Antidote\LaravelCart\Models\Adjustment::all()->active()->count())->toBe(1);
 
-});
+})
+->coversClass(\Antidote\LaravelCart\Collections\AdjustmentCollection::class);
