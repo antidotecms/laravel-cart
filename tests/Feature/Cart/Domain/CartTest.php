@@ -129,6 +129,36 @@ it('can remove a product by product id', function () {
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
+it('can remove a product by product id specifying quantity', function () {
+
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+
+    $product_data = SimpleProductDataType::create([
+        'price' => '2000'
+    ]);
+
+    $product = TestProduct::create([
+        'name' => 'A Simple Product',
+    ]);
+
+    $product->productType()->associate($product_data);
+    $product->save();
+
+    $this->be($customer, 'customer');
+
+    Cart::add($product, 3);
+
+    $this->assertEquals(1, Cart::items()->count());
+    $this->assertEquals(3, Cart::items()->first()->quantity);
+
+    Cart::remove($product, 2);
+    //$customer->refresh();
+
+    $this->assertEquals(1, Cart::items()->first()->quantity);
+
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
+
 it('it can remove a product by product id and product data', function () {
 
     $variable_product_data_type1 = VariableProductDataType::create();
@@ -204,6 +234,84 @@ it('it can remove a product by product id and product data specifying quantity',
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
+
+it('will remove an item completely with just product data', function () {
+
+    $variable_product_data_type1 = VariableProductDataType::create();
+
+    $variable_product1 = TestProduct::create([
+        'name' => 'A variable product'
+    ]);
+
+    $variable_product1->productType()->associate($variable_product_data_type1);
+    $variable_product1->save();
+
+    Cart::add($variable_product1, product_data: [
+        'width' => 10,
+        'height' => 10
+    ]);
+
+    expect(Cart::items()->count())->toBe(1);
+
+    Cart::remove($variable_product1, product_data: [
+        'width' => 10,
+        'height' => 20
+    ]);
+
+    expect(Cart::items()->count())->toBe(1);
+
+    Cart::remove($variable_product1, product_data: [
+        'width' => 10,
+        'height' => 10
+    ]);
+
+    expect(Cart::items()->count())->toBe(0);
+});
+
+it('will not remove an item if it is not in the cart', function () {
+
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+
+    $product_data = SimpleProductDataType::create([
+        'price' => '2000'
+    ]);
+
+    $product = TestProduct::create([
+        'name' => 'A Simple Product',
+    ]);
+
+    $product2 = TestProduct::create([
+        'name' => 'Another Simple Product',
+    ]);
+
+    $product->productType()->associate($product_data);
+    $product->save();
+
+    $this->be($customer, 'customer');
+
+    Cart::add($product, 3);
+
+    $this->assertEquals(1, Cart::items()->count());
+    $this->assertEquals(3, Cart::items()->first()->quantity);
+
+    Cart::remove($product2, 2);
+    //$customer->refresh();
+
+    $this->assertEquals(3, Cart::items()->first()->quantity);
+});
+
+it('will not remove an item if the cart is empty', function () {
+
+    $product = TestProduct::create([
+        'name' => 'A Simple Product',
+    ]);
+
+    expect(Cart::items()->count())->toBe(0);
+
+    Cart::remove($product);
+
+    expect(Cart::items()->count())->toBe(0);
+});
 
 it('can clear the contents of the cart', function () {
 
@@ -679,3 +787,85 @@ it('will update adjustments if an order has not been completed and items added b
     $this->markTestIncomplete('To Do');
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
+
+it('will set the active order with the id', function () {
+
+    $product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1000
+    ])->create();
+
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for($customer)
+        ->withProduct($product)
+        ->create();
+
+    expect($order->customer->name)->toBe($customer->name);
+
+    expect(Cart::getActiveOrder())->toBeNull();
+
+    Cart::setActiveOrder($order->id);
+
+    expect(Cart::getActiveOrder())->not()->toBeNull();
+
+    expect(Cart::getActiveOrder())->toBeInstanceOf(\Antidote\LaravelCart\Models\Order::class);
+
+    expect(Cart::getActiveOrder()->id)->toBe($order->id);
+});
+
+it('will set the active order with the order object', function () {
+
+    $product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1000
+    ])->create();
+
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for($customer)
+        ->withProduct($product)
+        ->create();
+
+    expect($order->customer->name)->toBe($customer->name);
+
+    expect(Cart::getActiveOrder())->toBeNull();
+
+    Cart::setActiveOrder($order);
+
+    expect(Cart::getActiveOrder())->not()->toBeNull();
+
+    expect(Cart::getActiveOrder())->toBeInstanceOf(\Antidote\LaravelCart\Models\Order::class);
+
+    expect(Cart::getActiveOrder()->id)->toBe($order->id);
+});
+
+it('will clear the active order', function () {
+
+    $product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1000
+    ])->create();
+
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for($customer)
+        ->withProduct($product)
+        ->create();
+
+    expect($order->customer->name)->toBe($customer->name);
+
+    expect(Cart::getActiveOrder())->toBeNull();
+
+    Cart::setActiveOrder($order);
+
+    expect(Cart::getActiveOrder())->not()->toBeNull();
+
+    expect(Cart::getActiveOrder())->toBeInstanceOf(\Antidote\LaravelCart\Models\Order::class);
+
+    expect(Cart::getActiveOrder()->id)->toBe($order->id);
+
+    Cart::setActiveOrder(null);
+
+    expect(Cart::getActiveOrder())->toBeNull();
+});

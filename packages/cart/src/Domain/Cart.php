@@ -7,6 +7,7 @@ use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderAdjustment;
+use Antidote\LaravelCart\Models\Product;
 use Antidote\LaravelCart\Types\ValidCartItem;
 use Illuminate\Support\Collection;
 
@@ -98,35 +99,51 @@ class Cart
      * @param $quantity int of products to remove. If null, all specified products are removed.
      * @return void
      */
-    private function remove($product, $quantity = null, $product_data = null) : void
+    private function remove(Product $product, $quantity = null, $product_data = null) : void
     {
         $cart_items = $this->items();
 
-        $cart_items->transform(function($cart_item) use ($product, $quantity, $product_data) {
+        if($this->isInCart($product->id)) {
 
-            if ($cart_item->product_id == $product->id && !$product_data)
-            {
-                $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
-            }
-            elseif ($cart_item->product_id == $product->id && $product_data && $cart_item->product_data == $product_data)
-            {
-                $cart_item->quantity -= ($quantity ?? $cart_item->quantity);
-            }
+            //remove entirely
+            $cart_items = $cart_items->reject(function($cart_item) use ($product, $quantity, $product_data) {
 
-            return $cart_item;
-        });
+                $useProductData = !$product_data ?: $cart_item->product_data == $product_data;
+                $useQuantity = !$quantity ?: $cart_item->quantity <= $quantity;
 
-        $cart_items = $cart_items->reject(function($cart_item) {
-             return $cart_item->quantity <= 0;
-        });
+                return $cart_item->product_id == $product->id
+                    && $useProductData
+                    && $useQuantity;
+            });
 
+            //remove specific amount
+            $cart_items->transform(function($cart_item) use ($product, $quantity, $product_data) {
+                if($cart_item->product_id == $product->id
+                    && (!$product_data ?: $cart_item->product_data == $product_data)) {
+                    $cart_item->quantity -= $quantity;
+                }
+
+                return $cart_item;
+            });
+
+
+            $cart_items = $cart_items->reject(function($cart_item) {
+                return $cart_item->quantity <= 0;
+            });
+
+            $this->clearOrderAdjustments($cart_items);
+
+            session()->put('cart_items', $cart_items->toArray());
+        }
+    }
+
+    private function clearOrderAdjustments($cart_items)
+    {
         if(!$cart_items->count() && $this->getActiveOrder()) {
             config('laravel-cart.classes.order_adjustment')::where('order_id', $this->getActiveOrder()->id)->delete();
             $order = $this->getActiveOrder()->fresh();
             $this->setActiveOrder($order);
         }
-
-        session()->put('cart_items', $cart_items->toArray());
     }
 
     /**
@@ -173,9 +190,11 @@ class Cart
 
     private function getValidAdjustments(bool $applied_to_subtotal) : Collection
     {
-        $class = $this->getActiveOrder() && $this->getActiveOrder()->isCompleted()
-            ? config('laravel-cart.classes.order_adjustment')
-            : config('laravel-cart.classes.adjustment');
+//        $class = $this->getActiveOrder() && $this->getActiveOrder()->isCompleted()
+//            ? config('laravel-cart.classes.order_adjustment')
+//            : config('laravel-cart.classes.adjustment');
+
+        $class = config('laravel-cart.classes.adjustment');
 
         return $class::all()
             ->when($this->getActiveOrder(), function($query) {
@@ -214,79 +233,86 @@ class Cart
     /**
      * @param Customer $customer
      * @return Order|bool a created or false if no order created
+     * @throws \Exception
      */
     private function createOrder(Customer $customer) : Order | bool
     {
-        if(Cart::getTotal() >= 30 && Cart::getTotal() <= 99999999) {
-            // create an order
-            $order_class = getClassNameFor('order');
-
-            $order = Cart::getActiveOrder() ?? $order_class::create([
-                    'customer_id' => $customer->id
-                ]);
-
-//            $order = $order_class::create([
-//                $customer->getForeignKey() => $customer->id
-//            ]);
-
-            $order->items()->delete();
-
-            $cart_items = Cart::items();
-
-            $cart_items->each(function ($cart_item) use ($order) {
-                //$product_key = getKeyFor('product');
-                $order->items()->create([
-                    'name' => $cart_item->getProduct()->getName($cart_item->product_data),
-                    'product_id'=> $cart_item->product_id,
-                    'product_data' => $cart_item->product_data,
-                    'price' => $cart_item->getProduct()->getPrice($cart_item->product_data),
-                    'quantity' => $cart_item->quantity
-                ]);
-            });
-
-//            $validDiscounts = $this->getValidAdjustments();
-//
-//            $validDiscounts->each(function (CartAdjustment $adjustment) use ($order) {
-//                $order->adjustments()->create([
-//                    'name' => $adjustment->name,
-//                    'class' => $adjustment->class,
-//                    'parameters' => $adjustment->parameters,
-//                    getKeyFor('order') => $order->id
-//                ]);
-//            });
-
-            //saving additional cart/order data
-            //@todo possibly expand to allow "hooks" or events to trigger methods depending on keys/values set?
-            $cart_data = Cart::getData();
-
-            foreach($cart_data as $key => $value)
-            {
-                $order->setData($key, $value);
-            }
-
-            //@todo convert cart adjustments to order adjustments
-            //throw new \Exception('convert cart adjustments to order adjustments in Cart::createOrder');
-            foreach($this->getValidAdjustments(true)->concat($this->getValidAdjustments(false)) as $adjustment) {
-                config('laravel-cart.classes.order_adjustment')::create([
-                    'name' => $adjustment->name,
-                    'original_parameters' => $adjustment->parameters,
-                    'order_id' => $order->id,
-                    'class' => $adjustment->class,
-                    'amount' => $adjustment->calculated_amount,
-                    'apply_to_subtotal' => $adjustment->apply_to_subtotal
-                ]);
-            }
-
-            $order->save();
-
-            self::setActiveOrder($order);
-
-            return $order;
-        }
-        else
-        {
+        if(Cart::getTotal() < 30 || Cart::getTotal() > 99999999) {
             throw new \Exception('The order total must be greater than £0.30 and less that £999,999.99');
         }
+
+        $order = $this->getOrder($customer);
+
+        $order->items()->delete();
+
+        $this->convertCartItemsToOrderItems($order);
+
+        $this->setOrderData($order);
+
+        $this->convertAdjustments($order);
+
+        $order->save();
+
+        self::setActiveOrder($order);
+
+        return $order;
+    }
+
+    private function getOrder($customer)
+    {
+        // create an order
+        $order_class = getClassNameFor('order');
+
+        $order = Cart::getActiveOrder() ?? $order_class::create([
+            'customer_id' => $customer->id
+        ]);
+
+        return $order;
+    }
+
+    private function convertCartItemsToOrderItems($order)
+    {
+        $cart_items = Cart::items();
+
+        $cart_items->each(function ($cart_item) use ($order) {
+            //$product_key = getKeyFor('product');
+            $order->items()->create([
+                'name' => $cart_item->getProduct()->getName($cart_item->product_data),
+                'product_id'=> $cart_item->product_id,
+                'product_data' => $cart_item->product_data,
+                'price' => $cart_item->getProduct()->getPrice($cart_item->product_data),
+                'quantity' => $cart_item->quantity
+            ]);
+        });
+    }
+
+    private function setOrderData($order)
+    {
+        //saving additional cart/order data
+        //@todo possibly expand to allow "hooks" or events to trigger methods depending on keys/values set?
+        //$cart_data = $this->getData();
+
+        collect($this->getData())->each(function($value, $key) use ($order) {
+            $order->setData($key, $value);
+        });
+
+    }
+
+    private function convertAdjustments($order)
+    {
+        //@todo convert cart adjustments to order adjustments
+        //throw new \Exception('convert cart adjustments to order adjustments in Cart::createOrder');
+        $this->getValidAdjustments(true)->concat($this->getValidAdjustments(false))->each(function($adjustment) use ($order) {
+        //foreach($this->getValidAdjustments(true)->concat($this->getValidAdjustments(false)) as $adjustment) {
+            config('laravel-cart.classes.order_adjustment')::create([
+                'name' => $adjustment->name,
+                'original_parameters' => $adjustment->parameters,
+                'order_id' => $order->id,
+                'class' => $adjustment->class,
+                'amount' => $adjustment->calculated_amount,
+                'apply_to_subtotal' => $adjustment->apply_to_subtotal
+            ]);
+        });
     }
 
     private function setActiveOrder(int|Order|null $order)
