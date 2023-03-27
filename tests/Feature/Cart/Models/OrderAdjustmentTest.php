@@ -117,31 +117,9 @@ it('will remove a discount if there are no order items', function () {
 
     $order = \Antidote\LaravelCart\Facades\Cart::createOrder($customer);
 
-//    $adjustment = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment::create([
-//        'name' => '10% for all orders',
-//        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
-//        'parameters' => [
-//            'type' => 'percentage', //or fixed
-//            'rate' => 10
-//        ]
-//    ]);
-
-//    $order_adjustment = TestOrderAdjustment::create([
-//        'name' => $adjustment->name,
-////        'adjustment_type' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestAdjustment::class,
-//        'test_adjustment_id' => $adjustment->id,
-//        'amount' => $adjustment->calculated_amount,
-//        'test_order_id' => $order->id,
-//        'original_parameters' => [
-//            'type' => 'percentage',
-//            'rate' => 10
-//        ]
-//    ]);
-
     $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::create([
         'name' => '10% off',
         'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
-        //'test_adjustment_id' => $adjustment->id,
         'amount' => -100,
         'order_id' => $order->id,
         'original_parameters' => [
@@ -161,7 +139,7 @@ it('will remove a discount if there are no order items', function () {
 })
 ->coversClass(\Antidote\LaravelCart\Models\OrderAdjustment::class);
 
-it('will show potential discounts in the cart', function () {
+it('belongs to an order', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
@@ -171,15 +149,21 @@ it('will show potential discounts in the cart', function () {
 
     \Antidote\LaravelCart\Facades\Cart::add($product);
 
-    $adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->create([
-        'name' => '10% for all orders',
+    $order = \Antidote\LaravelCart\Facades\Cart::createOrder($customer);
+
+    $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::create([
+        'name' => '10% off',
         'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
-        'parameters' => [
-            'type' => 'percentage', //or fixed
+        'amount' => -100,
+        'order_id' => $order->id,
+        'original_parameters' => [
+            'type' => 'percentage',
             'rate' => 10
-        ]
+        ],
+        'apply_to_subtotal' => true
     ]);
 
-    expect(\Antidote\LaravelCart\Facades\Cart::getTotal())->toBe(900);
+    expect($order_adjustment->order->id)->toBe($order->id);
+    expect($order_adjustment->order->customer->id)->toBe($order->customer->id);
 })
 ->coversClass(\Antidote\LaravelCart\Models\OrderAdjustment::class);

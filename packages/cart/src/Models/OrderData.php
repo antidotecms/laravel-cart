@@ -19,4 +19,9 @@ class OrderData extends Model
     {
         return OrderDataFactory::new();
     }
+
+    public function order()
+    {
+        return $this->belongsTo(getClassNameFor('order'));
+    }
 }

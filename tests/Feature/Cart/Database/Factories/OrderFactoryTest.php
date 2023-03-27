@@ -14,7 +14,8 @@ it('will correctly create an order with a simple product', function () {
         ->create();
 
     expect($order->getSubtotal())->toBe($product->getPrice() * 2);
-});
+})
+->covers(\Antidote\LaravelCart\Database\Factories\OrderFactory::class);
 
 it('will correctly create an order with a complex product', function () {
 
@@ -27,7 +28,8 @@ it('will correctly create an order with a complex product', function () {
         ->create();
 
     expect($order->getSubtotal())->toBe($product->getPrice() * 2)->toBe(200);
-});
+})
+->covers(\Antidote\LaravelCart\Database\Factories\OrderFactory::class);
 
 it('will correctly create an order with a variable product', function() {
 
@@ -40,4 +42,5 @@ it('will correctly create an order with a variable product', function() {
         ->create();
 
     expect($order->getSubtotal())->toBe($product->getPrice(['width' => 10, 'height' => 10]) * 2)->toBe(200);
-});
+})
+->covers(\Antidote\LaravelCart\Database\Factories\OrderFactory::class);

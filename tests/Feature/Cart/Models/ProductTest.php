@@ -239,3 +239,42 @@ it('will throw an exception if a deferred attribute is not defined', function ()
 })
 ->coversClass(\Antidote\LaravelCart\Models\Product::class)
 ->throws(Exception::class, "Define 'getFoo' on ".SimpleProductDataType::class);
+
+it('will check whether a product is valid from its product type', function () {
+
+    $product = TestProduct::factory()->create([
+        'name' => 'This Product',
+        'description' => 'This Description'
+    ]);
+
+    $test_product_type = new class extends \Antidote\LaravelCart\Contracts\ProductType {
+        public function isValid(?array $product_data = null): bool {
+            return true;
+        }
+    };
+
+    $spied_product_type = Mockery::spy($test_product_type::class);
+    //$spied_product = \Mockery\Mock::spy(TestProduct::class);
+
+    //$mock_product = Mockery::mock(TestProduct::class)->makePartial();
+    //$mock_product_type = Mockery::mock($test_product_type::class)->makePartial();
+
+    $product->productType()->associate($spied_product_type);
+    $product->save();
+    //$test_product_type->product()->save($mock_product);
+
+    expect($product->productType)->not()->toBeNull();
+
+
+    //$mock_product->shouldReceive('checkValidity');
+//    $mock_product_type->shouldReceive('isValid')
+//        ->once()
+//        ->andReturnTrue();
+
+    //expect($product->checkValidity())->toBeTrue();
+    $product->checkValidity();
+
+    $spied_product_type->shouldHaveReceived('isValid')->withAnyArgs()->once();
+
+})
+->coversClass(\Antidote\LaravelCart\Models\Product::class);

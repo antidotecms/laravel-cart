@@ -257,3 +257,146 @@ it('will not create an order if an active order already exists', function () {
         ->and($order->customer->id)->toBe($customer->id);
 })
 ->coversClass(\Antidote\LaravelCart\Models\Order::class);
+
+it('has log items', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for(\Antidote\LaravelCart\Models\Customer::factory())
+        ->create();
+
+    //@todo create factory
+    $order_log_item = \Antidote\LaravelCart\Models\OrderLogItem::create([
+        'message' => 'a log item',
+        'order_id' => $order->id
+    ]);
+
+    expect($order->logItems()->count())->toBe(1);
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
+
+it('will log an item', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for(\Antidote\LaravelCart\Models\Customer::factory())
+        ->create();
+
+    $order->log('this is a note');
+
+    expect($order->logItems()->count())->toBe(1);
+
+    expect($order->logItems->first()->message)->toBe('this is a note');
+
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
+
+it('has data', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for(\Antidote\LaravelCart\Models\Customer::factory())
+        ->create();
+
+    $order_data = \Antidote\LaravelCart\Models\OrderData::factory()
+        ->for($order)
+        ->create([
+            'key' => 'note',
+            'value' => 'some notes'
+        ]);
+
+    expect($order->data()->count())->toBe(1);
+    expect($order->data()->first()->key)->toBe('note');
+    expect($order->data()->first()->value)->toBe('some notes');
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
+
+it('will set data', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for(\Antidote\LaravelCart\Models\Customer::factory())
+        ->create();
+
+    $order->setData('some_data', 'some_value');
+
+    expect($order->data()->count())->toBe(1);
+    expect($order->data->first()->key)->toBe('some_data');
+    expect($order->data->first()->value)->toBe('"some_value"'); //json encoded so need quotes
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
+
+it('will get data', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for(\Antidote\LaravelCart\Models\Customer::factory())
+        ->create();
+
+    $order->setData('some_data', 'some_value');
+
+    expect($order->getData('some_data'))->toBe('some_value');
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
+
+it('will set data as array', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for(\Antidote\LaravelCart\Models\Customer::factory())
+        ->create();
+
+    $order->setData('some_data', [
+        'array',
+        'of',
+        'data'
+    ]);
+
+    expect($order->data()->count())->toBe(1);
+    expect($order->data->first()->value)->toBe(json_encode([
+        'array',
+        'of',
+        'data'
+    ])); //json encoded
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
+
+it('will get data as array', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for(\Antidote\LaravelCart\Models\Customer::factory())
+        ->create();
+
+    $order->setData('some_data', [
+        'array',
+        'of',
+        'data'
+    ]);
+
+    expect($order->getData('some_data'))->toBe([
+        'array',
+        'of',
+        'data'
+    ]);
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
+
+it('will return null of the data does not exist', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->for(\Antidote\LaravelCart\Models\Customer::factory())
+        ->create();
+
+    expect($order->getData('non_existant'))->toBeNull();
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
+
+it('will overwrite data with the same key', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()->create();
+
+    $order->setData('some_data', 'a value');
+
+    expect($order->data()->where('key', 'some_data')->count())->toBe(1);
+    expect($order->getData('some_data'))->toBe('a value');
+
+    $order->setData('some_data', 'a new value');
+
+    expect($order->data()->where('key', 'some_data')->count())->toBe(1);
+    expect($order->getData('some_data'))->toBe('a new value');
+})
+->coversClass(\Antidote\LaravelCart\Models\Order::class);
