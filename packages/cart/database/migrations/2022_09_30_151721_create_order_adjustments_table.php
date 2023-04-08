@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('name');
             $table->integer('amount');
             $table->json('original_parameters');
-            $table->boolean('apply_to_subtotal')->nullable();
+            $table->boolean('apply_to_subtotal');
             $table->foreignIdFor(\Antidote\LaravelCart\Models\Order::class);
             $table->string('class');
             $table->timestamps();
