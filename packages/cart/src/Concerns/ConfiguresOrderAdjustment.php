@@ -2,9 +2,6 @@
 
 namespace Antidote\LaravelCart\Concerns;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Str;
-
 /**
  * @property string $name
  * @property bool $apply_to_subtotal
@@ -36,20 +33,20 @@ trait ConfiguresOrderAdjustment
         ]);
     }
 
-    public function applyToSubtotal(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('applyToSubtotal', $value)
-        );
-    }
-
-    private function getMethodOnAdjustmentIfDefined($attribute, $value)
-    {
-        if(method_exists($this->class, $attribute)) {
-            $attribute = Str::of($attribute)->studly()->lcfirst()->value();
-            return (new $this->class)->{$attribute}($this->original_parameters);
-        } else {
-            return $value;
-        }
-    }
+//    public function applyToSubtotal(): Attribute
+//    {
+//        return Attribute::make(
+//            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('applyToSubtotal', $value)
+//        );
+//    }
+//
+//    private function getMethodOnAdjustmentIfDefined($attribute, $value)
+//    {
+//        if(method_exists($this->class, $attribute)) {
+//            $attribute = Str::of($attribute)->studly()->lcfirst()->value();
+//            return (new $this->class)->{$attribute}($this->original_parameters);
+//        } else {
+//            return $value;
+//        }
+//    }
 }
