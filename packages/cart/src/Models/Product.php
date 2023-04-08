@@ -60,13 +60,7 @@ class Product extends Model
     public function __call($method, $parameters)
     {
         if($method == 'checkValidity') {
-            //if(in_array(get_class($this->productType), $this->product_validity )) {
-            if(method_exists($this->productType, 'isValid')) {
-                return $this->productType->isValid(...$parameters);
-            } else {
-                //@todo this will never happen as 'isValid' is defined in the abstract ProductType class and therefore will always be called
-                return $this->isValid(...$parameters);
-            }
+            return $this->productType->isValid(...$parameters);
         }
 
         $product_methods = collect($this->product_data)
