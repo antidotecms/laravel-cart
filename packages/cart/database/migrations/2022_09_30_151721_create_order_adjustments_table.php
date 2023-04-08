@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->json('original_parameters');
             $table->boolean('apply_to_subtotal')->nullable();
             $table->foreignIdFor(\Antidote\LaravelCart\Models\Order::class);
-            //$table->foreignIdFor(config('laravel-cart.classes.adjustment'));
             $table->string('class');
             $table->timestamps();
         });
