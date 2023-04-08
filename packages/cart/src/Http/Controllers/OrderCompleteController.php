@@ -16,6 +16,7 @@ class OrderCompleteController extends \Illuminate\Routing\Controller
             }
         }
 
+        /** @var Order $order */
         if($order)
         {
             Cart::setActiveOrder(null);

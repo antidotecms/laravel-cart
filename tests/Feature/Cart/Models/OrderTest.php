@@ -400,3 +400,17 @@ it('will overwrite data with the same key', function () {
     expect($order->getData('some_data'))->toBe('a new value');
 })
 ->coversClass(\Antidote\LaravelCart\Models\Order::class);
+
+it('will throw an exception when attempting to update status', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()->create();
+    $order->updateStatus();
+})
+->expectExceptionMessage('Order should be overriden and implement updateStatus');
+
+it('will throw an exception when attempting to determine if the order is completed', function () {
+
+    $order = \Antidote\LaravelCart\Models\Order::factory()->create();
+    $order->isCompleted();
+})
+    ->expectExceptionMessage('Order should be overriden and implement isCompleted');

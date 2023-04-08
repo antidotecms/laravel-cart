@@ -13,6 +13,7 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase;
 
@@ -95,9 +96,18 @@ class OrderCompleteControllerTest extends TestCase
 
         $customer = Customer::factory()->create();
 
-        $order = Order::factory()
-            ->forCustomer($customer)
-            ->create();
+        $order = new class extends Order {
+            public function updateStatus()
+            {
+                return null;
+            }
+        };
+
+        $order = $order::create([
+            'customer_id' => $customer->id
+        ]);
+
+        Config::set('laravel-cart.classes.order', $order::class);
 
         OrderItem::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct([
@@ -109,21 +119,6 @@ class OrderCompleteControllerTest extends TestCase
         $mock = \Mockery::mock(Order::class)->makePartial();
         $mock->shouldReceive('updateStatus')->andReturnNull();
         $this->app->instance(Order::class, $mock);
-
-//        $mocked_controller = $this->partialMock(OrderCompleteController::class, function(MockInterface $mock) use ($order) {
-//            $mock->shouldReceive('__construct')
-//                ->withNoArgs()
-//                ->once()
-//                ->andReturn($order);
-//
-//            $mock-shouldRecei
-//        });
-
-//        $this->app->when(OrderCompleteController::class)
-//            ->needs(Order::class)
-//            ->give(fn() => $mock_order);
-
-        //$this->app->bind(OrderCompleteController::class, $mocked_controller::class);
 
         $this->actingAs($customer, 'customer')
             ->get('/order-complete?order_id='.$order->id)
@@ -139,9 +134,23 @@ class OrderCompleteControllerTest extends TestCase
     {
         $customer = Customer::factory()->create();
         $second_customer = Customer::factory()->create();
-        $order = Order::factory()
-            ->forCustomer($customer)
-            ->create();
+
+        $order = new class extends Order {
+            public function updateStatus()
+            {
+                return null;
+            }
+        };
+
+        \Config::set('laravel-cart.classes.order', $order::class);
+
+//        $order = Order::factory()
+//            ->forCustomer($customer)
+//            ->create();
+
+        $order = $order::create([
+            'customer_id' => $customer->id
+        ]);
 
         OrderItem::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct([
@@ -214,9 +223,22 @@ class OrderCompleteControllerTest extends TestCase
 
         $customer = Customer::factory()->create();
 
-        $order = Order::factory()
-            ->forCustomer($customer)
-            ->create();
+        $order = new class extends Order {
+            public function updateStatus()
+            {
+                return null;
+            }
+        };
+
+        $order = $order::create([
+            'customer_id' => $customer->id
+        ]);
+
+        Config::set('laravel-cart.classes.order', $order::class);
+
+//        $order = Order::factory()
+//            ->forCustomer($customer)
+//            ->create();
 
         OrderItem::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct([

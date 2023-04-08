@@ -6,6 +6,7 @@ use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Illuminate\Support\Facades\Config;
 
 /**
  * @covers \Antidote\LaravelCart\Http\Controllers\OrderCompleteController
@@ -19,9 +20,22 @@ class OrderCompleteControllerTest extends \Antidote\LaravelCart\Tests\TestCase
     {
         $customer = Customer::factory()->create();
 
-        $order = Order::factory()
-            ->forCustomer($customer)
-            ->create();
+        $order_class = new class extends Order {
+            public function updateStatus()
+            {
+                return null;
+            }
+        };
+
+        $order = $order_class::create([
+            'customer_id' => $customer->id
+        ]);
+
+        Config::set('laravel-cart.classes.order', $order::class);
+
+//        $order = Order::factory()
+//            ->forCustomer($customer)
+//            ->create();
 
         $product = TestProduct::factory()->asSimpleProduct([
             'price' => 5000

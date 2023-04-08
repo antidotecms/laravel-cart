@@ -117,13 +117,13 @@ class Order extends Model
     //@tdo should this return an exception to inform developer that it must be overridden in their own class
     public function updateStatus()
     {
-        return null;
+        throw new \Exception('Order should be overriden and implement updateStatus');
     }
 
     //@tdo should this return an exception to inform developer that it must be overridden in their own class
     public function isCompleted()
     {
-        return null;
+        throw new \Exception('Order should be overriden and implement isCompleted');
     }
 
     public function data()
