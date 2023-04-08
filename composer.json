@@ -54,7 +54,7 @@
         "post-autoload-dump": [
             "@php ./vendor/bin/testbench package:discover --ansi"
         ],
-        "coverage" : "sail php ./vendor/bin/pest -p12 --verbose --runner=WrapperRunner --coverage-html ./coverage -c ./phpunit.xml",
+        "coverage" : "sail php ./vendor/bin/pest -p8 --verbose --runner=WrapperRunner --coverage-html ./coverage -c ./phpunit.xml",
         "phpstan": "./vendor/bin/phpstan analyse"
     },
     "require": {
