@@ -34,13 +34,6 @@ trait ConfiguresAdjustment
         ]);
     }
 
-    //@todo is this used/needed?
-    public function order_adjustment()
-    {
-        return $this->morphOne(config('laravel-cart.classes.order_adjustment'), 'order_adjustment');
-    }
-
-
     protected function calculatedAmount() : Attribute
     {
         return Attribute::make(
