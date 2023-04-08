@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Str;
 
 /**
+ * @property string $name
  * @property bool $apply_to_subtotal
- * @property bool $is_valid
- * @property bool $is_active
  * @property string $class
  * @property array $original_parameters
  * @property int $amount
@@ -35,21 +34,6 @@ trait ConfiguresOrderAdjustment
         return array_merge(parent::getCasts(), [
             'original_parameters' => 'array'
         ]);
-    }
-
-    //@todo refactor all the below into a trait to be shared between OrderAdjustment and Adjustment
-    public function isValid(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('isValid', $value)
-        );
-    }
-
-    public function isActive(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('isActive', $value)
-        );
     }
 
     public function applyToSubtotal(): Attribute
