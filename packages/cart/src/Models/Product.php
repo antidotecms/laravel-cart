@@ -59,6 +59,7 @@ class Product extends Model
 
     public function __call($method, $parameters)
     {
+        //@todo implment deferring validity with product_validity
         if($method == 'checkValidity') {
             return $this->productType->isValid(...$parameters);
         }
