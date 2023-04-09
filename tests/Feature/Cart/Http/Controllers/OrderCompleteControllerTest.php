@@ -182,9 +182,9 @@ class OrderCompleteControllerTest extends TestCase
      */
     function show_404_if_the_order_does_not_exist()
     {
-        $this->actingAs(Customer::factory()->create())
+        $this->actingAs(Customer::factory()->create(), 'customer')
             ->get('/order-complete?order_id=1')
-            ->assertRedirect(route('login'));
+            ->assertNotFound();
     }
 
     /**
