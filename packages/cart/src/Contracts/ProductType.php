@@ -23,11 +23,6 @@ abstract class ProductType extends Model
                 return true;
             }
 
-            if($product_type->product->trashed())
-            {
-                return true;
-            }
-
             return false;
 
         });
