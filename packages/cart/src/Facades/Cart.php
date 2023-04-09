@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Antidote\LaravelCart\Domain\Cart::items
- * @method static Collection items()
+ * @codeCoverageIgnore
  * @see \Antidote\LaravelCart\Domain\Cart::add
  * @method static void add($product, int $quantity = 1, $product_data = null)
- * @see \Antidote\LaravelCart\Domain\Cart::remove
- * @method static void remove($product, $quantity, $product_data)
+ * @see \Antidote\LaravelCart\Domain\Cart::items
+ * @method static Collection items()
  * @see \Antidote\LaravelCart\Domain\Cart::clear
  * @method static void clear()
+ * @see \Antidote\LaravelCart\Domain\Cart::remove
+ * @method static void remove($product, $quantity, $product_data)
  * @see \Antidote\LaravelCart\Domain\Cart::getSubtotal
  * @method static int getSubtotal()
  * @see \Antidote\LaravelCart\Domain\Cart::getTotal
@@ -27,9 +28,17 @@ use Illuminate\Support\Facades\Facade;
  * @see \Antidote\LaravelCart\Domain\Cart::createOrder
  * @method static Order createOrder(Customer $customer)
  * @see \Antidote\LaravelCart\Domain\Cart::getActiveOrder
- * @method getActiveOrder()
+ * @method static Order getActiveOrder()
  * @see \Antidote\LaravelCart\Domain\Cart::setActiveOrder
- * @method setActiveOrder(int|Order|null $order)
+ * @method Order setActiveOrder(int|Order|null $order)
+ * @see \Antidote\LaravelCart\Domain\Cart::addData
+ * @method void addData(string $key, mixed $value)
+ * @see \Antidote\LaravelCart\Domain\Cart::getData
+ * @method mixed getData($key = null)
+ * @see \Antidote\LaravelCart\Domain\Cart::getAdjustmentsTotal
+ * @method int getAdjustmentsTotal(bool $applied_to_subtotal)
+ * @see \Antidote\LaravelCart\Domain\Cart::getValidAdjustments
+ * @method Collection getValidAdjustments(bool $applied_to_subtotal)
  */
 
 class Cart extends Facade

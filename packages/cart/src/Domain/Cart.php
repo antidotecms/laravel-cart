@@ -21,11 +21,11 @@ class Cart
             'add',
             'items',
             'clear',
-            'getDiscountTotal',
+            'remove',
             'getSubtotal',
             'getTotal',
+            'getDiscountTotal',
             'isInCart',
-            'remove',
             'createOrder',
             'getActiveOrder',
             'setActiveOrder',
@@ -177,11 +177,11 @@ class Cart
         return $total;
     }
 
-    private function getAdjustmentsTotal(bool $is_in_cart)
+    private function getAdjustmentsTotal(bool $applied_to_subtotal)
     {
         $discount_total = 0;
 
-        $this->getValidAdjustments($is_in_cart)->each(function (OrderAdjustment|Adjustment $adjustment) use (&$discount_total) {
+        $this->getValidAdjustments($applied_to_subtotal)->each(function (OrderAdjustment|Adjustment $adjustment) use (&$discount_total) {
             $discount_total += is_a($adjustment, OrderAdjustment::class) ? $adjustment->amount : $adjustment->calculated_amount;
         });
 
