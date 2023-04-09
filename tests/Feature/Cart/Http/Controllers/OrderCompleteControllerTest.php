@@ -169,9 +169,9 @@ class OrderCompleteControllerTest extends TestCase
         $this->refreshInMemoryDatabase();
         $this->setUpApplicationRoutes();
 
-        $this->actingAs($second_customer)
+        $this->actingAs($second_customer, 'customer')
             ->get('/order-complete?order_id='.$order->id)
-            ->assertRedirect(route('login'));
+            ->assertNotFound();
 
 
     }
