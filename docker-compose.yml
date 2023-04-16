@@ -1,7 +1,7 @@
 # For more information: https://laravel.com/docs/sail
 version: '3'
 services:
-    laravel-cart.laravel:
+    laravel-cart.package:
         build:
             context: ./vendor/laravel/sail/runtimes/8.2
             dockerfile: Dockerfile
@@ -10,9 +10,9 @@ services:
         image: sail-8.2/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
-        ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+#        ports:
+#            - '${APP_PORT:-80}:80'
+#            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
@@ -22,16 +22,20 @@ services:
         volumes:
             - '.:/var/www/html'
         networks:
-            - laravel-cart-network
+            - packages.laravel-cart
         depends_on:
             - laravel-cart.mysql
             - laravel-cart.mailhog
     laravel-cart.coverage:
         image: httpd:latest
-        ports:
-            - '81:80'
+#        ports:
+#            - '81:80'
+        expose:
+            - 80
         volumes:
             - ./coverage:/usr/local/apache2/htdocs
+        networks:
+            - packages.laravel-cart
     laravel-cart.mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -46,7 +50,7 @@ services:
         volumes:
             - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
         networks:
-            - laravel-cart-network
+            - packages.laravel-cart
         healthcheck:
             test: ["CMD", "mysqladmin", "ping", "-ppassword"]
             retries: 3
@@ -57,9 +61,10 @@ services:
             - '${FORWARD_MAILHOG_PORT:-1025}:1025'
             - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
         networks:
-            - laravel-cart-network
+            - packages.laravel-cart
 networks:
-    laravel-cart-network:
+    packages.laravel-cart:
+        name: packages.laravel-cart
         driver: bridge
 volumes:
     laravel-cart-mysql:
