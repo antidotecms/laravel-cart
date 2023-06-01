@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class)
 //    ->middleware('stripe_webhook');
+    ->withoutMiddleware([
+        \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class
+    ])
     ->middleware([
         \Antidote\LaravelCartStripe\Http\Middleware\AllowStripeWebhooksDuringMaintenance::class,
         \Antidote\LaravelCartStripe\Http\Middleware\WhitelistStripeIPAddresses::class
