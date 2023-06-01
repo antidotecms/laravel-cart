@@ -28,10 +28,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         Blade::component('stripe-checkout-client-script', StripeCheckoutClientScriptComponent::class);
 
-        //$router = $this->app->make(Router::class);
+//        $router = $this->app->make(Router::class);
         //$router->pushMiddlewareToGroup('stripe_webhook', WhitelistStripeIPAddresses::class);
         //$router->pushMiddlewareToGroup('stripe_webhook', AllowStripeWebhooksDuringMaintenance::class);
-        //app('router')->
 
 
         //@see https://stackoverflow.com/a/20550845
