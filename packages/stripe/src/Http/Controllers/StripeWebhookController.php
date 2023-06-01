@@ -44,7 +44,7 @@ class StripeWebhookController extends Controller
         $this->handleEvent($event);
     }
 
-    private function handleEvent(\stdClass $event)
+    private function handleEvent($event)
     {
         $order = getClassNameFor('order')::where('id', $event->data->object->metadata->order_id)->first();
 
