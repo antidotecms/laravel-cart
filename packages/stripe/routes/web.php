@@ -3,7 +3,12 @@
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 
-Route::post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class)->middleware('stripe_webhook');
+Route::post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class)
+//    ->middleware('stripe_webhook');
+    ->middleware([
+        \Antidote\LaravelCartStripe\Http\Middleware\AllowStripeWebhooksDuringMaintenance::class,
+        \Antidote\LaravelCartStripe\Http\Middleware\WhitelistStripeIPAddresses::class
+    ]);
 
 Route::middleware(['web', 'auth:customer'])->group(function() {
 

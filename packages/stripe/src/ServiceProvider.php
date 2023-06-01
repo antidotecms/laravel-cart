@@ -6,10 +6,7 @@ namespace Antidote\LaravelCartStripe;
 //use Antidote\LaravelCart\Commands\CreateMigrationCommand;
 use Antidote\LaravelCart\Providers\EventServiceProvider;
 use Antidote\LaravelCartStripe\Components\StripeCheckoutClientScriptComponent;
-use Antidote\LaravelCartStripe\Http\Middleware\AllowStripeWebhooksDuringMaintenance;
-use Antidote\LaravelCartStripe\Http\Middleware\WhitelistStripeIPAddresses;
 use Illuminate\Foundation\Http\Kernel;
-use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 
@@ -31,9 +28,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         Blade::component('stripe-checkout-client-script', StripeCheckoutClientScriptComponent::class);
 
-        $router = $this->app->make(Router::class);
-        $router->pushMiddlewareToGroup('stripe_webhook', WhitelistStripeIPAddresses::class);
-        $router->pushMiddlewareToGroup('stripe_webhook', AllowStripeWebhooksDuringMaintenance::class);
+        //$router = $this->app->make(Router::class);
+        //$router->pushMiddlewareToGroup('stripe_webhook', WhitelistStripeIPAddresses::class);
+        //$router->pushMiddlewareToGroup('stripe_webhook', AllowStripeWebhooksDuringMaintenance::class);
+        //app('router')->
 
 
         //@see https://stackoverflow.com/a/20550845
