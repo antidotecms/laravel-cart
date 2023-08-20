@@ -56,7 +56,7 @@
         ],
         "coverage" : [
             "Composer\\Config::disableProcessTimeout",
-            "php ./vendor/bin/pest -p8 --verbose --runner=WrapperRunner --coverage-html ./coverage -c ./phpunit.xml"
+            "php ./vendor/bin/pest -p4 --verbose --runner=WrapperRunner --coverage-html ./coverage -c ./phpunit.xml"
         ],
         "phpstan": "./vendor/bin/phpstan analyse"
     },
