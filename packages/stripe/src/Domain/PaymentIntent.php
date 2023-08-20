@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCartStripe\Domain;
 
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCartStripe\Concerns\HasStripeClient;
 use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
@@ -176,12 +177,18 @@ abstract class PaymentIntent
         }
     }
 
-    public static function getClientSecret($order)
+    public static function getClientSecret(Order $order): string
     {
-        $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->getData('payment_intent_id'));
+        $client_secret = '';
 
-        $order->setData('client_secret', json_decode($payment_intent_response->getLastResponse()->body)->client_secret);
-        $order->save();
-        return $order->getData('client_secret');
+        if(!$client_secret = $order->getData('client_secret')) {
+            $payment_intent_response = static::getClient()->paymentIntents->retrieve($order->getData('payment_intent_id'));
+
+            $order->setData('client_secret', json_decode($payment_intent_response->getLastResponse()->body)->client_secret);
+            $order->save();
+            $client_secret = $order->getData('client_secret');
+        }
+
+        return $client_secret;
     }
 }
