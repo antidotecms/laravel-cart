@@ -69,7 +69,3 @@ it('will add the contents of the cart with an incomplete order', function() {
     //expect(Cart::items()->first()->getProduct()->name)->toBe('Product in old order');
 })
 ->coversClass(\Antidote\LaravelCart\Http\Controllers\OrderController::class);
-
-it('will throw an exception if the ', function () {
-    
-});
