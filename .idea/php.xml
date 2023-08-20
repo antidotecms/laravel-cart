@@ -160,6 +160,7 @@
       <path value="$PROJECT_DIR$/vendor/phpstan/phpstan" />
       <path value="$PROJECT_DIR$/vendor/nunomaduro/larastan" />
       <path value="$PROJECT_DIR$/vendor/phpmyadmin/sql-parser" />
+      <path value="$PROJECT_DIR$/vendor/timacdonald/log-fake" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
