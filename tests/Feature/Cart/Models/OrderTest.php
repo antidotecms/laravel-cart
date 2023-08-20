@@ -406,6 +406,7 @@ it('will throw an exception when attempting to update status', function () {
     $order = \Antidote\LaravelCart\Models\Order::factory()->create();
     $order->updateStatus();
 })
+->coversClass(\Antidote\LaravelCart\Models\Order::class)
 ->expectExceptionMessage('Order should be overriden and implement updateStatus');
 
 it('will throw an exception when attempting to determine if the order is completed', function () {
@@ -413,4 +414,5 @@ it('will throw an exception when attempting to determine if the order is complet
     $order = \Antidote\LaravelCart\Models\Order::factory()->create();
     $order->isCompleted();
 })
-    ->expectExceptionMessage('Order should be overriden and implement isCompleted');
+->coversClass(\Antidote\LaravelCart\Models\Order::class)
+->expectExceptionMessage('Order should be overriden and implement isCompleted');

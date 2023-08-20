@@ -12,4 +12,5 @@ it('has a product and cost', function() {
 
     expect($cart_item->getProduct()->id)->toBe($product->id);
     expect($cart_item->getCost())->toBe(4000);
-});
+})
+->covers(\Antidote\LaravelCart\DataTransferObjects\CartItem::class);

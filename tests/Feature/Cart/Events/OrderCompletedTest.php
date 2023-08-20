@@ -16,4 +16,5 @@ it('has an order', function() {
 
     expect($order_completed_event->order->id)->toBe($order->id);
 
-});
+})
+->covers(\Antidote\LaravelCart\Events\OrderCompleted::class);

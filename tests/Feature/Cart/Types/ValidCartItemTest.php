@@ -14,7 +14,8 @@ it('will create a valid cart item', function() {
 
     //expect($valid_cart_item)->toBeInstanceOf(\Antidote\LaravelCart\Types\ValidCartItem::class);
     expect($valid_cart_item)->toBeInstanceOf(\Antidote\LaravelCart\DataTransferObjects\CartItem::class);
-});
+})
+->covers(\Antidote\LaravelCart\Types\ValidCartItem::class);
 
 it('will throw an exception if the product has no associated product type', function () {
 
@@ -28,6 +29,7 @@ it('will throw an exception if the product has no associated product type', func
 
     $valid_cart_item = \Antidote\LaravelCart\Types\ValidCartItem::create($cartitem);
 })
+->covers(\Antidote\LaravelCart\Types\ValidCartItem::class)
 ->throws(InvalidArgumentException::class, 'Product has no product data type associated');
 
 it('will throw an exception if the product is not valid', function () {
@@ -42,6 +44,7 @@ it('will throw an exception if the product is not valid', function () {
 
     $valid_cart_item = \Antidote\LaravelCart\Types\ValidCartItem::create($cartitem);
 })
+->covers(\Antidote\LaravelCart\Types\ValidCartItem::class)
 ->throws(InvalidArgumentException::class, 'The cart item is invalid');
 
 it('will throw an excpetion if the quantity is not greater than zero', function () {
@@ -57,4 +60,5 @@ it('will throw an excpetion if the quantity is not greater than zero', function 
     $valid_cart_item = \Antidote\LaravelCart\Types\ValidCartItem::create($cartitem);
 
 })
+->covers(\Antidote\LaravelCart\Types\ValidCartItem::class)
 ->throws(InvalidArgumentException::class, 'Quantity must be greater than or equal to one');

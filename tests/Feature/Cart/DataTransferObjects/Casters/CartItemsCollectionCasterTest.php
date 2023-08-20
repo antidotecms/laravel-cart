@@ -19,4 +19,5 @@ it('will create a collection of cart items from an array', function() {
 
     expect($cart->cart_items)->toBeInstanceOf(\Illuminate\Support\Collection::class);
     expect($cart->cart_items->count())->toBe(2);
-});
+})
+->covers(\Antidote\LaravelCart\DataTransferObjects\Casters\CartItemsCollectionCaster::class);
