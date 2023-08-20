@@ -11,7 +11,6 @@ use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
-use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\FilamentServiceProvider;
@@ -44,12 +43,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function defineDatabaseMigrations()
     {
         $this->loadMigrationsFrom(__DIR__.'/Fixtures/Cart/migrations');
-    }
-
-    protected function defineRoutes($router)
-    {
-        $router->post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class);
-        $router->get('/login')->name('login');
     }
 
     protected function getPackageProviders($app): array
