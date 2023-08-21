@@ -55,7 +55,7 @@ class Order extends Model
     public function total() : Attribute
     {
         return Attribute::make(
-            get: function($value) {
+            get: function($value) : int {
                 $total = $this->getSubtotal();
                 $total += $this->getAdjustmentTotal(false);
                 $total += $this->getAdjustmentTotal(true);
@@ -68,7 +68,7 @@ class Order extends Model
     public function tax() : Attribute
     {
         return Attribute::make(
-            get: function ($value) {
+            get: function ($value) : int {
                 return ceil(ceil(($this->getSubtotal() + $this->getAdjustmentTotal(true)) * config('laravel-cart.tax_rate')) * 100)/100;
             }
         );
