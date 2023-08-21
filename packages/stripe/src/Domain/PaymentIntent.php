@@ -8,10 +8,16 @@ use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Stripe\StripeClient;
 
 abstract class PaymentIntent
 {
-    use HasStripeClient;
+    private static function getClient() : StripeClient
+    {
+        return new StripeClient(
+            config('laravel-cart.stripe.secret_key')
+        );
+    }
 
     public static function fake() : MockStripeHttpClient
     {
