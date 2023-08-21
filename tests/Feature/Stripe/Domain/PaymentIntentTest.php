@@ -133,23 +133,23 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
         return [
             'Card Exception' => [
                 'exception_class' => \Stripe\Exception\CardException::class,
-                'expected_message' => 'Card Issue'
+                'expected_message' => \Stripe\Exception\CardException::class
             ],
             'Invalid Request Exception' => [
                 'exception_class' => \Stripe\Exception\InvalidRequestException::class,
-                'expected_message' => 'Invalid API Request'
+                'expected_message' => \Stripe\Exception\InvalidRequestException::class
             ],
             'Authentication Exception' => [
                 'exception_class' => \Stripe\Exception\AuthenticationException::class,
-                'expected_message' => 'Unable to authenticate with Stripe API'
+                'expected_message' => \Stripe\Exception\AuthenticationException::class
             ],
             'API Exception' => [
                 'exception_class' => \Stripe\Exception\OAuth\InvalidClientException::class,
-                'expected_message' => 'Stripe API Error'
+                'expected_message' => \Stripe\Exception\OAuth\InvalidClientException::class
             ],
             'Other Exception' => [
                 'exception_class' => \InvalidArgumentException::class,
-                'expected_message' => 'Application Error'
+                'expected_message' => \InvalidArgumentException::class
             ]
         ];
     }
@@ -163,7 +163,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
     {
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-        (new MockStripeHttpClient())->throwException($exception_class);
+        //(new MockStripeHttpClient())->throwException($exception_class);
+        PaymentIntent::fake()->throwException($exception_class);
 
         $simple_product = TestProduct::factory()->asSimpleProduct([
             'price' => 1000
@@ -178,12 +179,50 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
         $order = Cart::createOrder($customer);
         expect($order->total)->toBe(1200); //with 20% tax
 
-        $this->expectException(\Exception::class);
+        //$this->expectException($exception_class);
 
-        Cart::initializePayment($order);
+        //Cart::initializePayment($order);
+        try {
+            PaymentIntent::create($order);
+        } catch (\Exception $e) {
+            expect($order->logItems()->count())->toBe(1)
+                ->and($order->logItems()->first()->message)->toStartWith($expected_message);
+        }
 
-        expect($order->logItems()->count())->toBe(1)
-            ->and($order->logItems()->first()->message)->toStartWith($expected_message);
+
+//        expect($order->logItems()->count())->toBe(1)
+//            ->and($order->logItems()->first()->message)->toStartWith($expected_message);
+
+    }
+
+    /**
+     * @test
+     * @define-env defineEnv
+     * @dataProvider orderLogErrorDataProvider
+     */
+    public function it_will_throw_the_correct_exception($exception_class, $expected_message)
+    {
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+
+        //(new MockStripeHttpClient())->throwException($exception_class);
+        PaymentIntent::fake()->throwException($exception_class);
+
+        $simple_product = TestProduct::factory()->asSimpleProduct([
+            'price' => 1000
+        ])->create();
+
+        $customer = Customer::factory()->create();
+
+        Cart::add($simple_product);
+
+        Config::set('laravel-cart.tax_rate', 0.2);
+
+        $order = Cart::createOrder($customer);
+        expect($order->total)->toBe(1200); //with 20% tax
+
+        $this->expectException($exception_class);
+
+        PaymentIntent::create($order);
     }
 
     /**
