@@ -86,6 +86,35 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
      * @test
      * @define-env defineEnv
      */
+    public function it_will_throw_an_exception_if_payment_intent_id_is_not_set_on_order_when_retrieving_a_payment_intents_status()
+    {
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+
+        (new MockStripeHttpClient())->with('status', 'a_status');
+
+        $product = TestProduct::factory()->asSimpleProduct([
+            'price' => 1000
+        ])->create();
+
+        $order = TestStripeOrder::factory()
+            ->withProduct($product, 1)
+            ->forCustomer(Customer::factory()->create())
+            ->create();
+
+        $order->setData('payment_intent_id', '');
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('No payment intent id set on order');
+
+        PaymentIntent::retrieveStatus($order);
+
+        //expect($order->status)->toBe('a_status');
+    }
+
+    /**
+     * @test
+     * @define-env defineEnv
+     */
     public function will_throw_an_exception_if_the_amount_is_too_low()
     {
         new MockStripeHttpClient();
@@ -114,7 +143,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
         new MockStripeHttpClient();
 
         $product = TestProduct::factory()->asSimpleProduct([
-            'price' => 999999999
+            'price' => 1000000000
         ])->create();
 
         $order = TestStripeOrder::factory()
@@ -313,6 +342,80 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
         PaymentIntent::create($order);
 
         expect(TestStripeOrder::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
+    }
+
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function it_will_get_the_client_secret()
+    {
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+
+        (new MockStripeHttpClient())->with('client_secret', 'the client secret');
+
+        $product = TestProduct::factory()->asSimpleProduct([
+            'price' => 1000
+        ])->create();
+
+        $order = TestStripeOrder::factory()
+            ->withProduct($product, 1)
+            ->forCustomer(Customer::factory()->create())
+            ->create();
+
+        $order->setData('payment_intent_id', 'a payment io');
+
+        PaymentIntent::getClientSecret($order);
+
+        expect($order->getData('client_secret'))->toBe('the client secret');
+    }
+
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function it_will_not_query_stripe_if_the_client_secret_already_exists_on_the_order()
+    {
+//        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+//
+//        (new MockStripeHttpClient())->with('client_secret', 'the client secret');
+
+        $product = TestProduct::factory()->asSimpleProduct([
+            'price' => 1000
+        ])->create();
+
+        $order = TestStripeOrder::factory()
+            ->withProduct($product, 1)
+            ->forCustomer(Customer::factory()->create())
+            ->create();
+
+        $order->setData('client_secret', 'the client secret');
+
+        PaymentIntent::getClientSecret($order);
+
+        expect($order->getData('client_secret'))->toBe('the client secret');
+    }
+
+    /**
+     * @test
+     * @define-env defineEnv
+     */
+    public function it_will_get_the_payment_intent()
+    {
+        Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
+
+        (new MockStripeHttpClient());
+
+        $product = TestProduct::factory()->asSimpleProduct([
+            'price' => 1000
+        ])->create();
+
+        $order = TestStripeOrder::factory()
+            ->withProduct($product, 1)
+            ->forCustomer(Customer::factory()->create())
+            ->create();
+
+        PaymentIntent::create($order);
     }
 
 }
