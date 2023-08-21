@@ -12,6 +12,11 @@ use Stripe\Webhook;
 
 class StripeWebhookController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(\Antidote\LaravelCartStripe\Http\Middleware\WhitelistStripeIPAddresses::class);
+    }
+
     public function __invoke(Request $request)
     {
         Stripe::setApiKey(config('laravel-cart.stripe.secret_key'));
