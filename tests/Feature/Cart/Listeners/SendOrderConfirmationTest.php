@@ -1,6 +1,6 @@
 <?php
 
-namespace Antidote\LaravelCart\Tests\Feature\Stripe\Listeners;
+namespace Antidote\LaravelCart\Tests\Feature\Cart\Listeners;
 
 use Antidote\LaravelCart\Mail\OrderComplete;
 use Antidote\LaravelCart\Models\Adjustment;
@@ -9,6 +9,7 @@ use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
+use Antidote\LaravelCart\Providers\EventServiceProvider;
 use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -41,7 +42,8 @@ class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            ServiceProvider::class
+            ServiceProvider::class,
+            EventServiceProvider::class
         ];
     }
 
