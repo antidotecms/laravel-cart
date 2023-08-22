@@ -137,9 +137,9 @@ class Cart
         }
     }
 
-    private function clearOrderAdjustments($cart_items)
+    private function clearOrderAdjustments(Collection $cart_items)
     {
-        if(!$cart_items->count() && $this->getActiveOrder()) {
+        if((bool) $this->getActiveOrder() & !$cart_items->count()) {
             config('laravel-cart.classes.order_adjustment')::where('order_id', $this->getActiveOrder()->id)->delete();
             $order = $this->getActiveOrder()->fresh();
             $this->setActiveOrder($order);
@@ -237,7 +237,7 @@ class Cart
      */
     private function createOrder(Customer $customer) : Order | bool
     {
-        if(Cart::getTotal() < 30 || Cart::getTotal() > 99999999) {
+        if(Cart::getTotal() < 30 | Cart::getTotal() > 99999999) {
             throw new \Exception('The order total must be greater than £0.30 and less that £999,999.99');
         }
 

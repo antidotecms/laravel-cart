@@ -662,7 +662,7 @@ it('will not allow a product to be added if it is invalid', function () {
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class)
 ->throws(InvalidArgumentException::class, 'The cart item is invalid');
 
-it('will throw an exception if the amount is out of bounds', function () {
+it('will throw an exception if the amount is too low', function () {
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1
@@ -675,10 +675,30 @@ it('will throw an exception if the amount is out of bounds', function () {
     $result = Cart::createOrder($customer);
 
     //expect($result)->toBeFalse();
-    expect(\Antidote\LaravelCart\Models\Order::count())->toBe(0);
+    //below doesnt get fired as exception hit first
+    //expect(\Antidote\LaravelCart\Models\Order::count())->toBe(0);
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class)
 ->throws(\Exception::class, 'The order total must be greater than £0.30 and less that £999,999.99');
+
+it('will throw an exception if the amount is too high', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 100000000
+    ])->create();
+
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+
+    Cart::add($simple_product);
+
+    $result = Cart::createOrder($customer);
+
+    //expect($result)->toBeFalse();
+    //below doesnt get fired as exception hit first
+    //expect(\Antidote\LaravelCart\Models\Order::count())->toBe(0);
+})
+    ->coversClass(\Antidote\LaravelCart\Domain\Cart::class)
+    ->throws(\Exception::class, 'The order total must be greater than £0.30 and less that £999,999.99');
 
 it('can add a note to the cart', function () {
 
@@ -779,6 +799,47 @@ it('will add order adjustments to the order when creating an order', function ()
     expect($order_adjustment->apply_to_subtotal)->toBeTruthy();
     expect($order->getSubtotal())->toBe(1000);
     expect($order->total)->toBe(1080); //900 * 1.2 - 0.2 tax rate
+})
+->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
+
+it('will clear the order_adjustments from order if cart is empty', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1000
+    ])->create();
+
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+
+    $adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->create([
+        'name' => '10 percent off',
+        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
+        'parameters' => [
+            'type' => 'percentage',
+            'rate' => 10
+        ],
+        'apply_to_subtotal' => true
+    ]);
+
+    Cart::add($simple_product);
+
+    expect(Cart::getSubtotal())->toBe(1000);
+    expect(Cart::getTotal())->toBe(900);
+    expect(Cart::getValidAdjustments(true)->count())->toBe(1);
+    expect(Cart::getValidAdjustments(false)->count())->toBe(0);
+
+    $order = Cart::createOrder($customer);
+
+    expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
+
+    $order = \Antidote\LaravelCart\Models\Order::first();
+
+    expect($order->adjustments->count())->toBe(1);
+
+    Cart::remove($simple_product);
+
+    $order->refresh();
+
+    expect($order->adjustments->count())->toBe(0);
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
