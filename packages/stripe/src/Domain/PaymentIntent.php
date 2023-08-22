@@ -9,48 +9,48 @@ use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Stripe\StripeClient;
 
-abstract class PaymentIntent
+class PaymentIntent
 {
-    private static function getClient() : StripeClient
+    private function getClient() : StripeClient
     {
         return new StripeClient(
             config('laravel-cart.stripe.secret_key')
         );
     }
 
-    public static function fake() : MockStripeHttpClient
+    public function fake() : MockStripeHttpClient
     {
         return new MockStripeHttpClient();
     }
 
-    public static function create(StripeOrder $order) : void
+    public function create(StripeOrder $order) : void
     {
-        self::checkValidOrderAmount($order);
+        $this->checkValidOrderAmount($order);
 
         try {
             $event = [];
-            $event = static::getPaymentIntent($order);
+            $event = $this->getPaymentIntent($order);
         } catch (\Exception $e) {
-            self::logError($order, get_class($e), $e, $event);
+            $this->logError($order, get_class($e), $e, $event);
             throw $e;
         }
 
     }
 
-    private static function checkValidOrderAmount(StripeOrder $order): void
+    private function checkValidOrderAmount(StripeOrder $order): void
     {
         if($order->total < 30 | $order->total > 99999999) {
             throw new InvalidArgumentException('The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
         }
     }
 
-    private static function logError($order, $type, $exception, $event)
+    private function logError($order, $type, $exception, $event)
     {
-        static::logMessage($order, $type.' : '.$exception, $event);
+        $this->logMessage($order, $type.' : '.$exception, $event);
         //return $exception;
     }
 
-    private static function logMessage($order, $message, $event = [])
+    private function logMessage($order, $message, $event = [])
     {
         $order->logItems()->create([
             'message' => $message,
@@ -58,10 +58,10 @@ abstract class PaymentIntent
         ]);
     }
 
-    private static function createPaymentIntent($order)
+    private function createPaymentIntent($order)
     {
         //throws ApiErrorException
-        $payment_intent = static::getClient()->paymentIntents->create([
+        $payment_intent = $this->getClient()->paymentIntents->create([
             'amount' => $order->total,
             'currency' => 'gbp',
             'payment_method_types' => ['card'],
@@ -79,17 +79,17 @@ abstract class PaymentIntent
         $order->refresh();
 
         $event = json_decode($payment_intent->getLastResponse()->body);
-        self::logMessage($order, 'Payment Intent Created: '.$payment_intent->id, $event);
+        $this->logMessage($order, 'Payment Intent Created: '.$payment_intent->id, $event);
         return $event;
     }
 
-    private static function updatePaymentIntent($order)
+    private function updatePaymentIntent($order)
     {
-//        $payment_intent_response = static::getClient()->paymentIntents->update($order->getData('payment_intent_id'), [
+//        $payment_intent_response = $this->getClient()->paymentIntents->update($order->getData('payment_intent_id'), [
 //            'amount' => $order->total
 //        ]);
 
-        $payment_intent_response = static::queryPaymentIntent($order->getData('payment_intent_id'), [
+        $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'), [
             'amount' => $order->total
         ]);
 
@@ -99,16 +99,16 @@ abstract class PaymentIntent
         $order->setData('client_secret', $payment_intent_response->client_secret);
         $order->save();
         //$event = json_decode($payment_intent_response->getLastResponse()->body);
-        self::logMessage($order, 'Payment Intent Updated: '.$payment_intent_response->id, $payment_intent_response);
+        $this->logMessage($order, 'Payment Intent Updated: '.$payment_intent_response->id, $payment_intent_response);
         return $payment_intent_response;
     }
 
-    public static function retrieveStatus(StripeOrder $order)
+    public function retrieveStatus(StripeOrder $order)
     {
         if($order->getData('payment_intent_id')) {
 
             //@todo may throw Stripe\Exception\ApiErrorException
-            $payment_intent_response = static::queryPaymentIntent($order->getData('payment_intent_id'));
+            $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'));
 
             $order->status = $payment_intent_response->status;
             $order->save();
@@ -118,13 +118,13 @@ abstract class PaymentIntent
         }
     }
 
-    public static function getClientSecret(Order $order): string
+    public function getClientSecret(Order $order): string
     {
         $client_secret = '';
 
         if(!$client_secret = $order->getData('client_secret')) {
             //@todo may throw Stripe\Exception\ApiErrorException
-            $payment_intent_response = static::queryPaymentIntent($order->getData('payment_intent_id'));
+            $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'));
 
             $order->setData('client_secret', $payment_intent_response->client_secret);
             $order->save();
@@ -134,30 +134,30 @@ abstract class PaymentIntent
         return $client_secret;
     }
 
-    private static function getPaymentIntent(Order $order): \stdClass
+    private function getPaymentIntent(Order $order): \stdClass
     {
         $payment_intent_response = null;
 
-        $payment_intent_response = static::requiresPaymentIntent($order, $payment_intent_response, function() use ($order) {
-            return static::createPaymentIntent($order);
+        $payment_intent_response = $this->requiresPaymentIntent($order, $payment_intent_response, function() use ($order) {
+            return $this->createPaymentIntent($order);
         });
 
         Log::info('retrieving payment intent');
-        $payment_intent_response = static::queryPaymentIntent($order->getData('payment_intent_id'));
+        $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'));
 
-        $payment_intent_response = static::paymentIntentCancelled($payment_intent_response, function() use ($order) {
+        $payment_intent_response = $this->paymentIntentCancelled($payment_intent_response, function() use ($order) {
             Log::info('payment intent cancelled, deleting old one - creating a new one');
-            return static::createPaymentIntent($order);
+            return $this->createPaymentIntent($order);
         });
 
-        $payment_intent_response = static::mismatchedTotals($order,$payment_intent_response, function() use ($order) {
-            return static::updatePaymentIntent($order);
+        $payment_intent_response = $this->mismatchedTotals($order,$payment_intent_response, function() use ($order) {
+            return $this->updatePaymentIntent($order);
         });
 
         return $payment_intent_response;
     }
 
-    private static function requiresPaymentIntent($order, $event, \Closure $callback): \stdClass|null
+    private function requiresPaymentIntent($order, $event, \Closure $callback): \stdClass|null
     {
         if(!$order->isCompleted() & !$order->getData('payment_intent_id')) {
             $event = $callback();
@@ -166,7 +166,7 @@ abstract class PaymentIntent
         return $event;
     }
 
-    private static function paymentIntentCancelled($event, \Closure $callback): \stdClass|null
+    private function paymentIntentCancelled($event, \Closure $callback): \stdClass|null
     {
         if($event->canceled_at) {
             $event = $callback();
@@ -175,7 +175,7 @@ abstract class PaymentIntent
         return $event;
     }
 
-    private static function mismatchedTotals($order, $event, \Closure $callback): \stdClass|null
+    private function mismatchedTotals($order, $event, \Closure $callback): \stdClass|null
     {
         if($event->amount != $order->total) {
             $event = $callback();
@@ -184,9 +184,9 @@ abstract class PaymentIntent
         return $event;
     }
 
-    private static function queryPaymentIntent($payment_intent_id, $params = []): \stdClass
+    private function queryPaymentIntent($payment_intent_id, $params = []): \stdClass
     {
-        $response = static::getClient()->paymentIntents->retrieve($payment_intent_id, $params);
+        $response = $this->getClient()->paymentIntents->retrieve($payment_intent_id, $params);
         return (object) $response->getLastResponse()->json;
     }
 }

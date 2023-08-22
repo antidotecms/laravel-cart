@@ -15,11 +15,11 @@ class StripeCheckoutClientScriptComponent extends Component
     public string $checkout_confirm_url;
     public string $order_complete_url;
 
-    public function __construct()
+    public function __construct(PaymentIntent $payment_intent)
     {
         $this->validateRequiredConfig();
 
-        $this->client_secret = PaymentIntent::getClientSecret(Cart::getActiveOrder());
+        $this->client_secret = $payment_intent->getClientSecret(Cart::getActiveOrder());
 
         $this->checkout_confirm_url = config('laravel-cart.urls.checkout_confirm');
         $this->order_complete_url = config('laravel-cart.urls.order_complete').'?order_id='.Cart::getActiveOrder()->id;

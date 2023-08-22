@@ -77,7 +77,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         $order->setData('payment_intent_id', 'a_payment_intent_id');
 
-        PaymentIntent::retrieveStatus($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->retrieveStatus($order);
 
         expect($order->status)->toBe('a_status');
     }
@@ -105,8 +106,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('No payment intent id set on order');
-
-        PaymentIntent::retrieveStatus($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->retrieveStatus($order);
 
         //expect($order->status)->toBe('a_status');
     }
@@ -131,7 +132,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
 
-        PaymentIntent::create($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->create($order);
     }
 
     /**
@@ -154,7 +156,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
 
-        $payment_intent = PaymentIntent::create($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->create($order);
     }
 
     public static function orderLogErrorDataProvider(): array
@@ -192,8 +195,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
     {
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-        //(new MockStripeHttpClient())->throwException($exception_class);
-        PaymentIntent::fake()->throwException($exception_class);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->fake()->throwException($exception_class);
 
         $simple_product = TestProduct::factory()->asSimpleProduct([
             'price' => 1000
@@ -212,7 +215,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         //Cart::initializePayment($order);
         try {
-            PaymentIntent::create($order);
+            $payment_intent->create($order);
         } catch (\Exception $e) {
             expect($order->logItems()->count())->toBe(1)
                 ->and($order->logItems()->first()->message)->toStartWith($expected_message);
@@ -234,7 +237,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
         //(new MockStripeHttpClient())->throwException($exception_class);
-        PaymentIntent::fake()->throwException($exception_class);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->fake()->throwException($exception_class);
 
         $simple_product = TestProduct::factory()->asSimpleProduct([
             'price' => 1000
@@ -251,7 +255,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         $this->expectException($exception_class);
 
-        PaymentIntent::create($order);
+        $payment_intent->create($order);
     }
 
     /**
@@ -274,11 +278,12 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         expect(TestStripeOrder::count())->toBe(1);
 
-        PaymentIntent::create($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->create($order);
 
         $payment_intent_id = TestStripeOrder::first()->getData('payment_intent_id');
 
-        PaymentIntent::create($order);
+        $payment_intent->create($order);
 
         expect(TestStripeOrder::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
 
@@ -304,12 +309,13 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
         expect(TestStripeOrder::count())->toBe(1);
 
         //Cart::initializePayment($order);
-        PaymentIntent::create($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->create($order);
 
         $payment_intent_id = TestStripeOrder::first()->getData('payment_intent_id');
 
         (new MockStripeHttpClient())->with('canceled_at', 'hello')->with('amount', $order->total);
-        PaymentIntent::create($order);
+        $payment_intent->create($order);
 
         expect(TestStripeOrder::first()->getData('payment_intent_id'))->not()->toBe($payment_intent_id);
 
@@ -335,11 +341,13 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         expect(TestStripeOrder::count())->toBe(1);
 
-        PaymentIntent::create($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->create($order);
 
         $payment_intent_id = TestStripeOrder::first()->getData('payment_intent_id');;
 
-        PaymentIntent::create($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->create($order);
 
         expect(TestStripeOrder::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
     }
@@ -365,7 +373,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         $order->setData('payment_intent_id', 'a payment io');
 
-        PaymentIntent::getClientSecret($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->getClientSecret($order);
 
         expect($order->getData('client_secret'))->toBe('the client secret');
     }
@@ -391,7 +400,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
 
         $order->setData('client_secret', 'the client secret');
 
-        PaymentIntent::getClientSecret($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->getClientSecret($order);
 
         expect($order->getData('client_secret'))->toBe('the client secret');
     }
@@ -415,7 +425,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
             ->forCustomer(Customer::factory()->create())
             ->create();
 
-        PaymentIntent::create($order);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->create($order);
     }
 
 }

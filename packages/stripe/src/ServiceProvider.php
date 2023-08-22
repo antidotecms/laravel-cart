@@ -6,32 +6,23 @@ namespace Antidote\LaravelCartStripe;
 //use Antidote\LaravelCart\Commands\CreateMigrationCommand;
 use Antidote\LaravelCart\Providers\EventServiceProvider;
 use Antidote\LaravelCartStripe\Components\StripeCheckoutClientScriptComponent;
-use Illuminate\Foundation\Http\Kernel;
+use Antidote\LaravelCartStripe\Domain\PaymentIntent;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    public function boot(Kernel $kernel)
+    public function register()
     {
-//        if($this->app->runningInConsole()) {
-//            $this->commands([
-//                CreateMigrationCommand::class
-//            ]);
-//        }
+        $this->routes();
 
-        $this->loadRoutesFrom(__DIR__.'../../routes/web.php');
+        $this->app->bind(PaymentIntent::class, PaymentIntent::class);
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-cart-stripe');
 
         $this->app->register(EventServiceProvider::class);
 
         Blade::component('stripe-checkout-client-script', StripeCheckoutClientScriptComponent::class);
-
-//        $router = $this->app->make(Router::class);
-        //$router->pushMiddlewareToGroup('stripe_webhook', WhitelistStripeIPAddresses::class);
-        //$router->pushMiddlewareToGroup('stripe_webhook', AllowStripeWebhooksDuringMaintenance::class);
-
 
         //@see https://stackoverflow.com/a/20550845
         Arr::macro('mergeDeep', function($array2, $array1) {
@@ -55,5 +46,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             }
             return $array1;
         });
+    }
+
+    private function routes()
+    {
+        $this->loadRoutesFrom(__DIR__.'../../routes/web.php');
     }
 }

@@ -14,7 +14,8 @@ class StripeOrder extends \Antidote\LaravelCart\Models\Order
 
     public function updateStatus()
     {
-        PaymentIntent::retrieveStatus($this);
+        $payment_intent = app(PaymentIntent::class);
+        $payment_intent->retrieveStatus($this);
     }
 
     public function isCompleted()
