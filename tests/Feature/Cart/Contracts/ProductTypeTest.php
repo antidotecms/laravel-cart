@@ -23,3 +23,17 @@ it('will be trashed if the product is trashed', function () {
     expect(\Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType::count())->toBe(0);
 })
 ->covers(\Antidote\LaravelCart\Contracts\ProductType::class);
+
+it('will not be trashed if there is a product attached', function () {
+
+    $product = \Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct::factory()->asSimpleProduct()->create([
+        'name' => 'Simple Product'
+    ]);
+
+    expect(\Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType::count())->toBe(1);
+
+    $product->productType->delete();
+
+    expect(\Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType::count())->toBe(1);
+})
+->covers(\Antidote\LaravelCart\Contracts\ProductType::class);

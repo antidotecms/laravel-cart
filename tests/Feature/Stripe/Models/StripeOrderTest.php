@@ -13,8 +13,24 @@ it('provides a factory', function() {
 
 it('will update the status of an order', function () {
 
+    $order = TestStripeOrder::factory()->create();
+
+    $mock = $this->mock(\Antidote\LaravelCartStripe\Domain\PaymentIntent::class, function(\Mockery\MockInterface $mock) use ($order) {
+        $mock->shouldReceive('retrieveStatus')
+            ->with($order)
+            ->andReturns();
+    });
+
+    app()->bind(\Antidote\LaravelCartStripe\Domain\PaymentIntent::class, fn() => $mock);
+
+    $order->updateStatus();
+
+    //needed as mocking expectations does not constitute as an assertion
+    $this->assertTrue(true);
+
 })
-->skip('Need to refactor payment intent and pull from service container rather than use abstract class');
+->covers(\Antidote\LaravelCartStripe\Models\StripeOrder::class);
+//->skip('Need to refactor payment intent and pull from service container rather than use abstract class');
 
 it('will state whether an order is completed', function () {
 
