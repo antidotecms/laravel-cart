@@ -25,24 +25,22 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         Blade::component('stripe-checkout-client-script', StripeCheckoutClientScriptComponent::class);
 
         //@see https://stackoverflow.com/a/20550845
-        Arr::macro('mergeDeep', function($array2, $array1) {
+        Arr::macro('mergeDeep', function(array $array2, array $array1) {
             foreach ($array2 as $k => $v) {
-                if ( is_array($array1) ) {
-                    if ( is_string($v) && ! in_array($v, $array1) ) {
-                        /**
-                         *  Preserve keys in n-dimension using $k
-                         */
+
+                if ( is_string($v) && ! in_array($v, $array1) ) {
+                    /**
+                     *  Preserve keys in n-dimension using $k
+                     */
+                    $array1[$k] = $v;
+                } else if ( is_array($v) ) {
+                    if ( isset($array1[$k]) ) {
+                        $array1[$k] = Arr::mergeDeep($array1[$k], $v);
+                    } else {
                         $array1[$k] = $v;
-                    } else if ( is_array($v) ) {
-                        if ( isset($array1[$k]) ) {
-                            $array1[$k] = Arr::mergeDeep($array1[$k], $v);
-                        } else {
-                            $array1[$k] = $v;
-                        }
                     }
-                } else {
-                    $array1 = array($v);
                 }
+
             }
             return $array1;
         });
