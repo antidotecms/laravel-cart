@@ -3,6 +3,7 @@
 namespace Tests\Feature\Cart;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -19,7 +20,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
         ];
     }
 
-    protected function dataProviderColumns()
+    public function dataProviderColumns()
     {
         return $this->getColumns();
     }
@@ -160,4 +161,15 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
 
         $this->assertEqualsCanonicalizing($included, Schema::getColumnListing($table));
     }
+
+    /**
+     * @test
+     */
+    public function it_has_the_correct_routes()
+    {
+        expect(Route::has('laravel-cart.order_complete'))->toBeTrue();
+        expect(Route::has('laravel-cart.replace_cart'))->toBeTrue();
+        expect(Route::has('laravel-cart.add_to_cart'))->toBeTrue();
+    }
+
 }

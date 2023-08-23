@@ -2,6 +2,8 @@
 
 namespace Antidote\LaravelCart;
 
+use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
+use Antidote\LaravelCart\Http\Controllers\OrderController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
@@ -17,9 +19,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function boot()
     {
+        $this->routes();
         $this->migrations();
         $this->configuration();
-        $this->loadRoutesFrom(__DIR__.'../../routes/web.php');
+        //$this->loadRoutesFrom(__DIR__.'../../routes/web.php');
 
         //create customer guard
         Config::set('auth.guards.customer', [
@@ -46,6 +49,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     private function bindings()
     {
+        //@todo look at real time facades
         $this->app->bind('cart', function () {
             return new \Antidote\LaravelCart\Domain\Cart();
         });
@@ -56,5 +60,21 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->publishes([
             __DIR__ . '/../../../config/laravel-cart.php' => config_path('laravel-cart.php'),
         ], 'laravel-cart-config');
+    }
+
+    private function routes()
+    {
+        if($this->app['config']->get('laravel-cart.urls.order_complete')) {
+            $this->app['router']->get(config('laravel-cart.urls.order_complete'), OrderCompleteController::class)
+                ->middleware(['web', 'auth:customer'])->name('laravel-cart.order_complete');
+        } else {
+            throw new \Exception('The order complete url has not been set in config');
+        }
+
+        $this->app['router']->get('/checkout/replace_cart/{order_id}', [OrderController::class, 'setOrderItemsAsCart'])
+            ->middleware(['web', 'auth:customer'])->name('laravel-cart.replace_cart');;
+
+        $this->app['router']->get('/checkout/add_to_cart/{order_id}', [OrderController::class, 'addOrderItemsToCart'])
+            ->middleware(['web', 'auth:customer'])->name('laravel-cart.add_to_cart');;
     }
 }

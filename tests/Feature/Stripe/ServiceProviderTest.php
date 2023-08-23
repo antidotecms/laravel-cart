@@ -17,6 +17,11 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
         ];
     }
 
+    protected function defineEnv($app)
+    {
+        $app->config->set('laravel-cart.urls.order_complete', '/order/complete');
+    }
+
     /**
      * @test
      */
