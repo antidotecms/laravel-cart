@@ -173,11 +173,11 @@ it('will get the subtotal', function () {
 
     \Antidote\LaravelCart\Models\OrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
 
-    expect($order->getSubtotal())->toBe(1999);
+    expect($order->subtotal)->toBe(1999);
 
     \Antidote\LaravelCart\Models\OrderItem::factory()->withProduct($simple_product)->forOrder($order)->create();
 
-    expect($order->getSubtotal())->toBe(3998);
+    expect($order->subtotal)->toBe(3998);
 
 })
 ->coversClass(\Antidote\LaravelCart\Models\Order::class);
@@ -200,7 +200,7 @@ it('will get the subtotal 2', function () {
         ->forOrder($order)
         ->create();
 
-    expect($order->getSubtotal())->toBe(1999);
+    expect($order->subtotal)->toBe(1999);
 
     \Antidote\LaravelCart\Models\OrderItem::factory()
         ->withProduct($simple_product)
@@ -208,7 +208,7 @@ it('will get the subtotal 2', function () {
         ->forOrder($order)
         ->create();
 
-    expect($order->getSubtotal())->toBe(3998);
+    expect($order->subtotal)->toBe(3998);
 
 })
 ->coversClass(\Antidote\LaravelCart\Models\Order::class);

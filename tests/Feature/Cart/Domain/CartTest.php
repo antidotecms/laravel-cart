@@ -797,7 +797,7 @@ it('will add order adjustments to the order when creating an order', function ()
         'rate' => 10
     ]);
     expect($order_adjustment->apply_to_subtotal)->toBeTruthy();
-    expect($order->getSubtotal())->toBe(1000);
+    expect($order->subtotal)->toBe(1000);
     expect($order->total)->toBe(1080); //900 * 1.2 - 0.2 tax rate
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);

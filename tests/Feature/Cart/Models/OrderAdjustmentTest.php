@@ -73,7 +73,7 @@ it('will add a discount to the order', function () {
 
     $order = \Antidote\LaravelCart\Facades\Cart::createOrder($customer);
 
-    expect($order->getSubtotal())->toBe(1000);
+    expect($order->subtotal)->toBe(1000);
 
     $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::create([
         'name' => '10% off',
@@ -97,7 +97,7 @@ it('will add a discount to the order', function () {
 
     //expect($discount->amount)->toBe(100);
     expect($order->adjustments->sum('amount'))->toBe(-100);
-    expect($order->getSubtotal())->toBe(1000);
+    expect($order->subtotal)->toBe(1000);
     expect($order->getAdjustmentTotal(true))->toBe(-100);
     expect($order->getAdjustmentTotal(false))->toBe(0);
     expect($order->total)->toBe(1080); // 1000 with 10% off plus tax at 20%

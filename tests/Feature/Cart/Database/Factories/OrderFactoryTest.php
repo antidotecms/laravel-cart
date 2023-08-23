@@ -13,7 +13,7 @@ it('will correctly create an order with a simple product', function () {
         ->withProduct($product, 2)
         ->create();
 
-    expect($order->getSubtotal())->toBe($product->getPrice() * 2);
+    expect($order->subtotal)->toBe($product->getPrice() * 2);
 })
 ->covers(\Antidote\LaravelCart\Database\Factories\OrderFactory::class);
 
@@ -27,7 +27,7 @@ it('will correctly create an order with a complex product', function () {
         ->withProduct($product, 2, ['width' => 10, 'height' => 10])
         ->create();
 
-    expect($order->getSubtotal())->toBe($product->getPrice() * 2)->toBe(200);
+    expect($order->subtotal)->toBe($product->getPrice() * 2)->toBe(200);
 })
 ->covers(\Antidote\LaravelCart\Database\Factories\OrderFactory::class);
 
@@ -41,6 +41,6 @@ it('will correctly create an order with a variable product', function() {
         ->withProduct($product, 2, ['width' => 10, 'height' => 10])
         ->create();
 
-    expect($order->getSubtotal())->toBe($product->getPrice(['width' => 10, 'height' => 10]) * 2)->toBe(200);
+    expect($order->subtotal)->toBe($product->getPrice(['width' => 10, 'height' => 10]) * 2)->toBe(200);
 })
 ->covers(\Antidote\LaravelCart\Database\Factories\OrderFactory::class);

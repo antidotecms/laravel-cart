@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCartFilament\Resources;
 
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\CreateOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
@@ -54,19 +55,25 @@ class OrderResource extends Resource
                     ->columns(1)
                     ->schema([
                     TextInput::make('order_subtotal')
-                        ->afterStateHydrated(fn($component, $record) => $component->state(NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($record->getSubtotal()/100, 'GBP')))
+                        /** @var Order $record */
+                        ->afterStateHydrated(fn($component, $record) => static::formatCurrency($component, $record->subtotal))
                         //->formatStateUsing(fn($state) => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($state/100, 'GBP'))
                         ->disabled(),
                     TextInput::make('tax')
-                        ->afterStateHydrated(fn($component, $record) => $component->state(NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($record->tax/100, 'GBP')))
+                        ->afterStateHydrated(fn($component, $record) => static::formatCurrency($component, $record->tax))
                         ->disabled(),
                     TextInput::make('order_total')
-                        ->afterStateHydrated(fn($component, $record) => $component->state(NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($record->total/100, 'GBP')))
+                        ->afterStateHydrated(fn($component, $record) => static::formatCurrency($component, $record->total))
                         ->disabled(),
                 ]),
                 TextInput::make('status')
 
             ]);
+    }
+
+    private static function formatCurrency($component, $number)
+    {
+        return $component->state(NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($number/100, 'GBP'));
     }
 
     public static function table(Table $table): Table

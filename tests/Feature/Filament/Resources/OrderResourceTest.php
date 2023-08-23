@@ -119,10 +119,44 @@ it('has the required fields', function () {
         'id' => $order->id,
         'customer' => $customer->id,
         //@todo would be nice just to assert the state (i.e the integer value) rather than have to format and assert
-        'order_subtotal' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($order->getSubtotal()/100, 'GBP'),
+        'order_subtotal' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($order->subtotal/100, 'GBP'),
         'order_total' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($order->total/100, 'GBP'),
         'tax' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($order->tax/100, 'GBP'),
         'status' => $order->status
     ]);
+})
+->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
+
+test('the id field is disabled', function () {
+
+    $product = TestProduct::factory()->asSimpleProduct()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->withProduct($product)
+        ->forCustomer($customer)
+        ->create();
+
+    livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class, [
+        'record' => $order->id
+    ])
+    ->assertFormFieldIsDisabled('id');
+})
+->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
+
+test('the customer name is displayed', function () {
+
+    $product = TestProduct::factory()->asSimpleProduct()->create();
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+    $order = \Antidote\LaravelCart\Models\Order::factory()
+        ->withProduct($product)
+        ->forCustomer($customer)
+        ->create();
+
+    livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class, [
+        'record' => $order->id
+    ])
+    ->assertFormFieldExists('customer', 'form', function(\Filament\Forms\Components\Select $field) use ($customer) {
+        return $field->getState() == $customer->id;
+    });
 })
 ->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);

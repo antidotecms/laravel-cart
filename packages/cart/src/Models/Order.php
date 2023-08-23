@@ -10,11 +10,30 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder|static query()
+ * @method static static make(array $attributes = [])
+ * @method static static create(array $attributes = [])
+ * @method static static forceCreate(array $attributes)
+ * @method static firstOrNew(array $attributes = [], array $values = [])
+ * @method static firstOrFail($columns = ['*'])
+ * @method static firstOrCreate(array $attributes, array $values = [])
+ * @method static firstOr($columns = ['*'], \Closure $callback = null)
+ * @method static firstWhere($column, $operator = null, $value = null, $boolean = 'and')
+ * @method static updateOrCreate(array $attributes, array $values = [])
+ * @method null|static first($columns = ['*'])
+ * @method static static findOrFail($id, $columns = ['*'])
+ * @method static static findOrNew($id, $columns = ['*'])
+ * @method static null|static find($id, $columns = ['*'])
+ * @property-read int $id
+ *
+ * @method static OrderFactory|Order factory(...$parameters)
+ */
+
 class Order extends Model
 {
     use ConfiguresOrder;
     use HasFactory;
-
     protected static function newFactory()
     {
         return OrderFactory::new();
@@ -35,28 +54,23 @@ class Order extends Model
         return $this->belongsTo(getClassNameFor('customer'), 'customer_id');
     }
 
-    //@todo convert to attribute
-    public function getSubtotal() : int
+    public function subtotal(): Attribute
     {
-        $subtotal = 0;
-
-        $this->items()->each(function($order_item) use (&$subtotal) {
-            $subtotal += $order_item->getCost();
-        });
-
-//        $this->adjustments()->where('is_in_subtotal', true)->each(function($order_adjustment) use (&$subtotal) {
-//            //$order_adjustment->load('adjustment');
-//            $subtotal += !$order_adjustment->adjustment->is_in_subtotal ?: $order_adjustment->amount;
-//        });
-
-        return $subtotal;
+        return Attribute::make(
+            get: function($value) : int {
+                $subtotal = 0;
+                $this->items()->each(function ($order_item) use (&$subtotal) {
+                    $subtotal += $order_item->getCost();
+                });
+                return $subtotal;
+            });
     }
 
     public function total() : Attribute
     {
         return Attribute::make(
             get: function($value) : int {
-                $total = $this->getSubtotal();
+                $total = $this->subtotal;
                 $total += $this->getAdjustmentTotal(false);
                 $total += $this->getAdjustmentTotal(true);
                 $total += (int) $this->tax;
@@ -69,7 +83,7 @@ class Order extends Model
     {
         return Attribute::make(
             get: function ($value) : int {
-                return ceil(ceil(($this->getSubtotal() + $this->getAdjustmentTotal(true)) * config('laravel-cart.tax_rate')) * 100)/100;
+                return ceil(ceil(($this->subtotal + $this->getAdjustmentTotal(true)) * config('laravel-cart.tax_rate')) * 100)/100;
             }
         );
     }
