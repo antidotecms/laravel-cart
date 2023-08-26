@@ -48,25 +48,34 @@ class OrderResource extends Resource
         return $form
             ->schema([
                 TextInput::make('id')
-                    ->disabled(),
+                    ->disabled()
+                    ->dehydrated(false),
                 Select::make('customer')
-                    ->relationship('customer', 'name'),
+                    ->relationship('customer', 'name')
+                    ->disabled()
+                    ->dehydrated(false),
                 Fieldset::make('Totals')
                     ->columns(1)
                     ->schema([
                     TextInput::make('order_subtotal')
                         /** @var Order $record */
-                        ->afterStateHydrated(fn($component, $record) => static::formatCurrency($component, $record->subtotal))
-                        //->formatStateUsing(fn($state) => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($state/100, 'GBP'))
-                        ->disabled(),
+                        ->afterStateHydrated(fn($component, $record) => static::formatCurrency($component, $record->subtotal))                        //->formatStateUsing(fn($state) => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($state/100, 'GBP'))
+                        ->disabled()
+                        ->dehydrated(false),
                     TextInput::make('tax')
+                        /** @var Order $record */
                         ->afterStateHydrated(fn($component, $record) => static::formatCurrency($component, $record->tax))
-                        ->disabled(),
+                        ->disabled()
+                        ->dehydrated(false),
                     TextInput::make('order_total')
+                        /** @var Order $record */
                         ->afterStateHydrated(fn($component, $record) => static::formatCurrency($component, $record->total))
-                        ->disabled(),
+                        ->disabled()
+                        ->dehydrated(false),
                 ]),
                 TextInput::make('status')
+                    ->disabled()
+                    ->dehydrated(false)
 
             ]);
     }

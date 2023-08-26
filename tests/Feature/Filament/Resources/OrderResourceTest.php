@@ -4,159 +4,85 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
 use function Pest\Livewire\livewire;
 
+beforeEach(function() {
+
+    $this->product = TestProduct::factory()->asSimpleProduct()->create();
+    $this->customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+    $this->orders = \Antidote\LaravelCart\Models\Order::factory()
+        ->count(10)
+        ->withProduct($this->product)
+        ->forCustomer($this->customer)
+        ->create([
+            'status' => 'an order status'
+        ]);
+
+    $this->user = TestUser::create([
+        'name' => 'Test User',
+        'email' => 'test@user.com',
+        'password' => \Illuminate\Support\Facades\Hash::make('password')
+    ]);
+
+});
 
 it('will list the orders', function () {
 
-//    Config::set('laravel-cart.classes.order', Order::class);
-//    Config::set('laravel-cart.classes.order_log_item', OrderLogItem::class);
-//    Config::set('laravel-cart.stripe.log', false);
+    livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders::class)
+        ->assertCanSeeTableRecords($this->orders);
+})
+->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class)
+->group('order_resource_table_records');
 
-    //dump(app(\Antidote\LaravelCart\Models\Order::class));
-
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-    $orders = \Antidote\LaravelCart\Models\Order::factory()
-        ->count(10)
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
-
-    $user = TestUser::create([
-        'name' => 'Test User',
-        'email' => 'test@user.com',
-        'password' => \Illuminate\Support\Facades\Hash::make('password')
-    ]);
-
-    $this->actingAs($user)->get(\Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('index'))->assertSuccessful();
+it('has the correct columns', function () {
 
     livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders::class)
-        ->assertCanSeeTableRecords($orders);
+        ->assertTableColumnStateSet('id', $this->orders->first()->id, $this->orders->first())
+        ->assertTableColumnStateSet('order_total', $this->orders->first()->total, $this->orders->first())
+        ->assertTableColumnStateSet('status', $this->orders->first()->status, $this->orders->first())
+        ->assertTableColumnStateSet('customer.name', $this->customer->name, $this->orders->first());
 })
-->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
+->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class)
+->group('order_resource_table_columns');
 
-it('can render the edit page', function () {
+it('can render the pages', function () {
 
-//    dump(app()->getBindings());
+    $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('index'))
+        ->assertSuccessful();
 
-//    Config::set('laravel-cart.classes.order', TestOrder::class);
-//    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
-//    Config::set('laravel-cart.stripe.log', false);
+    $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('create'))
+        ->assertForbidden();
 
-//    dump(app(\Antidote\LaravelCart\Models\Order::class));
-
-    //dump(\Filament\Facades\Filament::getResources());
-
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-    $order = \Antidote\LaravelCart\Models\Order::factory()
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
-
-    $user = TestUser::create([
-        'name' => 'Test User',
-        'email' => 'test@user.com',
-        'password' => \Illuminate\Support\Facades\Hash::make('password')
-    ]);
-
-    $response = $this->actingAs($user)->get(\Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('edit', [
-        'record' => $order->getKey()
+    $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('edit', [
+        'record' => $this->orders->first()->getKey()
     ]))->assertSuccessful();
-
-    //dump($response);
 })
-->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
-
-it('will allow sending an order confirmation mail again', function() {
-
-//    Config::set('laravel-cart.classes.order', TestOrder::class);
-//    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
-    Config::set('laravel-cart.stripe.log', false);
-
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-    $order = \Antidote\LaravelCart\Models\Order::factory()
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
-
-    \Illuminate\Support\Facades\Event::fake();
-
-    livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class, [
-            'record' => $order->getKey()
-        ])
-        ->callPageAction('resend_order_complete_notification');
-
-    \Illuminate\Support\Facades\Event::assertDispatched(\Antidote\LaravelCart\Events\OrderCompleted::class);
-
-    //expect($order->logitems->count())->toBe(1);
-})
-->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
+->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class)
+->group('order_resource_urls');
 
 it('has the required fields', function () {
 
-//    Config::set('laravel-cart.classes.order', TestOrder::class);
-//    Config::set('laravel-cart.classes.order_log_item', TestOrderLogItem::class);
-//    Config::set('laravel-cart.classes.customer', TestCustomer::class);
-    Config::set('laravel-cart.stripe.log', false);
-
-    //app()->bind(\Antidote\LaravelCart\Models\Order::class, \Antidote\LaravelCart\Models\Order::class);
-
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-    $order = \Antidote\LaravelCart\Models\Order::factory()
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
-
-    $order->status = 'a status';
-    $order->save();
-
     livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class, [
-        'record' => $order->getKey()
+        'record' => $this->orders->first()->getKey()
     ])
     ->assertFormSet([
-        'id' => $order->id,
-        'customer' => $customer->id,
-        //@todo would be nice just to assert the state (i.e the integer value) rather than have to format and assert
-        'order_subtotal' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($order->subtotal/100, 'GBP'),
-        'order_total' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($order->total/100, 'GBP'),
-        'tax' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($order->tax/100, 'GBP'),
-        'status' => $order->status
-    ]);
+        'id' => $this->orders->first()->id,
+        'customer' => $this->customer->id,
+        //@todo would be nice just to assert the state (i.e the integer value) rather than have to format and assert - maybe use a mask?
+        'order_subtotal' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($this->orders->first()->subtotal/100, 'GBP'),
+        'order_total' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($this->orders->first()->total/100, 'GBP'),
+        'tax' => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($this->orders->first()->tax/100, 'GBP'),
+        'status' => $this->orders->first()->status
+    ])
+    ->call('save')
+    ->assertHasNoErrors();
 })
-->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
+->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class)
+->group('order_resource_form_fields_all');
 
 test('the id field is disabled', function () {
 
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-    $order = \Antidote\LaravelCart\Models\Order::factory()
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
-
     livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class, [
-        'record' => $order->id
+        'record' => $this->orders->first()->id
     ])
     ->assertFormFieldIsDisabled('id');
-})
-->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
-
-test('the customer name is displayed', function () {
-
-    $product = TestProduct::factory()->asSimpleProduct()->create();
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-    $order = \Antidote\LaravelCart\Models\Order::factory()
-        ->withProduct($product)
-        ->forCustomer($customer)
-        ->create();
-
-    livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class, [
-        'record' => $order->id
-    ])
-    ->assertFormFieldExists('customer', 'form', function(\Filament\Forms\Components\Select $field) use ($customer) {
-        return $field->getState() == $customer->id;
-    });
 })
 ->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);

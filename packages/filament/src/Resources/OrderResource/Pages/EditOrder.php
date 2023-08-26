@@ -3,6 +3,7 @@
 namespace Antidote\LaravelCartFilament\Resources\OrderResource\Pages;
 
 use Antidote\LaravelCart\Events\OrderCompleted;
+use Antidote\LaravelCartFilament\Resources\OrderResource;
 use Filament\Pages\Actions\Action;
 use Filament\Pages\Actions\ActionGroup;
 use Filament\Pages\Actions\DeleteAction;
@@ -12,7 +13,7 @@ class EditOrder extends EditRecord
 {
     public static function getResource(): string
     {
-        return config('laravel-cart.filament.order');
+        return config('laravel-cart.filament.order') ?? OrderResource::class;
     }
 
     protected static ?string $title = 'Edit Order';

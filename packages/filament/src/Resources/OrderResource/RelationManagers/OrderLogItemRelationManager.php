@@ -26,15 +26,18 @@ class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\R
             ->actions(self::getActions());
     }
 
+    // @codeCoverageIgnoreStart
+    // Test fails to due to error in `callTableAction`
+    // @link https://github.com/filamentphp/filament/discussions/8048
     private static function getActions() : array
     {
         //@todo better way to determine payment provider needed?
-        if(is_a(getClassNameFor('order_log_item'), StripeOrderLogItem::class)) {
+        if(is_subclass_of(getClassNameFor('order_log_item'), StripeOrderLogItem::class)) {
+//        if(is_a(TestStripeOrderLogItem::class,StripeOrderLogItem::class)) {
             return [
                 Action::make('event')
-                    ->action(fn($record) => $record)
+                    //->action(fn($record) => $record)
                     ->modalContent(function($record) {
-
                         return view('laravel-cart-filament::stripe-event', [
                             'event_data' => \Illuminate\Support\Arr::dot($record->event)]);
                     })
@@ -43,4 +46,5 @@ class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\R
 
         return [];
     }
+    // @codeCoverageIgnoreEnd
 }

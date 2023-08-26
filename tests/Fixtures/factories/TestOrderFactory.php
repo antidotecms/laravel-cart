@@ -13,7 +13,7 @@ class TestOrderFactory extends OrderFactory
     public function definition(): array
     {
         return [
-            'customer_id' => Customer::factory(),
+            'customer_id' => Customer::factory()
         ];
     }
 }

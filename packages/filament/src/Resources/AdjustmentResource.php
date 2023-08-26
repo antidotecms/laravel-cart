@@ -62,13 +62,15 @@ class AdjustmentResource extends Resource
                     ->options(config('laravel-cart.adjustments'))
                     ->required()
                     ->reactive(),
-                Toggle::make('apply_to_subtotal'),
+                Toggle::make('apply_to_subtotal')
+                    ->default(true),
                     //@todo disable this if the value derives from code and not the DB
                     //->disabled()
                 Toggle::make('is_active'),
                     //@todo disable this if the value derives from code and not the DB
                     //->disabled(),
-                Section::make('Setttings')
+                Section::make('Settings')
+                    ->statePath('parameters')
                     ->visible(fn($get) => $get('class') != "")
                     ->schema(fn($get) => $get('class') != "" ? $get('class')::getFilamentFields() : [])
             ]);

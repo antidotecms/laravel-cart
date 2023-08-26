@@ -22,12 +22,13 @@ class OrderRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('total')
-                    ->getStateUsing(fn($record) => $record->total)
             ]);
     }
 
+    //@codeCoverageIgnoreStart
     protected function getTableRecordUrlUsing(): Closure
     {
         return fn ($record): string => OrderResource::getUrl('edit', ['record' => $record]);
     }
+    //@codeCoverageIgnoreEnd
 }

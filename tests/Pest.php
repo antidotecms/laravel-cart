@@ -10,8 +10,8 @@
 //uses(\Antidote\LaravelCart\Tests\TestCase::class)->in('Feature/Filament');
 //uses(\Antidote\LaravelCart\Tests\StripeTestCase::class)->in('Feature/Stripe/Http/Controllers');
 //uses(\Antidote\LaravelCart\Tests\BrowserTestCase::class)->in('Browser');
-uses(\Antidote\LaravelCart\Tests\TestCase::class)->in('Feature');
-//uses(\Illuminate\Foundation\Testing\Concerns\InteractsWithViews::class)->in('Feature/Filament');
+uses(\Antidote\LaravelCart\Tests\TestCase::class)->in('Feature/Cart', 'Feature/Stripe');
+uses(\Antidote\LaravelCart\Tests\StripeTestCase::class)->in('Feature/Filament');
 
 //uses(RefreshDatabase::class)->in('Feature');
 

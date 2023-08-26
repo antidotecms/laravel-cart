@@ -21,7 +21,7 @@ class OrderItemRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('product_name')
                     ->getStateUsing(fn($record) => $record->getName())
-                ->description(fn($record) => $record->product->getDescription($record->product_data)),
+                    ->description(fn($record) => $record->product->getDescription($record->product_data)),
                 TextColumn::make('quantity'),
                 TextColumn::make('price')
                     ->formatStateUsing(fn($state) => NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($state/100, 'GBP')),

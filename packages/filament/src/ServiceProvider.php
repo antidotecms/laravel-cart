@@ -2,10 +2,13 @@
 
 namespace Antidote\LaravelCartFilament;
 
+use Antidote\LaravelCart\Testing\Mixins\FilamentAssertionsMixin;
+use Antidote\LaravelCart\Tests\Assertions\Livewire\LivewireAssertionsMixin;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
 use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
 use Filament\PluginServiceProvider;
+use Livewire\Testing\TestableLivewire;
 use Spatie\LaravelPackageTools\Package;
 
 class ServiceProvider extends PluginServiceProvider
@@ -32,5 +35,12 @@ class ServiceProvider extends PluginServiceProvider
         $package
             ->name('laravel-cart-filament')
             ->hasViews('laravel-cart-filament');
+    }
+
+    public function boot()
+    {
+        parent::boot();
+
+        TestableLivewire::mixin(new FilamentAssertionsMixin());
     }
 }
