@@ -11,7 +11,7 @@ use Filament\PluginServiceProvider;
 use Livewire\Testing\TestableLivewire;
 use Spatie\LaravelPackageTools\Package;
 
-class ServiceProvider extends PluginServiceProvider
+class FilamentServiceProvider extends PluginServiceProvider
 {
 //    protected array $resources = [
 //        OrderResource::class,

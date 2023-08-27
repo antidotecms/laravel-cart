@@ -2,13 +2,13 @@
 
 namespace Antidote\LaravelCart\Tests;
 
+use Antidote\LaravelCart\CartServiceProvider;
 use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
-use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
@@ -49,9 +49,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         return [
             //'Antidote\LaravelCart\ServiceProvider',
-            ServiceProvider::class,
-            'Antidote\LaravelCartStripe\ServiceProvider',
-            \Antidote\LaravelCartFilament\ServiceProvider::class,
+            CartServiceProvider::class,
+            'Antidote\LaravelCartStripe\StripeServiceProvider',
+            \Antidote\LaravelCartFilament\FilamentServiceProvider::class,
             BladeCaptureDirectiveServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,

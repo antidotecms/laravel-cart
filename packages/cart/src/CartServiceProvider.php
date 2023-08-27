@@ -7,7 +7,7 @@ use Antidote\LaravelCart\Http\Controllers\OrderController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
-class ServiceProvider extends \Illuminate\Support\ServiceProvider
+class CartServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function register()
     {

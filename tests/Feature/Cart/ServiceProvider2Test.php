@@ -2,12 +2,12 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Cart;
 
-use Antidote\LaravelCart\ServiceProvider;
+use Antidote\LaravelCart\CartServiceProvider;
 use Illuminate\Config\Repository;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Antidote\LaravelCart\ServiceProvider
+ * @covers \Antidote\LaravelCart\CartServiceProvider
  */
 class ServiceProvider2Test extends TestCase
 {
@@ -29,7 +29,7 @@ class ServiceProvider2Test extends TestCase
             ->with('router')
             ->andReturn([]);
 
-        $service = new ServiceProvider($app_mock);
+        $service = new CartServiceProvider($app_mock);
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('The order complete url has not been set in config');

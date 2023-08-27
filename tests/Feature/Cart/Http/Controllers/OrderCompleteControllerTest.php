@@ -2,13 +2,13 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Cart\Http\Controllers;
 
+use Antidote\LaravelCart\CartServiceProvider;
 use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
-use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
@@ -79,7 +79,7 @@ class OrderCompleteControllerTest extends TestCase
     protected function getPackageProviders($app)
     {
         return [
-            ServiceProvider::class,
+            CartServiceProvider::class,
             LivewireServiceProvider::class
         ];
     }

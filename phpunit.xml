@@ -15,7 +15,7 @@
             <directory suffix=".php">./packages</directory>
         </include>
         <exclude>
-            <file>./packages/filament/resources/views/stripe-event.blade.php</file>
+            <directory suffix=".blade.php">./packages</directory>
         </exclude>
     </source>
     <coverage pathCoverage="true">

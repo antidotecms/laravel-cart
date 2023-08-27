@@ -10,7 +10,7 @@ use Antidote\LaravelCartStripe\Domain\PaymentIntent;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 
-class ServiceProvider extends \Illuminate\Support\ServiceProvider
+class StripeServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function register()
     {

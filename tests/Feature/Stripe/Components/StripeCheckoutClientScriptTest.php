@@ -95,4 +95,12 @@ class StripeCheckoutClientScriptTest extends TestCase
 
         $component = $this->actingAs(Customer::first(), 'customer')->component(StripeCheckoutClientScriptComponent::class);
     }
+
+    /**
+     * @test
+     */
+    public function it_will_render_the_component()
+    {
+
+    }
 }

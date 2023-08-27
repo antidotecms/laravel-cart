@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * @covers \Antidote\LaravelCart\ServiceProvider
+ * @covers \Antidote\LaravelCart\CartServiceProvider
  */
 class ServiceProviderTest extends \Orchestra\Testbench\TestCase
 {
@@ -16,7 +16,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            \Antidote\LaravelCart\ServiceProvider::class
+            \Antidote\LaravelCart\CartServiceProvider::class
         ];
     }
 

@@ -2,13 +2,13 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Stripe\Http\Controllers;
 
+use Antidote\LaravelCart\CartServiceProvider;
 use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\OrderItem;
-use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
@@ -70,8 +70,8 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            ServiceProvider::class,
-            \Antidote\LaravelCartStripe\ServiceProvider::class,
+            CartServiceProvider::class,
+            \Antidote\LaravelCartStripe\StripeServiceProvider::class,
             //LivewireServiceProvider::class
         ];
     }

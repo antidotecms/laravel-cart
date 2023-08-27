@@ -7,7 +7,7 @@ use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
 
 /**
- * @covers \Antidote\LaravelCartFilament\ServiceProvider
+ * @covers \Antidote\LaravelCartFilament\FilamentServiceProvider
  */
 class ServiceProviderTest extends \Antidote\LaravelCart\Tests\TestCase
 {

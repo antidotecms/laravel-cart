@@ -2,10 +2,10 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Cart\Providers;
 
+use Antidote\LaravelCart\CartServiceProvider;
 use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Listeners\SendOrderConfirmation;
 use Antidote\LaravelCart\Providers\EventServiceProvider;
-use Antidote\LaravelCart\ServiceProvider;
 use Antidote\LaravelCart\Tests\TestCase;
 use Illuminate\Support\Facades\Event;
 
@@ -17,7 +17,7 @@ class EventServiceProviderTest extends TestCase
     protected function getPackageProviders($app): array
     {
         return [
-            ServiceProvider::class,
+            CartServiceProvider::class,
             EventServiceProvider::class
         ];
     }

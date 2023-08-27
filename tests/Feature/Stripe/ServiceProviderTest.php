@@ -2,18 +2,18 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Stripe;
 
-use Antidote\LaravelCartStripe\ServiceProvider;
+use Antidote\LaravelCartStripe\StripeServiceProvider;
 use Illuminate\Support\Arr;
 
 /**
- * @covers \Antidote\LaravelCartStripe\ServiceProvider
+ * @covers \Antidote\LaravelCartStripe\StripeServiceProvider
  */
 class ServiceProviderTest extends \Orchestra\Testbench\TestCase
 {
     protected function getPackageProviders($app)
     {
         return [
-            ServiceProvider::class
+            StripeServiceProvider::class
         ];
     }
 

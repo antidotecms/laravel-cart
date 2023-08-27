@@ -59,8 +59,8 @@ class BrowserTestCase extends \Orchestra\Testbench\Dusk\TestCase
     protected function getPackageProviders($app): array
     {
         return [
-            'Antidote\LaravelCart\ServiceProvider',
-            'Antidote\LaravelCartStripe\ServiceProvider',
+            'Antidote\LaravelCart\CartServiceProvider',
+            'Antidote\LaravelCartStripe\StripeServiceProvider',
 //            LivewireServiceProvider::class,
 //            FilamentServiceProvider::class
             //WireUiServiceProvider::class

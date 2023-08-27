@@ -30,9 +30,9 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Antidote\\LaravelCart\\ServiceProvider",
-                "Antidote\\LaravelCartStripe\\ServiceProvider",
-                "Antidote\\LaravelCartFilament\\ServiceProvider"
+                "Antidote\\LaravelCart\\CartServiceProvider",
+                "Antidote\\LaravelCartStripe\\StripeServiceProvider",
+                "Antidote\\LaravelCartFilament\\FilamentServiceProvider"
             ],
             "aliases": {
                 "cart": "Antidote\\LaravelCart\\Facades\\Cart"
