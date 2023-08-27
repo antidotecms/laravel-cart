@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Blade;
 
 class StripeServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    public function register()
+    public function register() : void
     {
         $this->routes();
 
@@ -46,7 +46,7 @@ class StripeServiceProvider extends \Illuminate\Support\ServiceProvider
         });
     }
 
-    private function routes()
+    private function routes() : void
     {
         $this->loadRoutesFrom(__DIR__.'../../routes/web.php');
     }
