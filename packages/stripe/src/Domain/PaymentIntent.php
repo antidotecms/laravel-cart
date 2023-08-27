@@ -2,7 +2,6 @@
 
 namespace Antidote\LaravelCartStripe\Domain;
 
-use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +27,7 @@ class PaymentIntent
         $this->checkValidOrderAmount($order);
 
         try {
-            $event = [];
+            $event = new \stdClass();
             $event = $this->getPaymentIntent($order);
         } catch (\Exception $e) {
             $this->logError($order, get_class($e), $e, $event);
@@ -44,13 +43,13 @@ class PaymentIntent
         }
     }
 
-    private function logError($order, $type, $exception, $event)
+    private function logError(StripeOrder $order, string $type, \Exception $exception, \stdClass $event) : void
     {
         $this->logMessage($order, $type.' : '.$exception, $event);
         //return $exception;
     }
 
-    private function logMessage($order, $message, $event = [])
+    private function logMessage(StripeOrder $order, string $message, \stdClass $event) : void
     {
         $order->logItems()->create([
             'message' => $message,
@@ -58,7 +57,7 @@ class PaymentIntent
         ]);
     }
 
-    private function createPaymentIntent($order)
+    private function createPaymentIntent(StripeOrder $order) : \stdClass
     {
         //throws ApiErrorException
         $payment_intent = $this->getClient()->paymentIntents->create([
@@ -83,7 +82,7 @@ class PaymentIntent
         return $event;
     }
 
-    private function updatePaymentIntent($order)
+    private function updatePaymentIntent(StripeOrder $order) : \stdClass
     {
 //        $payment_intent_response = $this->getClient()->paymentIntents->update($order->getData('payment_intent_id'), [
 //            'amount' => $order->total
@@ -103,7 +102,7 @@ class PaymentIntent
         return $payment_intent_response;
     }
 
-    public function retrieveStatus(StripeOrder $order)
+    public function retrieveStatus(StripeOrder $order) : void
     {
         if($order->getData('payment_intent_id')) {
 
@@ -118,7 +117,7 @@ class PaymentIntent
         }
     }
 
-    public function getClientSecret(Order $order): string
+    public function getClientSecret(StripeOrder $order): string
     {
         $client_secret = '';
 
@@ -134,11 +133,11 @@ class PaymentIntent
         return $client_secret;
     }
 
-    private function getPaymentIntent(Order $order): \stdClass
+    private function getPaymentIntent(StripeOrder $order): \stdClass
     {
         $payment_intent_response = null;
 
-        $payment_intent_response = $this->requiresPaymentIntent($order, $payment_intent_response, function() use ($order) {
+        $payment_intent_response = $this->requiresPaymentIntent($order, function() use ($order) {
             return $this->createPaymentIntent($order);
         });
 
@@ -157,8 +156,10 @@ class PaymentIntent
         return $payment_intent_response;
     }
 
-    private function requiresPaymentIntent($order, $event, \Closure $callback): \stdClass|null
+    private function requiresPaymentIntent(StripeOrder $order, \Closure $callback): \stdClass|null
     {
+        $event = null;
+
         if(!$order->isCompleted() & !$order->getData('payment_intent_id')) {
             $event = $callback();
         }
@@ -166,7 +167,7 @@ class PaymentIntent
         return $event;
     }
 
-    private function paymentIntentCancelled($event, \Closure $callback): \stdClass|null
+    private function paymentIntentCancelled(\stdClass $event, \Closure $callback): \stdClass|null
     {
         if($event->canceled_at) {
             $event = $callback();
@@ -175,7 +176,7 @@ class PaymentIntent
         return $event;
     }
 
-    private function mismatchedTotals($order, $event, \Closure $callback): \stdClass|null
+    private function mismatchedTotals(StripeOrder $order, \stdClass $event, \Closure $callback): \stdClass|null
     {
         if($event->amount != $order->total) {
             $event = $callback();
@@ -184,7 +185,7 @@ class PaymentIntent
         return $event;
     }
 
-    private function queryPaymentIntent($payment_intent_id, $params = []): \stdClass
+    private function queryPaymentIntent(string $payment_intent_id, array $params = []): \stdClass
     {
         $response = $this->getClient()->paymentIntents->retrieve($payment_intent_id, $params);
         return (object) $response->getLastResponse()->json;
