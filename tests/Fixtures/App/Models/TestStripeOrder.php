@@ -7,6 +7,10 @@ use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static TestStripeOrderFactory|TestStripeOrder factory(...$parameters)
+ */
+
 class TestStripeOrder extends StripeOrder
 {
     use SoftDeletes;

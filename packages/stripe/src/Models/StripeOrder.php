@@ -33,13 +33,13 @@ class StripeOrder extends \Antidote\LaravelCart\Models\Order
         return StripeOrderFactory::new();
     }
 
-    public function updateStatus()
+    public function updateStatus() : void
     {
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->retrieveStatus($this);
     }
 
-    public function isCompleted()
+    public function isCompleted() : bool
     {
         return $this->status == 'succeeded';
     }
