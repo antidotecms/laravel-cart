@@ -6,6 +6,7 @@ use Antidote\LaravelCart\Events\OrderCompleted;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
+use Stripe\Event;
 use Stripe\Exception\UnexpectedValueException;
 use Stripe\Stripe;
 use Stripe\Webhook;
@@ -49,7 +50,7 @@ class StripeWebhookController extends Controller
         $this->handleEvent($event);
     }
 
-    private function handleEvent($event)
+    private function handleEvent(Event $event) : void
     {
         $order = getClassNameFor('order')::where('id', $event->data->object->metadata->order_id)->first();
 
@@ -93,12 +94,12 @@ class StripeWebhookController extends Controller
         $order->save();
     }
 
-    private function logStripeEvent($event)
+    private function logStripeEvent(Event $event)
     {
         if(config('laravel-cart.stripe.log') === true) {
-            Log::info(json_encode($event));
+            Log::info($event->toJSON());
         } else if(is_string(config('laravel-cart.stripe.log'))) {
-            Log::channel(config('laravel-cart.stripe.log'))->info(json_encode($event));
+            Log::channel(config('laravel-cart.stripe.log'))->info($event->toJSON());
         }
     }
 }
