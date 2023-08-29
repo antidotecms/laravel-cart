@@ -3,7 +3,9 @@
 namespace Antidote\LaravelCart\Testing\Mixins;
 
 use Filament\Forms\ComponentContainer;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
+use Filament\Resources\Pages\Page;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
@@ -160,6 +162,41 @@ class FilamentAssertionsMixin
                 $livewire->getRecordUrl($record),
                 "The record url is no {$url}"
             );
+        };
+    }
+
+    public function assertFormStructure()
+    {
+        return function(array $structure, string $formName = 'form'): static {
+            /** @phpstan-ignore-next-line */
+            $this->assertFormExists($formName);
+
+            /** @var Page $livewire */
+            $livewire = $this->instance();
+
+            /** @var ComponentContainer $form */
+            $form = $livewire->{$formName};
+
+            //main grid
+            /** @var Grid $main */
+            $main = $form->getComponents(withHidden: true)[0];
+
+            $schema = $main->getChildComponents();
+
+            $temp_container = ComponentContainer::make($livewire)
+                ->parentComponent($main)
+                ->schema($structure)
+                ->fill();
+
+            $structure = $temp_container->getComponents(withHidden: true);
+
+            Assert::assertEquals(
+                $structure,
+                $schema,
+                "Failed asserting that form '{$formName}' has the specified structure"
+            );
+
+            return $this;
         };
     }
 }

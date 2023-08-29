@@ -18,18 +18,6 @@ class CustomerResource extends Resource
 
     protected static ?string $navigationGroup = 'Orders';
 
-//    public static function getModel(): string
-//    {
-////        $classname = '\App\Models\Customer';
-////        try {
-////            $classname =  (string) getClassNameFor('customer');
-////        } catch (\Exception $e) {}
-////        finally {
-////            return $classname;
-////        }
-//        return config('laravel-cart.classes.customer');
-//    }
-
     public static function getModel(): string
     {
         return config('laravel-cart.classes.customer');

@@ -107,3 +107,17 @@ test('creating customers will use the correct resource', function () {
         ->toBe(\Antidote\LaravelCartFilament\Resources\CustomerResource::class);
 })
 ->covers(\Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\CreateCustomer::class);
+
+it('has the correct structure', function () {
+
+    $structure = [
+        \Filament\Forms\Components\TextInput::make('id'),
+        \Filament\Forms\Components\TextInput::make('name'),
+        \Filament\Forms\Components\TextInput::make('email')
+            ->email()
+    ];
+
+    livewire(\Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\CreateCustomer::class)
+        ->assertFormStructure($structure);
+})
+->covers(\Antidote\LaravelCartFilament\Resources\CustomerResource::class);
