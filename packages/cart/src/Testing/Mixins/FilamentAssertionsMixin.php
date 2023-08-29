@@ -3,7 +3,7 @@
 namespace Antidote\LaravelCart\Testing\Mixins;
 
 use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Field;
+use Filament\Forms\Components\Section;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
@@ -76,8 +76,8 @@ class FilamentAssertionsMixin
         };
     }
 
-    public function assertFormLayoutExists() {
-        return function(string $layoutName, string | \Closure $formName = 'form', ?\Closure $callback = null): static {
+    public function assertSectionLayoutExists() {
+        return function(string $heading, string | \Closure $formName = 'form', ?\Closure $callback = null): static {
 
             if ($formName instanceof \Closure) {
                 $callback = $formName;
@@ -94,26 +94,26 @@ class FilamentAssertionsMixin
             $form = $livewire->{$formName};
 
             $layouts = collect($form->getFlatComponents(withHidden: true))->reject(function ($component) {
-                return is_subclass_of($component, Field::class);
+                return !is_a($component, Section::class);
             });
 
             //remove main container
-            $layouts->shift();
+            //$layouts->shift();
 
-            $layout = $layouts->filter(function($item) use ($layoutName) {
-                return $item->getHeading() == $layoutName;
+            $layout = $layouts->filter(function($item) use ($heading) {
+                return $item->getHeading() == $heading;
             })->first();
 
             Assert::assertInstanceOf(
                 \Filament\Support\Components\Component::class,
                 $layout,
-                "Failed asserting that a layout component with the name [{$layoutName}] exists on the form with the name [{$formName}] on the [{$livewireClass}] component."
+                "Failed asserting that a layout component with the name [{$heading}] exists on the form with the name [{$formName}] on the [{$livewireClass}] component."
             );
 
             if ($callback) {
                 Assert::assertTrue(
                     $callback($layout),
-                    "Failed asserting that a layout component with the name [{$layoutName}] and provided configuration exists on the form with the name [{$formName}] on the [{$livewireClass}] component."
+                    "Failed asserting that a layout component with the name [{$heading}] and provided configuration exists on the form with the name [{$formName}] on the [{$livewireClass}] component."
                 );
             }
 

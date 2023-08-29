@@ -62,10 +62,10 @@ it('displays the correct form', function($mode, $form) {
         ->assertFormFieldExists('is_active', function(\Filament\Forms\Components\Toggle $field) {
             return $field->getDefaultState() == false;
         })
-        ->assertFormLayoutExists('Settings', function(\Filament\Forms\Components\Section $section) use ($mode) {
+        ->assertSectionLayoutExists('Settings', function(\Filament\Forms\Components\Section $section) use ($mode) {
             return $section->isHidden() == ($mode == 'create');
         })
-        ->assertFormLayoutExists('Settings', function(\Filament\Forms\Components\Section $section) use ($mode) {
+        ->assertSectionLayoutExists('Settings', function(\Filament\Forms\Components\Section $section) use ($mode) {
             return $section->getChildComponents() == match($mode) {
                 'create' => [],
                 'edit' => [
