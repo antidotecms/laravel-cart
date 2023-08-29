@@ -3,7 +3,6 @@
 namespace Antidote\LaravelCart\Concerns;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Str;
 
 /**
  * @property string $class
@@ -13,6 +12,8 @@ use Illuminate\Support\Str;
 
 trait ConfiguresAdjustment
 {
+    use MapsPropertiesToAggregates;
+
     public function getTable()
     {
         return 'adjustments';
@@ -37,39 +38,14 @@ trait ConfiguresAdjustment
     protected function calculatedAmount() : Attribute
     {
         return Attribute::make(
-        //get: fn($value) => (new $this->class($this))->calculatedAmount($this->parameters, $value ?? 0)
-            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('calculatedAmount', $value)
+            get: fn($value) => $this->mapToAggregate($this->class, 'calculatedAmount', 0, [$this->parameters])
         );
     }
 
     protected function isValid() : Attribute
     {
         return Attribute::make(
-            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('isValid', $value)
+            get: fn($value) => $this->mapToAggregate($this->class, 'isValid', true, [$this->parameters])
         );
-    }
-
-    protected function isActive() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('isActive', $value)
-        );
-    }
-
-    protected function applyToSubtotal() : Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => $this->getMethodOnAdjustmentIfDefined('applyToSubtotal', $value)
-        );
-    }
-
-    private function getMethodOnAdjustmentIfDefined($attribute, $value)
-    {
-        if(method_exists($this->class, $attribute)) {
-            $attribute = Str::of($attribute)->studly()->lcfirst()->value();
-            return (new $this->class)->{$attribute}($this->parameters);
-        } else {
-            return $value;
-        }
     }
 }
