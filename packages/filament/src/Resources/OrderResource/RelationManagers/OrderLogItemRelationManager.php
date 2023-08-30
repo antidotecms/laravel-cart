@@ -36,7 +36,8 @@ class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\R
 //        if(is_a(TestStripeOrderLogItem::class,StripeOrderLogItem::class)) {
             return [
                 Action::make('event')
-                    //->action(fn($record) => $record)
+                    //@todo need action to trigger the modal
+                    ->action(fn($record) => $record)
                     ->modalContent(function($record) {
                         return view('laravel-cart-filament::stripe-event', [
                             'event_data' => \Illuminate\Support\Arr::dot($record->event)]);
