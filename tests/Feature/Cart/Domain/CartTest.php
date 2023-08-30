@@ -930,3 +930,33 @@ it('will clear the active order', function () {
 
     expect(Cart::getActiveOrder())->toBeNull();
 });
+
+it('will filter the valid adjustments', function () {
+
+    $simple_product = TestProduct::factory()->asSimpleProduct([
+        'price' => 1000
+    ])->create();
+
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+
+    $adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->create([
+        'name' => '10 percent off',
+        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
+        'parameters' => [
+            'type' => 'percentage',
+            'rate' => 10
+        ],
+        'apply_to_subtotal' => true
+    ]);
+
+    Cart::add($simple_product);
+
+    expect(Cart::getSubtotal())->toBe(1000);
+    expect(Cart::getTotal())->toBe(900);
+    expect(Cart::getValidAdjustments(true)->count())->toBe(1);
+    expect(Cart::getValidAdjustments(
+        true,
+        [
+            \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class
+        ])->count())->toBe(0);
+});

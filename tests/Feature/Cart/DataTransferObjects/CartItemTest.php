@@ -14,3 +14,19 @@ it('has a product and cost', function() {
     expect($cart_item->getCost())->toBe(4000);
 })
 ->covers(\Antidote\LaravelCart\DataTransferObjects\CartItem::class);
+
+it('has a product and cost via the cart facade', function () {
+
+    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
+
+    $product = \Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct::factory()->asSimpleProduct(['price' => 2000])->create();
+
+    $this->be($customer);
+
+    \Antidote\LaravelCart\Facades\Cart::add($product);
+
+    expect(\Antidote\LaravelCart\Facades\Cart::getSubtotal())->toBeGreaterThan(0);
+    expect(\Antidote\LaravelCart\Facades\Cart::getTotal())->toBeGreaterThan(0);
+
+})
+->covers(\Antidote\LaravelCart\DataTransferObjects\CartItem::class);

@@ -177,18 +177,18 @@ class Cart
         return $total;
     }
 
-    private function getAdjustmentsTotal(bool $applied_to_subtotal)
+    private function getAdjustmentsTotal(bool $applied_to_subtotal, array $except = [])
     {
         $discount_total = 0;
 
-        $this->getValidAdjustments($applied_to_subtotal)->each(function (OrderAdjustment|Adjustment $adjustment) use (&$discount_total) {
+        $this->getValidAdjustments($applied_to_subtotal, $except)->each(function (OrderAdjustment|Adjustment $adjustment) use (&$discount_total) {
             $discount_total += is_a($adjustment, OrderAdjustment::class) ? $adjustment->amount : $adjustment->calculated_amount;
         });
 
         return $discount_total;
     }
 
-    private function getValidAdjustments(bool $applied_to_subtotal) : Collection
+    private function getValidAdjustments(bool $applied_to_subtotal, array $except = []) : Collection
     {
 //        $class = $this->getActiveOrder() && $this->getActiveOrder()->isCompleted()
 //            ? config('laravel-cart.classes.order_adjustment')
@@ -203,6 +203,9 @@ class Cart
             ->when($applied_to_subtotal,
                 fn($query) => $query->appliedToSubtotal(),
                 fn($query) => $query->appliedToTotal()
+            )
+            ->when(!empty($except),
+                fn($query) => $query->whereNotIn('class',$except)
             )
             ->valid()
             ->active();

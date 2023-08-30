@@ -36,9 +36,9 @@ use Illuminate\Support\Facades\Facade;
  * @see \Antidote\LaravelCart\Domain\Cart::getData
  * @method mixed getData($key = null)
  * @see \Antidote\LaravelCart\Domain\Cart::getAdjustmentsTotal
- * @method int getAdjustmentsTotal(bool $applied_to_subtotal)
+ * @method int getAdjustmentsTotal(bool $applied_to_subtotal, array $except = [])
  * @see \Antidote\LaravelCart\Domain\Cart::getValidAdjustments
- * @method Collection getValidAdjustments(bool $applied_to_subtotal)
+ * @method Collection getValidAdjustments(bool $applied_to_subtotal, array $except = [])
  */
 
 class Cart extends Facade
