@@ -8,7 +8,7 @@
     <form
         x-data=''
         x-init='
-            stripe = Stripe("{{ $stripe_api_key }}");
+            stripe = await Stripe("{{ $stripe_api_key }}");
             elements = stripe.elements();
             cardElement = elements.create("card");
             cardElement.mount("#card-element");
@@ -40,7 +40,8 @@
                     .then(function(response) {
 
                         if(response.error) {
-
+                            const messageContainer = document.querySelector("#error-message");
+                            messageContainer.textContent = response.error.message;
                         } else {
                             location.href = "{{ $order_complete_url }}"
                         }
