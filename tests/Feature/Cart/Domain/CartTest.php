@@ -7,6 +7,9 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\ComplexProductDa
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\VariableProductDataType;
 
+beforeEach(function() {
+   $this->cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+});
 /**
  * @covers \Antidote\LaravelCart\Domain\Cart
  */
@@ -23,9 +26,9 @@ it('can add a product to the cart', function() {
     $product->productType()->associate($product_data);
     $product->save();
 
-    Cart::add($product);
+    $this->cart->add($product);
 
-    $this->assertEquals(1, Cart::items()->count());
+    $this->assertEquals(1, $this->cart->items()->count());
 
     $product_data = new CartItem([
         'product_id' => $product->id,
@@ -35,7 +38,7 @@ it('can add a product to the cart', function() {
         'specification' => null
     ]);
 
-    $this->assertEquals($product_data, Cart::items()->first());
+    $this->assertEquals($product_data, $this->cart->items()->first());
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -46,23 +49,24 @@ it('will get a cart items cost', function() {
         'price' => 105
     ])->create();;
 
-    Cart::add($simple_product, 3);
+    $cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+    $cart->add($simple_product, 3);
 
 
-    expect(Cart::items()->first()->getCost())->toBe(315);
+    expect($cart->items()->first()->getCost())->toBe(315);
 
-    Cart::clear();
+    $cart->clear();
 
     $complex_product = TestProduct::factory()->asComplexProduct([
         'width' => 10,
         'height' => 10
     ])->create();
 
-    Cart::add($complex_product, 2);
+    $cart->add($complex_product, 2);
 
-    expect(Cart::items()->first()->getCost())->toBe(200);
+    expect($cart->items()->first()->getCost())->toBe(200);
 
-    Cart::clear();
+    $cart->clear();
 
     $variable_product = TestProduct::factory()->asVariableProduct()->create();
 
@@ -71,9 +75,9 @@ it('will get a cart items cost', function() {
         'height' => 20
     ];
 
-    Cart::add($variable_product, 3 , $product_data);
+    $cart->add($variable_product, 3 , $product_data);
 
-    expect(Cart::items()->first()->getCost())->toBe(600);
+    expect($cart->items()->first()->getCost())->toBe(600);
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -91,11 +95,12 @@ it('can add a product and specify quantity', function () {
     $product->productType()->associate($product_data);
     $product->save();
 
-    Cart::add($product, 3);
+    $cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+    $cart->add($product, 3);
 
-    $this->assertEquals(1, Cart::items()->count());
-    $this->assertEquals(3, Cart::items()->first()->quantity);
-    $this->assertEquals(6000, Cart::items()->first()->getCost());
+    $this->assertEquals(1, $cart->items()->count());
+    $this->assertEquals(3, $cart->items()->first()->quantity);
+    $this->assertEquals(6000, $cart->items()->first()->getCost());
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -117,14 +122,15 @@ it('can remove a product by product id', function () {
 
     $this->be($customer, 'customer');
 
-    Cart::add($product);
+    $cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+    $cart->add($product);
 
-    $this->assertEquals(1, Cart::items()->count());
+    $this->assertEquals(1, $cart->items()->count());
 
-    Cart::remove($product);
+    $cart->remove($product);
     //$customer->refresh();
 
-    $this->assertEquals(0, Cart::items()->count());
+    $this->assertEquals(0, $cart->items()->count());
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -146,15 +152,16 @@ it('can remove a product by product id specifying quantity', function () {
 
     $this->be($customer, 'customer');
 
-    Cart::add($product, 3);
+    $cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+    $cart->add($product, 3);
 
-    $this->assertEquals(1, Cart::items()->count());
-    $this->assertEquals(3, Cart::items()->first()->quantity);
+    $this->assertEquals(1, $cart->items()->count());
+    $this->assertEquals(3, $cart->items()->first()->quantity);
 
-    Cart::remove($product, 2);
+    $cart->remove($product, 2);
     //$customer->refresh();
 
-    $this->assertEquals(1, Cart::items()->first()->quantity);
+    $this->assertEquals(1, $cart->items()->first()->quantity);
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -179,21 +186,21 @@ it('it can remove a product by product id and product data', function () {
     $variable_product2->productType()->associate($variable_product_data_type2);
     $variable_product2->save();
 
-    Cart::add($variable_product1, 1, [
+    $this->cart->add($variable_product1, 1, [
         'width' => 10,
         'height' => 10
     ]);
 
-    Cart::add($variable_product2, 1, [
+    $this->cart->add($variable_product2, 1, [
         'width' => 10,
         'height' => 20
     ]);
 
-    $this->assertEquals(2, Cart::items()->count());
+    $this->assertEquals(2, $this->cart->items()->count());
 
-    Cart::remove($variable_product1);
+    $this->cart->remove($variable_product1);
 
-    $this->assertEquals(1, Cart::items()->count());
+    $this->assertEquals(1, $this->cart->items()->count());
 
     $expected_product = new CartItem([
         'product_id' => $variable_product2->id,
@@ -204,7 +211,7 @@ it('it can remove a product by product id and product data', function () {
         ]
     ]);
 
-    $this->assertEquals($expected_product, Cart::items()->first());
+    $this->assertEquals($expected_product, $this->cart->items()->first());
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
@@ -221,16 +228,16 @@ it('it can remove a product by product id and product data specifying quantity',
     $product->productType()->associate($product_data);
     $product->save();
 
-    Cart::add($product, 5);
+    $this->cart->add($product, 5);
 
-    $this->assertEquals(1, Cart::items()->count());
-    $this->assertEquals(5, Cart::items()->first()->quantity);
+    $this->assertEquals(1, $this->cart->items()->count());
+    $this->assertEquals(5, $this->cart->items()->first()->quantity);
 
-    Cart::remove($product, 2);
+    $this->cart->remove($product, 2);
     //$customer->refresh();
 
-    $this->assertEquals(1, Cart::items()->count());
-    $this->assertEquals(3, Cart::items()->first()->quantity);
+    $this->assertEquals(1, $this->cart->items()->count());
+    $this->assertEquals(3, $this->cart->items()->first()->quantity);
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -246,26 +253,26 @@ it('will remove an item completely with just product data', function () {
     $variable_product1->productType()->associate($variable_product_data_type1);
     $variable_product1->save();
 
-    Cart::add($variable_product1, product_data: [
+    $this->cart->add($variable_product1, product_data: [
         'width' => 10,
         'height' => 10
     ]);
 
-    expect(Cart::items()->count())->toBe(1);
+    expect($this->cart->items()->count())->toBe(1);
 
-    Cart::remove($variable_product1, product_data: [
+    $this->cart->remove($variable_product1, product_data: [
         'width' => 10,
         'height' => 20
     ]);
 
-    expect(Cart::items()->count())->toBe(1);
+    expect($this->cart->items()->count())->toBe(1);
 
-    Cart::remove($variable_product1, product_data: [
+    $this->cart->remove($variable_product1, product_data: [
         'width' => 10,
         'height' => 10
     ]);
 
-    expect(Cart::items()->count())->toBe(0);
+    expect($this->cart->items()->count())->toBe(0);
 });
 
 it('will not remove an item if it is not in the cart', function () {
@@ -289,15 +296,15 @@ it('will not remove an item if it is not in the cart', function () {
 
     $this->be($customer, 'customer');
 
-    Cart::add($product, 3);
+    $this->cart->add($product, 3);
 
-    $this->assertEquals(1, Cart::items()->count());
-    $this->assertEquals(3, Cart::items()->first()->quantity);
+    $this->assertEquals(1, $this->cart->items()->count());
+    $this->assertEquals(3, $this->cart->items()->first()->quantity);
 
-    Cart::remove($product2, 2);
+    $this->cart->remove($product2, 2);
     //$customer->refresh();
 
-    $this->assertEquals(3, Cart::items()->first()->quantity);
+    $this->assertEquals(3, $this->cart->items()->first()->quantity);
 });
 
 it('will not remove an item if the cart is empty', function () {
@@ -306,11 +313,11 @@ it('will not remove an item if the cart is empty', function () {
         'name' => 'A Simple Product',
     ]);
 
-    expect(Cart::items()->count())->toBe(0);
+    expect($this->cart->items()->count())->toBe(0);
 
-    Cart::remove($product);
+    $this->cart->remove($product);
 
-    expect(Cart::items()->count())->toBe(0);
+    expect($this->cart->items()->count())->toBe(0);
 });
 
 it('can clear the contents of the cart', function () {
@@ -328,14 +335,14 @@ it('can clear the contents of the cart', function () {
 
     $this->assertEquals(1, SimpleProductDataType::count());
 
-    Cart::add($product, 5);
+    $this->cart->add($product, 5);
 
-    $this->assertEquals(1, Cart::items()->count());
-    $this->assertEquals(5, Cart::items()->first()->quantity);
+    $this->assertEquals(1, $this->cart->items()->count());
+    $this->assertEquals(5, $this->cart->items()->first()->quantity);
 
-    Cart::clear();
+    $this->cart->clear();
 
-    $this->assertEquals(0, Cart::items()->count());
+    $this->assertEquals(0, $this->cart->items()->count());
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -362,15 +369,15 @@ it('provide the subtotal', function () {
     $product2->productType()->associate($product_data2);
     $product2->save();
 
-    Cart::add($product1);
-    Cart::add($product2, 2);
+    $this->cart->add($product1);
+    $this->cart->add($product2, 2);
 
     $this->assertEquals('A Simple Product', $product1->getName());
 
-    $this->assertTrue(Cart::isInCart($product1->id));
-    $this->assertTrue(Cart::isInCart($product2->id));
+    $this->assertTrue($this->cart->isInCart($product1->id));
+    $this->assertTrue($this->cart->isInCart($product2->id));
 
-    $this->assertEquals(2300, Cart::getSubtotal());
+    $this->assertEquals(2300, $this->cart->getSubtotal());
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -400,10 +407,10 @@ it('provides the correct subtotal when a price of a product is calculated', func
     $complex_product->productType()->associate($complex_product_data);
     $complex_product->save();
 
-    Cart::add($simple_product);
-    Cart::add($complex_product, 2);
+    $this->cart->add($simple_product);
+    $this->cart->add($complex_product, 2);
 
-    $this->assertEquals(2400, Cart::getSubtotal());
+    $this->assertEquals(2400, $this->cart->getSubtotal());
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -431,11 +438,11 @@ it('will state whether a product is in the cart', function () {
     $complex_product->productType()->associate($complex_product_data);
     $complex_product->save();
 
-    Cart::add($complex_product, 2);
-    //Cart::add($product);
+    $this->cart->add($complex_product, 2);
+    //$this->cart->add($product);
 
-    $this->assertTrue(Cart::isInCart($complex_product->id));
-    $this->assertFalse(Cart::isInCart($simple_product->id));
+    $this->assertTrue($this->cart->isInCart($complex_product->id));
+    $this->assertFalse($this->cart->isInCart($simple_product->id));
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -458,13 +465,13 @@ it('can add a product with product data', function () {
 
     $this->assertEquals(100, $variable_product->getPrice($product_data));
 
-    Cart::add($variable_product, 1, [
+    $this->cart->add($variable_product, 1, [
         'width' => 10,
         'height' => 10
     ]);
 
-    $this->assertTrue(Cart::isInCart($variable_product->id));
-    $this->assertEquals(100, Cart::getSubtotal());
+    $this->assertTrue($this->cart->isInCart($variable_product->id));
+    $this->assertEquals(100, $this->cart->getSubtotal());
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -506,24 +513,24 @@ it('will increment the quantity of a cart item if the cart already has a product
         'height' => 30
     ];
 
-    Cart::add($variable_product, 1, $product_data);
+    $this->cart->add($variable_product, 1, $product_data);
 
-    Cart::add($variable_product, 1, $product_data2);
+    $this->cart->add($variable_product, 1, $product_data2);
 
-    Cart::add($simple_product, 1, $product_data3);
+    $this->cart->add($simple_product, 1, $product_data3);
 
-    $this->assertEquals(1, Cart::items()->first()->quantity);
-    $this->assertEquals(1, Cart::items()->skip(1)->first()->quantity);
-    $this->assertEquals(1, Cart::items()->skip(2)->first()->quantity);
+    $this->assertEquals(1, $this->cart->items()->first()->quantity);
+    $this->assertEquals(1, $this->cart->items()->skip(1)->first()->quantity);
+    $this->assertEquals(1, $this->cart->items()->skip(2)->first()->quantity);
 
-    Cart::add($variable_product, 1, [
+    $this->cart->add($variable_product, 1, [
         'width' => 10,
         'height' => 10
     ]);
 
-    $this->assertEquals(2, Cart::items()->first()->quantity);
-    $this->assertEquals(1, Cart::items()->skip(1)->first()->quantity);
-    $this->assertEquals(1, Cart::items()->skip(2)->first()->quantity);
+    $this->assertEquals(2, $this->cart->items()->first()->quantity);
+    $this->assertEquals(1, $this->cart->items()->skip(1)->first()->quantity);
+    $this->assertEquals(1, $this->cart->items()->skip(2)->first()->quantity);
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
@@ -548,12 +555,12 @@ it('will amend the quantity of a cart item', function () {
         'height' => 20
     ];
 
-    Cart::add($variable_product, 1, $product_data);
-    Cart::add($variable_product, 1, $product_data2);
-    Cart::add($variable_product, 2, $product_data);
+    $this->cart->add($variable_product, 1, $product_data);
+    $this->cart->add($variable_product, 1, $product_data2);
+    $this->cart->add($variable_product, 2, $product_data);
 
-    $this->assertEquals(3, Cart::items()->first()->quantity);
-    $this->assertEquals(1, Cart::items()->skip(1)->first()->quantity);
+    $this->assertEquals(3, $this->cart->items()->first()->quantity);
+    $this->assertEquals(1, $this->cart->items()->skip(1)->first()->quantity);
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
@@ -573,14 +580,14 @@ it('will remove a product if it is asked to remove more than is in the cart', fu
         'height' => 10
     ];
 
-    Cart::add($variable_product, 1, [
+    $this->cart->add($variable_product, 1, [
         'width' => 10,
         'height' => 10
     ]);
 
-    Cart::remove($variable_product, 2, $product_data);
+    $this->cart->remove($variable_product, 2, $product_data);
 
-    $this->assertEquals(0, Cart::items()->count());
+    $this->assertEquals(0, $this->cart->items()->count());
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
@@ -605,36 +612,36 @@ it('will add two cart items if the product data is different', function () {
         'height' => 20
     ];
 
-    Cart::add($variable_product, 1, $product_data);
+    $this->cart->add($variable_product, 1, $product_data);
 
-    expect(Cart::items()->count())->toBe(1);
+    expect($this->cart->items()->count())->toBe(1);
 
-    Cart::add($variable_product, 1, $product_data);
+    $this->cart->add($variable_product, 1, $product_data);
 
-    expect(Cart::items()->count())->toBe(1)
-        ->and(Cart::items()->first()->quantity)->toBe(2);
+    expect($this->cart->items()->count())->toBe(1)
+        ->and($this->cart->items()->first()->quantity)->toBe(2);
 
-    Cart::add($variable_product, 1, $product_data2);
+    $this->cart->add($variable_product, 1, $product_data2);
 
-    expect(Cart::items()->count())->toBe(2);
-
-})
-->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
-
-test('the facade will throw an error if the method does not exist', function () {
-
-    $this->expectException(\BadMethodCallException::class);
-
-    Cart::nonExistantMethod();
+    expect($this->cart->items()->count())->toBe(2);
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
+
+//test('the facade will throw an error if the method does not exist', function () {
+//
+//    $this->expectException(\BadMethodCallException::class);
+//
+//    $this->cart->nonExistantMethod();
+//
+//})
+//->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will not allow adding a product with a negative quantity', function() {
 
     $product = TestProduct::factory()->asSimpleProduct()->create();
 
-    Cart::add($product, -1);
+    $this->cart->add($product, -1);
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class)
 ->throws(InvalidArgumentException::class, 'Quantity must be greater than or equal to one');
@@ -643,7 +650,7 @@ it('will not allow adding a product without a product type', function() {
 
     $product = TestProduct::factory()->create();
 
-    Cart::add($product, 1);
+    $this->cart->add($product, 1);
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class)
 ->throws(InvalidArgumentException::class, 'Product has no product data type associated');
@@ -655,9 +662,9 @@ it('will not allow a product to be added if it is invalid', function () {
         'height' => 20
     ])->create();
 
-    Cart::add($product);
+    $this->cart->add($product);
 
-    expect(Cart::items()->count())->toBe(0);
+    expect($this->cart->items()->count())->toBe(0);
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class)
 ->throws(InvalidArgumentException::class, 'The cart item is invalid');
@@ -670,9 +677,9 @@ it('will throw an exception if the amount is too low', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    Cart::add($simple_product);
+    $this->cart->add($simple_product);
 
-    $result = Cart::createOrder($customer);
+    $result = $this->cart->createOrder($customer);
 
     //expect($result)->toBeFalse();
     //below doesnt get fired as exception hit first
@@ -689,9 +696,9 @@ it('will throw an exception if the amount is too high', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    Cart::add($simple_product);
+    $this->cart->add($simple_product);
 
-    $result = Cart::createOrder($customer);
+    $result = $this->cart->createOrder($customer);
 
     //expect($result)->toBeFalse();
     //below doesnt get fired as exception hit first
@@ -708,13 +715,13 @@ it('can add a note to the cart', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    Cart::add($simple_product);
+    $this->cart->add($simple_product);
 
-    Cart::addData('note', 'this is a note');
+    $this->cart->addData('note', 'this is a note');
 
-    expect(Cart::getData('note'))->toBe('this is a note');
+    expect($this->cart->getData('note'))->toBe('this is a note');
 
-    expect(Cart::getData('non_existant'))->toBe('');
+    expect($this->cart->getData('non_existant'))->toBe('');
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
@@ -726,12 +733,12 @@ it('can return all data', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    Cart::add($simple_product);
+    $this->cart->add($simple_product);
 
-    Cart::addData('note', 'this is a note');
-    Cart::addData('another_note', 'this is another note');
+    $this->cart->addData('note', 'this is a note');
+    $this->cart->addData('another_note', 'this is another note');
 
-    expect(count(Cart::getData()))->toBe(2);
+    expect(count($this->cart->getData()))->toBe(2);
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
@@ -743,11 +750,11 @@ it('can add a note to the order', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    Cart::add($simple_product);
+    $this->cart->add($simple_product);
 
-    Cart::addData('additional_field', 'this is a note');
+    $this->cart->addData('additional_field', 'this is a note');
 
-    Cart::createOrder($customer);
+    $this->cart->createOrder($customer);
 
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
     expect(\Antidote\LaravelCart\Models\Order::first()->getData('additional_field'))->toBe('this is a note');
@@ -773,14 +780,14 @@ it('will add order adjustments to the order when creating an order', function ()
         'apply_to_subtotal' => true
     ]);
 
-    Cart::add($simple_product);
+    $this->cart->add($simple_product);
 
-    expect(Cart::getSubtotal())->toBe(1000);
-    expect(Cart::getTotal())->toBe(900);
-    expect(Cart::getValidAdjustments(true)->count())->toBe(1);
-    expect(Cart::getValidAdjustments(false)->count())->toBe(0);
+    expect($this->cart->getSubtotal())->toBe(1000);
+    expect($this->cart->getTotal())->toBe(900);
+    expect($this->cart->getValidAdjustments(true)->count())->toBe(1);
+    expect($this->cart->getValidAdjustments(false)->count())->toBe(0);
 
-    $order = Cart::createOrder($customer);
+    $order = $this->cart->createOrder($customer);
 
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
 
@@ -820,14 +827,14 @@ it('will clear the order_adjustments from order if cart is empty', function () {
         'apply_to_subtotal' => true
     ]);
 
-    Cart::add($simple_product);
+    $this->cart->add($simple_product);
 
-    expect(Cart::getSubtotal())->toBe(1000);
-    expect(Cart::getTotal())->toBe(900);
-    expect(Cart::getValidAdjustments(true)->count())->toBe(1);
-    expect(Cart::getValidAdjustments(false)->count())->toBe(0);
+    expect($this->cart->getSubtotal())->toBe(1000);
+    expect($this->cart->getTotal())->toBe(900);
+    expect($this->cart->getValidAdjustments(true)->count())->toBe(1);
+    expect($this->cart->getValidAdjustments(false)->count())->toBe(0);
 
-    $order = Cart::createOrder($customer);
+    $order = $this->cart->createOrder($customer);
 
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
 
@@ -835,7 +842,7 @@ it('will clear the order_adjustments from order if cart is empty', function () {
 
     expect($order->adjustments->count())->toBe(1);
 
-    Cart::remove($simple_product);
+    $this->cart->remove($simple_product);
 
     $order->refresh();
 
@@ -864,15 +871,15 @@ it('will set the active order with the id', function () {
 
     expect($order->customer->name)->toBe($customer->name);
 
-    expect(Cart::getActiveOrder())->toBeNull();
+    expect($this->cart->getActiveOrder())->toBeNull();
 
-    Cart::setActiveOrder($order->id);
+    $this->cart->setActiveOrder($order->id);
 
-    expect(Cart::getActiveOrder())->not()->toBeNull();
+    expect($this->cart->getActiveOrder())->not()->toBeNull();
 
-    expect(Cart::getActiveOrder())->toBeInstanceOf(\Antidote\LaravelCart\Models\Order::class);
+    expect($this->cart->getActiveOrder())->toBeInstanceOf(\Antidote\LaravelCart\Models\Order::class);
 
-    expect(Cart::getActiveOrder()->id)->toBe($order->id);
+    expect($this->cart->getActiveOrder()->id)->toBe($order->id);
 });
 
 it('will set the active order with the order object', function () {
@@ -890,15 +897,15 @@ it('will set the active order with the order object', function () {
 
     expect($order->customer->name)->toBe($customer->name);
 
-    expect(Cart::getActiveOrder())->toBeNull();
+    expect($this->cart->getActiveOrder())->toBeNull();
 
-    Cart::setActiveOrder($order);
+    $this->cart->setActiveOrder($order);
 
-    expect(Cart::getActiveOrder())->not()->toBeNull();
+    expect($this->cart->getActiveOrder())->not()->toBeNull();
 
-    expect(Cart::getActiveOrder())->toBeInstanceOf(\Antidote\LaravelCart\Models\Order::class);
+    expect($this->cart->getActiveOrder())->toBeInstanceOf(\Antidote\LaravelCart\Models\Order::class);
 
-    expect(Cart::getActiveOrder()->id)->toBe($order->id);
+    expect($this->cart->getActiveOrder()->id)->toBe($order->id);
 });
 
 it('will clear the active order', function () {
@@ -916,19 +923,19 @@ it('will clear the active order', function () {
 
     expect($order->customer->name)->toBe($customer->name);
 
-    expect(Cart::getActiveOrder())->toBeNull();
+    expect($this->cart->getActiveOrder())->toBeNull();
 
-    Cart::setActiveOrder($order);
+    $this->cart->setActiveOrder($order);
 
-    expect(Cart::getActiveOrder())->not()->toBeNull();
+    expect($this->cart->getActiveOrder())->not()->toBeNull();
 
-    expect(Cart::getActiveOrder())->toBeInstanceOf(\Antidote\LaravelCart\Models\Order::class);
+    expect($this->cart->getActiveOrder())->toBeInstanceOf(\Antidote\LaravelCart\Models\Order::class);
 
-    expect(Cart::getActiveOrder()->id)->toBe($order->id);
+    expect($this->cart->getActiveOrder()->id)->toBe($order->id);
 
-    Cart::setActiveOrder(null);
+    $this->cart->setActiveOrder(null);
 
-    expect(Cart::getActiveOrder())->toBeNull();
+    expect($this->cart->getActiveOrder())->toBeNull();
 });
 
 it('will filter the valid adjustments', function () {
@@ -949,12 +956,12 @@ it('will filter the valid adjustments', function () {
         'apply_to_subtotal' => true
     ]);
 
-    Cart::add($simple_product);
+    $this->cart->add($simple_product);
 
-    expect(Cart::getSubtotal())->toBe(1000);
-    expect(Cart::getTotal())->toBe(900);
-    expect(Cart::getValidAdjustments(true)->count())->toBe(1);
-    expect(Cart::getValidAdjustments(
+    expect($this->cart->getSubtotal())->toBe(1000);
+    expect($this->cart->getTotal())->toBe(900);
+    expect($this->cart->getValidAdjustments(true)->count())->toBe(1);
+    expect($this->cart->getValidAdjustments(
         true,
         [
             \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class

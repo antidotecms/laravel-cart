@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart;
 
+use Antidote\LaravelCart\Domain\Cart;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Http\Controllers\OrderController;
 use Illuminate\Database\Eloquent\Model;
@@ -49,10 +50,7 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
 
     private function bindings()
     {
-        //@todo look at real time facades
-        $this->app->bind('cart', function () {
-            return new \Antidote\LaravelCart\Domain\Cart();
-        });
+        $this->app->bind(Cart::class, Cart::class);
     }
 
     private function configuration()

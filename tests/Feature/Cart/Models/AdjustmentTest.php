@@ -8,7 +8,9 @@ it('will show potential discounts in the cart', function () {
         'price' => 1000
     ])->create();
 
-    \Antidote\LaravelCart\Facades\Cart::add($product);
+    $cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+
+    $cart->add($product);
 
     $adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->create([
         'name' => '10% for all orders',
@@ -19,6 +21,6 @@ it('will show potential discounts in the cart', function () {
         ]
     ]);
 
-    expect(\Antidote\LaravelCart\Facades\Cart::getTotal())->toBe(900);
+    expect($cart->getTotal())->toBe(900);
 })
     ->coversClass(\Antidote\LaravelCart\Models\Adjustment::class);

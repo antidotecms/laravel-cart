@@ -2,6 +2,10 @@
 
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 
+beforeEach(function() {
+   $this->cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+});
+
 it('automatically populates the fillable fields', function () {
 
     Config::set('laravel-cart.classes.order', \Antidote\LaravelCart\Models\Order::class);
@@ -50,7 +54,7 @@ it('will add a discount to the order', function () {
         'price' => 1000
     ])->create();
 
-    \Antidote\LaravelCart\Facades\Cart::add($product);
+    $this->cart->add($product);
 
     //10 percent discount
     //@todo add validity - so scope it to subtotal amount, items in cart etc
@@ -69,9 +73,9 @@ it('will add a discount to the order', function () {
     //expect($discount->amount)->toBe(0); //or raise exception?
 
     //@todo valid adjustments are only shown in the cart if added to the order - mayeb look at automatically applying these?
-    //expect(\Antidote\LaravelCart\Facades\Cart::getTotal())->toBe(1000);
+    //expect($this->cart->getTotal())->toBe(1000);
 
-    $order = \Antidote\LaravelCart\Facades\Cart::createOrder($customer);
+    $order = $this->cart->createOrder($customer);
 
     expect($order->subtotal)->toBe(1000);
 
@@ -93,7 +97,7 @@ it('will add a discount to the order', function () {
 
     //$order->addAdjustment($adjustment);
 
-    //expect(\Antidote\LaravelCart\Facades\Cart::getTotal())->toBe(900);
+    //expect($this->cart->getTotal())->toBe(900);
 
     //expect($discount->amount)->toBe(100);
     expect($order->adjustments->sum('amount'))->toBe(-100);
@@ -113,9 +117,9 @@ it('will remove a discount if there are no order items', function () {
         'price' => 1000
     ])->create();
 
-    \Antidote\LaravelCart\Facades\Cart::add($product);
+    $this->cart->add($product);
 
-    $order = \Antidote\LaravelCart\Facades\Cart::createOrder($customer);
+    $order = $this->cart->createOrder($customer);
 
     $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::create([
         'name' => '10% off',
@@ -131,7 +135,7 @@ it('will remove a discount if there are no order items', function () {
 
     expect($order->adjustments->count())->toBe(1);
 
-    \Antidote\LaravelCart\Facades\Cart::remove($product);
+    $this->cart->remove($product);
 
     $order->refresh();
 
@@ -147,9 +151,9 @@ it('belongs to an order', function () {
         'price' => 1000
     ])->create();
 
-    \Antidote\LaravelCart\Facades\Cart::add($product);
+    $this->cart->add($product);
 
-    $order = \Antidote\LaravelCart\Facades\Cart::createOrder($customer);
+    $order = $this->cart->createOrder($customer);
 
     $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::create([
         'name' => '10% off',

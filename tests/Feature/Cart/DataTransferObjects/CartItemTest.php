@@ -23,10 +23,11 @@ it('has a product and cost via the cart facade', function () {
 
     $this->be($customer);
 
-    \Antidote\LaravelCart\Facades\Cart::add($product);
+    $cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+    $cart->add($product);
 
-    expect(\Antidote\LaravelCart\Facades\Cart::getSubtotal())->toBeGreaterThan(0);
-    expect(\Antidote\LaravelCart\Facades\Cart::getTotal())->toBeGreaterThan(0);
+    expect($cart->getSubtotal())->toBeGreaterThan(0);
+    expect($cart->getTotal())->toBeGreaterThan(0);
 
 })
 ->covers(\Antidote\LaravelCart\DataTransferObjects\CartItem::class);

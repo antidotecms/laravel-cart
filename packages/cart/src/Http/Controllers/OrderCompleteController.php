@@ -8,14 +8,14 @@ use Antidote\LaravelCart\Tests\laravel\app\Models\TestPayment;
 
 class OrderCompleteController extends \Illuminate\Routing\Controller
 {
-    public function __invoke()
+    public function __invoke(\Antidote\LaravelCart\Domain\Cart $cart)
     {
         $order = $this->getOrder() ?? abort(404);
 
         /** @var Order $order */
         $order->load('items.product.productType');
 
-        Cart::setActiveOrder(null);
+        $cart->setActiveOrder(null);
 
         $order->updateStatus();
 

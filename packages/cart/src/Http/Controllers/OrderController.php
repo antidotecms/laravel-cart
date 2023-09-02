@@ -7,7 +7,11 @@ use Antidote\LaravelCart\Models\Order;
 
 class OrderController
 {
-
+    private \Antidote\LaravelCart\Domain\Cart $cart;
+    public function __construct(\Antidote\LaravelCart\Domain\Cart $cart)
+    {
+        $this->cart = $cart;
+    }
     /**
      * Clears the cart and adds these order items to the current order
      */
@@ -15,7 +19,7 @@ class OrderController
     {
         $existing_order = $this->getOrder($order_id);
 
-        Cart::clear();
+        $this->cart->clear();
 
         $this->populateCart($order_id, $existing_order);
 
@@ -37,10 +41,10 @@ class OrderController
     private function populateCart($order_id, $existing_order)
     {
         $existing_order->items->each(function($order_item) {
-            Cart::add($order_item->product, $order_item->quantity, $order_item->product_data);
+            $this->cart->add($order_item->product, $order_item->quantity, $order_item->product_data);
         });
 
-        Cart::setActiveOrder($order_id);
+        $this->cart->setActiveOrder($order_id);
     }
 
     private function getOrder(int $order_id) : Order

@@ -13,34 +13,34 @@ use Illuminate\Support\Collection;
 
 class Cart
 {
-    public function __call($method, $arguments) : mixed
-    {
-        method_exists($this, $method) ?: throw new \BadMethodCallException();
+//    public function __call($method, $arguments) : mixed
+//    {
+//        method_exists($this, $method) ?: throw new \BadMethodCallException();
+//
+//        $allowedMethods = [
+//            'add',
+//            'items',
+//            'clear',
+//            'remove',
+//            'getSubtotal',
+//            'getTotal',
+//            'getDiscountTotal',
+//            'isInCart',
+//            'createOrder',
+//            'getActiveOrder',
+//            'setActiveOrder',
+//            'addData',
+//            'getData',
+//            'getAdjustmentsTotal',
+//            'getValidAdjustments'
+//        ];
+//
+//        in_array($method, $allowedMethods) ?: throw new \BadMethodCallException("Cannot call {$method}");
+//
+//        return $this->$method(...$arguments);
+//    }
 
-        $allowedMethods = [
-            'add',
-            'items',
-            'clear',
-            'remove',
-            'getSubtotal',
-            'getTotal',
-            'getDiscountTotal',
-            'isInCart',
-            'createOrder',
-            'getActiveOrder',
-            'setActiveOrder',
-            'addData',
-            'getData',
-            'getAdjustmentsTotal',
-            'getValidAdjustments'
-        ];
-
-        in_array($method, $allowedMethods) ?: throw new \BadMethodCallException("Cannot call {$method}");
-
-        return $this->$method(...$arguments);
-    }
-
-    private function items() : Collection
+    public function items() : Collection
     {
         $cart_items = session()->get('cart_items') ?? [];
         $cart = new \Antidote\LaravelCart\DataTransferObjects\Cart(cart_items: $cart_items);
@@ -48,7 +48,7 @@ class Cart
         return $cart->cart_items ?? collect([]);
     }
 
-    private function add($product, int $quantity = 1, $product_data = null) : void
+    public function add($product, int $quantity = 1, $product_data = null) : void
     {
         $cart_item = ValidCartItem::create(new CartItem([
             'product_id' => $product->id,
@@ -99,7 +99,7 @@ class Cart
      * @param $quantity int of products to remove. If null, all specified products are removed.
      * @return void
      */
-    private function remove(Product $product, $quantity = null, $product_data = null) : void
+    public function remove(Product $product, $quantity = null, $product_data = null) : void
     {
         $cart_items = $this->items();
 
@@ -150,12 +150,12 @@ class Cart
      * Clears the contents of the cart
      * @return void
      */
-    private function clear() : void
+    public function clear() : void
     {
         session()->put('cart_items', []);
     }
 
-    private function getSubtotal() : int
+    public function getSubtotal() : int
     {
         $subtotal = 0;
 
@@ -167,7 +167,7 @@ class Cart
         return $subtotal;
     }
 
-    private function getTotal()
+    public function getTotal()
     {
         $total = $this->getSubtotal();
 
@@ -177,7 +177,7 @@ class Cart
         return $total;
     }
 
-    private function getAdjustmentsTotal(bool $applied_to_subtotal, array $except = [])
+    public function getAdjustmentsTotal(bool $applied_to_subtotal, array $except = [])
     {
         $discount_total = 0;
 
@@ -188,7 +188,7 @@ class Cart
         return $discount_total;
     }
 
-    private function getValidAdjustments(bool $applied_to_subtotal, array $except = []) : Collection
+    public function getValidAdjustments(bool $applied_to_subtotal, array $except = []) : Collection
     {
 //        $class = $this->getActiveOrder() && $this->getActiveOrder()->isCompleted()
 //            ? config('laravel-cart.classes.order_adjustment')
@@ -225,7 +225,7 @@ class Cart
 //            });
     }
 
-    private function isInCart($product_id) : bool
+    public function isInCart($product_id) : bool
     {
         return $this->items()
             ->contains(function($cart_item) use ($product_id) {
@@ -238,7 +238,7 @@ class Cart
      * @return Order|bool a created or false if no order created
      * @throws \Exception
      */
-    private function createOrder(Customer $customer) : Order | bool
+    public function createOrder(Customer $customer) : Order | bool
     {
         if(Cart::getTotal() < 30 | Cart::getTotal() > 99999999) {
             throw new \Exception('The order total must be greater than £0.30 and less that £999,999.99');
@@ -318,7 +318,7 @@ class Cart
         });
     }
 
-    private function setActiveOrder(int|Order|null $order)
+    public function setActiveOrder(int|Order|null $order)
     {
         if(is_null($order)) {
             session()->remove('active_order');
@@ -329,21 +329,21 @@ class Cart
         }
     }
 
-    private function getActiveOrder()
+    public function getActiveOrder()
     {
         $order_id =  session()->get('active_order');
         $order_class = getClassNameFor('order');
         return $order_class::where('id', $order_id)->first();
     }
 
-    private function addData($key, $value)
+    public function addData($key, $value)
     {
         $cart_data = session()->get('cart_data') ?? [];
         $cart_data[$key] = $value;
         session()->put('cart_data', $cart_data);
     }
 
-    private function getData($key = null)
+    public function getData($key = null)
     {
         $cart_data = session()->get('cart_data') ?? [];
 

@@ -10,9 +10,11 @@ class DiscountAdjustmentCalculation extends AdjustmentCalculation
 {
     public function calculatedAmount(array $parameters) : int
     {
+        $cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+
         $amount_affected = $this->applyToSubtotal()
-            ? Cart::getSubtotal()
-            : Cart::getTotal();
+            ? $cart->getSubtotal()
+            : $cart->getTotal();
 
         return -(int) match($parameters['type']) {
             'percentage' => $amount_affected * ($parameters['rate']/100),

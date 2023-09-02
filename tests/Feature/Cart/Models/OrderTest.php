@@ -3,22 +3,26 @@
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 
+beforeEach(function() {
+   $this->cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+});
+
 it('will create an order', function() {
 
     $product = TestProduct::factory()->asSimpleProduct()->create();
 
-    Cart::add($product);
+    $this->cart->add($product);
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    Cart::createOrder($customer);
+    $this->cart->createOrder($customer);
 
     $order = \Antidote\LaravelCart\Models\Order::first();
 
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1)
         ->and($order->items()->count())->toBe(1)
         ->and($order->items()->first()->id)->toBe($product->id)
-        //->and(Cart::items())->toBeEmpty() // cart no longer cleared
+        //->and($this->cart->items())->toBeEmpty() // cart no longer cleared
         ->and($order->customer->id)->toBe($customer->id);
 })
 ->coversClass(\Antidote\LaravelCart\Models\Order::class);
@@ -31,7 +35,7 @@ it('will create an order with discount', function () {
         'price' => '1000'
     ])->create();
 
-    Cart::add($product);
+    $this->cart->add($product);
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
@@ -45,7 +49,7 @@ it('will create an order with discount', function () {
 //    ]);
 
 
-    $order = Cart::createOrder($customer);
+    $order = $this->cart->createOrder($customer);
 
 
 
@@ -77,11 +81,11 @@ test('a customer has an order', function () {
 
     $product = TestProduct::factory()->asSimpleProduct()->create();
 
-    Cart::add($product);
+    $this->cart->add($product);
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    Cart::createOrder($customer);
+    $this->cart->createOrder($customer);
 
     expect($customer->orders()->count())->toBe(1);
 
@@ -100,18 +104,18 @@ it('will detail an order item', function () {
         'name' => 'A Complex Product'
     ]);
 
-    Cart::add($simple_product ,2);
+    $this->cart->add($simple_product ,2);
 
     $product_data = [
         'width' => 10,
         'height' => 10
     ];
 
-    Cart::add($complex_product, 1, $product_data);
+    $this->cart->add($complex_product, 1, $product_data);
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $order = Cart::createOrder($customer);
+    $order = $this->cart->createOrder($customer);
 
     //change price of simple product and ensure it hasn't changed in cart
     $simple_product->productType->price = 2000;
@@ -235,21 +239,21 @@ it('will not create an order if an active order already exists', function () {
 
     $product = TestProduct::factory()->asSimpleProduct()->create();
 
-    Cart::add($product);
+    $this->cart->add($product);
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    Cart::createOrder($customer);
+    $this->cart->createOrder($customer);
 
     $order = \Antidote\LaravelCart\Models\Order::first();
 
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1)
         ->and($order->items()->count())->toBe(1)
         ->and($order->items()->first()->product->id)->toBe($product->id)
-        //->and(Cart::items())->toBeEmpty() // cart no longer cleared
+        //->and($this->cart->items())->toBeEmpty() // cart no longer cleared
         ->and($order->customer->id)->toBe($customer->id);
 
-    Cart::createOrder($customer);
+    $this->cart->createOrder($customer);
 
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1)
         ->and($order->items()->count())->toBe(1)
