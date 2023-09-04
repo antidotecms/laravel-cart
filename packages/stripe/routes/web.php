@@ -12,7 +12,8 @@ Route::middleware(['web', 'auth:customer'])->group(function() {
         $check = true;
 
         if($check) {
-            \Antidote\LaravelCart\Facades\Cart::clear();
+            $cart = app(\Antidote\LaravelCart\Domain\Cart::class);
+            $cart->clear();
         }
 
         return response()->json(['check' => $check]);
