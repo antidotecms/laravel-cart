@@ -246,19 +246,40 @@ class Cart
 
         $order = $this->getOrder($customer);
 
-        $order->items()->delete();
-
-        $this->convertCartItemsToOrderItems($order);
-
         $this->setOrderData($order);
 
-        $this->convertAdjustments($order);
+        //$this->syncCartWithOrder($order);
+
+        //$this->convertAdjustments($order);
+
+        //$this->syncAdjustmentsWithOrder();
+        $this->sync($order);
 
         $order->save();
 
         self::setActiveOrder($order);
 
         return $order;
+    }
+
+    private function syncCartWithOrder($order)
+    {
+        $order->items()->delete();
+
+        $this->convertCartItemsToOrderItems($order);
+    }
+
+    private function syncAdjustmentsWithOrder($order)
+    {
+        $order->adjustments()->delete();
+
+        $this->convertAdjustments($order);
+    }
+
+    public function sync($order)
+    {
+        $this->syncCartWithOrder($order);
+        $this->syncAdjustmentsWithOrder($order);
     }
 
     private function getOrder($customer)

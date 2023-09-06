@@ -84,13 +84,15 @@ class PaymentIntent
 
     private function updatePaymentIntent(StripeOrder $order) : \stdClass
     {
-//        $payment_intent_response = $this->getClient()->paymentIntents->update($order->getData('payment_intent_id'), [
+        $payment_intent_response = $this->getClient()->paymentIntents->update($order->getData('payment_intent_id'), [
+            'amount' => $order->total
+        ]);
+
+//        $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'), [
 //            'amount' => $order->total
 //        ]);
 
-        $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'), [
-            'amount' => $order->total
-        ]);
+        $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'));
 
         //not amended payment intent id as it will be the same
         //$order->payment_intent_id = json_decode($payment_intent_response->getLastResponse()->body)->id;
