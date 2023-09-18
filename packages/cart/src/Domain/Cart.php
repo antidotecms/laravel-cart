@@ -276,10 +276,20 @@ class Cart
         $this->convertAdjustments($order);
     }
 
+    private function syncDataWithOrder($order)
+    {
+        $data = $this->getData();
+        foreach($data as $key => $value) {
+            $order->setData($key, $value);
+        }
+        $order->save();
+    }
+
     public function sync($order)
     {
         $this->syncCartWithOrder($order);
         $this->syncAdjustmentsWithOrder($order);
+        $this->syncDataWithOrder($order);
     }
 
     private function getOrder($customer)
