@@ -106,12 +106,12 @@ it('displays the table', function () {
         ->assertTableColumnStateSet('id', $this->adjustment->id, $this->adjustment)
         ->assertTableColumnStateSet('name', $this->adjustment->name, $this->adjustment)
         ->assertTableColumnStateSet('class', $this->adjustment->class, $this->adjustment)
-        ->assertTableColumnConfig('is_active', $this->adjustment, function(\Filament\Tables\Columns\IconColumn $column) {
+        ->assertTableColumnExists('is_active', function(\Filament\Tables\Columns\IconColumn $column) {
             return $column->getIcon($column->getState()) == 'heroicon-o-check-badge';
-        })
-        ->assertTableColumnConfig('is_active', $this->not_active_adjustment, function(\Filament\Tables\Columns\IconColumn $column) {
+        }, $this->adjustment)
+        ->assertTableColumnExists('is_active', function(\Filament\Tables\Columns\IconColumn $column) {
             return $column->getIcon($column->getState()) == 'heroicon-o-x-circle';
-        });
+        }, $this->not_active_adjustment);
 })
 ->group('adjustment_resource', 'adjustment_resource_table');
 

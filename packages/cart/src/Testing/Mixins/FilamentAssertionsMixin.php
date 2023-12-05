@@ -123,32 +123,6 @@ class FilamentAssertionsMixin
         };
     }
 
-    public function assertTableColumnConfig()
-    {
-        return function(string $columnName, $record, \Closure $callback = null): static {
-            $this->assertTableColumnExists($columnName);
-
-            $livewire = $this->instance();
-            $livewireClass = $livewire::class;
-
-            //$column = $livewire->getCachedTableColumn($columnName);
-            $column = $livewire->getTable()->getColumn($columnName);
-
-            if (! ($record instanceof Model)) {
-                $record = $livewire->getTableRecord($record);
-            }
-
-            $column->record($record);
-
-            Assert::assertTrue(
-                $callback($column),
-                message: "Failed asserting that a table column with name [{$columnName}] has the given config for record [{$record->getKey()}] on the [{$livewireClass}] component.",
-            );
-
-            return $this;
-        };
-    }
-
     public function assertTableHasRecordUrl()
     {
         return function(string $url, $record) {
