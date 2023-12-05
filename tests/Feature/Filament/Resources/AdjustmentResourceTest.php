@@ -45,6 +45,8 @@ it('displays the correct form', function($mode, $form) {
         ];
     }
 
+    $this->be(\Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser::factory()->create());
+
     \Pest\Livewire\livewire(...$form_config)
         ->assertFormFieldExists('name', function(\Filament\Forms\Components\TextInput $field) {
             return $field->isRequired();
@@ -54,7 +56,7 @@ it('displays the correct form', function($mode, $form) {
                     'an_adjustment_class' => 'An Adjustment Class',
                     'a_second_adjustment_class' => 'A Second Adjustment Class'
                 ] && $field->isRequired()
-                && $field->isReactive();
+                && $field->isLive();
         })
         ->assertFormFieldExists('apply_to_subtotal', function(\Filament\Forms\Components\Toggle $field) {
             return $field->getDefaultState() == true;
@@ -90,7 +92,7 @@ it('will render the relevant pages', function () {
         ->assertSuccessful();
 
     $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\AdjustmentResource::getUrl('edit', [
-        'record' => $this->adjustment->getKey()
+        'record' => $this->adjustment
     ]))->assertSuccessful();
 
 })
@@ -105,10 +107,10 @@ it('displays the table', function () {
         ->assertTableColumnStateSet('name', $this->adjustment->name, $this->adjustment)
         ->assertTableColumnStateSet('class', $this->adjustment->class, $this->adjustment)
         ->assertTableColumnConfig('is_active', $this->adjustment, function(\Filament\Tables\Columns\IconColumn $column) {
-            return $column->getStateIcon() == 'heroicon-o-badge-check';
+            return $column->getIcon($column->getState()) == 'heroicon-o-check-badge';
         })
         ->assertTableColumnConfig('is_active', $this->not_active_adjustment, function(\Filament\Tables\Columns\IconColumn $column) {
-            return $column->getStateIcon() == 'heroicon-o-x-circle';
+            return $column->getIcon($column->getState()) == 'heroicon-o-x-circle';
         });
 })
 ->group('adjustment_resource', 'adjustment_resource_table');

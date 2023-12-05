@@ -28,7 +28,7 @@ it('will allow sending an order confirmation mail again', function() {
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class, [
         'record' => $this->orders->first()->getKey()
     ])
-        ->callPageAction('resend_order_complete_notification');
+        ->callAction('resend_order_complete_notification');
 
     \Illuminate\Support\Facades\Event::assertDispatched(\Antidote\LaravelCart\Events\OrderCompleted::class);
 })

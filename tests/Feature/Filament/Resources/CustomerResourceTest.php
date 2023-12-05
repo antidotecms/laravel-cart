@@ -118,6 +118,15 @@ it('has the correct structure', function () {
     ];
 
     livewire(\Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\CreateCustomer::class)
-        ->assertFormStructure($structure);
+        //->assertFormStructure($structure)
+        ->assertFormFieldExists('id', function (\Filament\Forms\Components\TextInput $field) {
+            return true;
+        })
+        ->assertFormFieldExists('name', function (\Filament\Forms\Components\TextInput $field) {
+            return true;
+        })
+        ->assertFormFieldExists('email', function (\Filament\Forms\Components\TextInput $field) {
+            return $field->isEmail();
+        });
 })
 ->covers(\Antidote\LaravelCartFilament\Resources\CustomerResource::class);

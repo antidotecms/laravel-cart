@@ -11,15 +11,15 @@ use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderL
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use NumberFormatter;
 
 class OrderResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
 
     protected static ?string $navigationGroup = 'Orders';
 

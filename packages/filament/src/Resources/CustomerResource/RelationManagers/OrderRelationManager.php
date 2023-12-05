@@ -2,11 +2,9 @@
 
 namespace Antidote\LaravelCartFilament\Resources\CustomerResource\RelationManagers;
 
-use Antidote\LaravelCartFilament\Resources\OrderResource;
-use Closure;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class OrderRelationManager extends RelationManager
 {
@@ -16,7 +14,7 @@ class OrderRelationManager extends RelationManager
 
     protected static ?string $title = 'Orders';
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([
@@ -26,9 +24,9 @@ class OrderRelationManager extends RelationManager
     }
 
     //@codeCoverageIgnoreStart
-    protected function getTableRecordUrlUsing(): Closure
-    {
-        return fn ($record): string => OrderResource::getUrl('edit', ['record' => $record]);
-    }
+//    protected function getTableRecordUrlUsing(): Closure
+//    {
+//        return fn (Model $record): string => OrderResource::getUrl('edit', ['record' => $record]);
+//    }
     //@codeCoverageIgnoreEnd
 }

@@ -3,9 +3,9 @@
 namespace Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers;
 
 use Antidote\LaravelCartStripe\Contracts\StripeOrderLogItem;
-use Filament\Resources\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\RelationManager
 {
@@ -15,7 +15,7 @@ class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\R
 
     protected static ?string $title = 'Log';
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([

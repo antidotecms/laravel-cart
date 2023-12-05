@@ -4,31 +4,29 @@ namespace Antidote\LaravelCartFilament;
 
 use Antidote\LaravelCart\Testing\Mixins\FilamentAssertionsMixin;
 use Antidote\LaravelCart\Tests\Assertions\Livewire\LivewireAssertionsMixin;
-use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
-use Antidote\LaravelCartFilament\Resources\CustomerResource;
-use Antidote\LaravelCartFilament\Resources\OrderResource;
 use Filament\PluginServiceProvider;
-use Livewire\Testing\TestableLivewire;
+use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class FilamentServiceProvider extends PluginServiceProvider
+class FilamentServiceProvider extends PackageServiceProvider
 {
 //    protected array $resources = [
 //        OrderResource::class,
 //        CustomerResource::class,
 //    ];
 
-    public function getResources(): array
-    {
-        return array_merge(
-            [
-                'order' => OrderResource::class,
-                'customer' => CustomerResource::class,
-                'adjustment' => AdjustmentResource::class
-            ],
-            config('laravel-cart.filament')
-        );
-    }
+//    public function getResources(): array
+//    {
+//        return array_merge(
+//            config('laravel-cart.filament'),
+//            [
+//                'order' => OrderResource::class,
+//                'customer' => CustomerResource::class,
+//                'adjustment' => AdjustmentResource::class
+//            ]
+//        );
+//    }
 
     public function configurePackage(Package $package): void
     {
@@ -41,6 +39,7 @@ class FilamentServiceProvider extends PluginServiceProvider
     {
         parent::boot();
 
-        TestableLivewire::mixin(new FilamentAssertionsMixin());
+        //TestableLivewire::mixin(new FilamentAssertionsMixin());
+        Testable::mixin(new FilamentAssertionsMixin());
     }
 }

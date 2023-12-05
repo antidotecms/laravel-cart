@@ -11,13 +11,18 @@ use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
+use Antidote\LaravelCart\Tests\Fixtures\Filament\TestPanelProvider;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
+use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
+use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
+use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\LivewireServiceProvider;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
@@ -52,6 +57,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             CartServiceProvider::class,
             'Antidote\LaravelCartStripe\StripeServiceProvider',
             \Antidote\LaravelCartFilament\FilamentServiceProvider::class,
+            ActionsServiceProvider::class,
             BladeCaptureDirectiveServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
@@ -61,6 +67,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
             NotificationsServiceProvider::class,
             SupportServiceProvider::class,
             TablesServiceProvider::class,
+            WidgetsServiceProvider::class,
+            //CartPanelPlugin::class
+            TestPanelProvider::class
         ];
     }
 
@@ -90,8 +99,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $app->config->set('laravel-cart.tax_rate', 0.2);
 
 //        $app->config->set('laravel-cart.filament.order', OrderResource::class);
-//        $app->config->set('laravel-cart.filament.customer', CustomerResource::class);
-//        $app->config->set('laravel-cart.filament.adjustment', AdjustmentResource::class);
+        $app->config->set('laravel-cart.filament.customer', CustomerResource::class);
+        $app->config->set('laravel-cart.filament.adjustment', AdjustmentResource::class);
 
 
         $app->config->set('laravel-cart.stripe.secret_key', 'secret_key');

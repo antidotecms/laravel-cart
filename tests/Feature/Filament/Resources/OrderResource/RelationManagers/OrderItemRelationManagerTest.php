@@ -23,6 +23,7 @@ beforeEach(function() {
 it('will display the order items', function() {
 
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderItemRelationManager::class, [
+        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertCanSeeTableRecords($this->orders->first()->items);
@@ -34,6 +35,7 @@ it('will display the order item columns', function () {
     $first_order_item = $this->orders->first()->items()->first();
 
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderItemRelationManager::class, [
+        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertTableColumnStateSet('product_name', $this->product->getName(), $first_order_item)

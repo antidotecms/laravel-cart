@@ -2,7 +2,9 @@
 
 namespace Antidote\LaravelCart\Tests\Fixtures\App\Models;
 
+use Antidote\LaravelCart\Tests\Fixtures\factories\TestUserFactory;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,6 +13,11 @@ use Illuminate\Notifications\Notifiable;
 class TestUser extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
+
+    protected static function newFactory()
+    {
+        return TestUserFactory::new();
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -42,7 +49,7 @@ class TestUser extends Authenticatable implements FilamentUser
         'email_verified_at' => 'datetime',
     ];
 
-    public function canAccessFilament(): bool
+    public function canAccessPanel(Panel $panel): bool
     {
         return true;
     }

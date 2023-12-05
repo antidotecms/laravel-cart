@@ -17,6 +17,7 @@ beforeEach(function() {
 it('will list the orders', function() {
 
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\CustomerResource\RelationManagers\OrderRelationManager::class, [
+        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
         'ownerRecord' => $this->customer
     ])
     ->assertCanSeeTableRecords(\Antidote\LaravelCart\Models\Order::all());
@@ -26,6 +27,7 @@ it('will list the orders', function() {
 it('has the correct columns', function () {
 
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\CustomerResource\RelationManagers\OrderRelationManager::class, [
+        'pageClass' => \Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\EditCustomer::class,
         'ownerRecord' => $this->customer
     ])
     ->assertTableColumnStateSet('id', $this->orders->first()->id, $this->orders->first())

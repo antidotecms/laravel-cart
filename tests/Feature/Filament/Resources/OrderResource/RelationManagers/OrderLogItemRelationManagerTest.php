@@ -36,6 +36,7 @@ beforeEach(function() {
 it('will display the order log items', function() {
 
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
+        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertCanSeeTableRecords($this->orders->first()->logitems);
@@ -47,6 +48,7 @@ it('will display the order log items columns', function() {
     $first_order_log_item = $this->orders->first()->logitems()->first();
 
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
+        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertTableColumnStateSet('created_at', $first_order_log_item->created_at, $first_order_log_item)
@@ -57,6 +59,7 @@ it('will display the order log items columns', function() {
 it('will provide an action to view stripe event if stripe order log item is used', function () {
 
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
+        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertTableActionExists('event');
@@ -67,6 +70,7 @@ it('will provide an action to view stripe event if stripe order log item is used
     $config->set('laravel-cart.classes.order_log_item', T::class);
 
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
+        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertTableActionDoesNotExist('event');
@@ -80,6 +84,7 @@ it('will display the stripe event', function () {
     //$config->set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem::class);
 
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
+        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertTableActionExists('event')

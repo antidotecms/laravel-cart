@@ -65,7 +65,8 @@
     "require": {
         "spatie/data-transfer-object": "^3.8",
         "stripe/stripe-php": "^9.6",
-        "filament/filament": "^2.0"
+        "filament/filament": "^3.0-stable",
+        "livewire/livewire": "^3.0.0"
     },
     "config": {
         "allow-plugins": {

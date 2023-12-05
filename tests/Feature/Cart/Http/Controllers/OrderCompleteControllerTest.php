@@ -167,7 +167,7 @@ class OrderCompleteControllerTest extends TestCase
         //@link https://stackoverflow.com/questions/28425830/multiple-http-requests-in-laravel-5-integration-tests
         $this->refreshApplication();
         $this->refreshInMemoryDatabase();
-        $this->setUpApplicationRoutes();
+        $this->setUpApplicationRoutes(app());
 
         $this->actingAs($second_customer, 'customer')
             ->get('/order-complete?order_id='.$order->id)

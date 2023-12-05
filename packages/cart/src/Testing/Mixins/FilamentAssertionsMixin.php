@@ -29,7 +29,7 @@ class FilamentAssertionsMixin
             $livewire = $this->instance();
 
             /** @var Action $action */
-            $action = $livewire->getCachedTableAction($name) ?? $livewire->getCachedTableEmptyStateAction($name) ?? $livewire->getCachedTableHeaderAction($name);
+            $action = $livewire->getTable()->getAction($name) ?? $livewire->getCachedTableEmptyStateAction($name) ?? $livewire->getCachedTableHeaderAction($name);
 
             $action->record($record);
 
@@ -59,7 +59,7 @@ class FilamentAssertionsMixin
             $livewire = $this->instance();
 
             /** @var Action $action */
-            $action = $livewire->getCachedTableAction($name) ?? $livewire->getCachedTableEmptyStateAction($name) ?? $livewire->getCachedTableHeaderAction($name);
+            $action = $livewire->getTable()->getAction($name) ?? $livewire->getCachedTableEmptyStateAction($name) ?? $livewire->getCachedTableHeaderAction($name);
 
             $action->record($record);
 
@@ -131,7 +131,8 @@ class FilamentAssertionsMixin
             $livewire = $this->instance();
             $livewireClass = $livewire::class;
 
-            $column = $livewire->getCachedTableColumn($columnName);
+            //$column = $livewire->getCachedTableColumn($columnName);
+            $column = $livewire->getTable()->getColumn($columnName);
 
             if (! ($record instanceof Model)) {
                 $record = $livewire->getTableRecord($record);
@@ -168,6 +169,9 @@ class FilamentAssertionsMixin
     public function assertFormStructure()
     {
         return function(array $structure, string $formName = 'form'): static {
+
+            throw new \Exception('use assertFormFieldExists instead');
+
             /** @phpstan-ignore-next-line */
             $this->assertFormExists($formName);
 

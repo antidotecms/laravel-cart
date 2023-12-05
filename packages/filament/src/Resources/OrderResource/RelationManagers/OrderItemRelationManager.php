@@ -3,8 +3,8 @@
 namespace Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use NumberFormatter;
 
 class OrderItemRelationManager extends RelationManager
@@ -15,7 +15,7 @@ class OrderItemRelationManager extends RelationManager
 
     protected static ?string $title = 'Order Items';
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([

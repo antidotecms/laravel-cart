@@ -1,7 +1,8 @@
 <?php
 
-namespace Tests\Feature\Filament;
+namespace Antidote\LaravelCart\Tests\Feature\Filament;
 
+use Antidote\LaravelCart\Tests\TestCase;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
 use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
@@ -9,46 +10,18 @@ use Antidote\LaravelCartFilament\Resources\OrderResource;
 /**
  * @covers \Antidote\LaravelCartFilament\FilamentServiceProvider
  */
-class ServiceProviderTest extends \Antidote\LaravelCart\Tests\TestCase
+class ServiceProviderTest extends TestCase
 {
-    public function overrideFilamentResourcesEnvironment($app)
-    {
-        $app->config->set('laravel-cart.filament', $this->getResourceClasses());
-    }
-
-    public function getResourceClasses()
-    {
-        $order_resource_class = new class extends \Filament\Resources\Resource {};
-        $customer_resource_class = new class extends \Filament\Resources\Resource {};
-        $adjustment_resource_class = new class extends \Filament\Resources\Resource {};
-
-        return [
-            'order' => $order_resource_class::class,
-            'customer' => $customer_resource_class::class,
-            'adjustment' => $adjustment_resource_class::class
-        ];
-    }
-
     /**
      * @test
-     * @define-env defaultFilamentResourcesEnvironment
      */
-    public function it_will_provide_default_filament_resources()
+    public function provides_the_ability_to_provide_default_resources()
     {
-        expect(\Filament\Facades\Filament::getResources())->toBe([
-            'order' => OrderResource::class,
-            'customer' => CustomerResource::class,
-            'adjustment' => AdjustmentResource::class
-        ]);
-    }
-
-    /**
-     * @test
-     * @define-env overrideFilamentResourcesEnvironment
-     */
-    public function provides_the_ability_to_override_resources()
-    {
-        expect(\Filament\Facades\Filament::getResources())
-            ->toBe($this->getResourceClasses());
+        expect(app('filament')->getResources())
+            ->toEqualCanonicalizing([
+                'order' => OrderResource::class,
+                'adjustment' => AdjustmentResource::class,
+                'customer' => CustomerResource::class
+            ]);
     }
 }

@@ -7,14 +7,14 @@ use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\EditCustomer;
 use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\ListCustomers;
 use Antidote\LaravelCartFilament\Resources\CustomerResource\RelationManagers\OrderRelationManager;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class CustomerResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
 
     protected static ?string $navigationGroup = 'Orders';
 
