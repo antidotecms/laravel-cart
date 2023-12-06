@@ -37,10 +37,9 @@ it('has the correct columns', function () {
 
 it('will navigate to the order when a row is clicked', function () {
 
-    $this->markTestIncomplete('cannot check this as `getTableRecordUrlUsing` is protected - looks like this has been opened up in v3');
-
     \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\CustomerResource\RelationManagers\OrderRelationManager::class, [
+        'pageClass' => \Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\EditCustomer::class,
         'ownerRecord' => $this->customer
     ])
-    ->assertTableHasRecordUrl(\Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('edit', ['record' => $this->orders->first()]), $this->orders->first());
+    ->assertTableExists(fn (\Filament\Tables\Table $table) => $table->getRecordUrl($this->orders->first()) == \Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('edit', ['record' => $this->orders->first()]));
 });

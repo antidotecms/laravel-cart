@@ -5,6 +5,7 @@ namespace Antidote\LaravelCartFilament\Resources\CustomerResource\RelationManage
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class OrderRelationManager extends RelationManager
 {
@@ -17,6 +18,7 @@ class OrderRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->recordUrl(fn(Model $record): string => \Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('edit', ['record' => $record]))
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('total')

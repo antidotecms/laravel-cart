@@ -6,8 +6,8 @@ use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Pages\Page;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Testing\Assert;
 use Livewire\Testing\TestableLivewire;
@@ -123,20 +123,26 @@ class FilamentAssertionsMixin
         };
     }
 
-    public function assertTableHasRecordUrl()
+    public function assertTableExists()
     {
-        return function(string $url, $record) {
+        return function(?\Closure $checkTableUsing = null) {
 
-            $livewire = $this->instance();
+            /** @var $table Table */
+            $table = $this->instance()->getTable();
 
-            /** @var RelationManager $livewire */
-            $livewire->recordAction();
-
-            Assert::assertEquals(
-                $url,
-                $livewire->getRecordUrl($record),
-                "The record url is no {$url}"
+            Assert::isInstanceOf(
+                Table::class,
+                $table,
+                "Failed asserting that a table exists"
             );
+
+            if($checkTableUsing) {
+                Assert::assertTrue(
+                    $checkTableUsing($table),
+                    "Failed asserting that the table exists with the given configuration"
+                );
+            }
+
         };
     }
 
