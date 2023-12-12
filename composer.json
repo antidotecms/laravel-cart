@@ -41,7 +41,7 @@
     },
     "require-dev": {
         "orchestra/testbench": "^8.0",
-        "phpunit/phpunit": "^10.0",
+        "phpunit/phpunit": "^10.4",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
         "laravel/framework": "^10.0",
@@ -58,9 +58,10 @@
         ],
         "coverage" : [
             "Composer\\Config::disableProcessTimeout",
-            "php ./vendor/bin/pest -p4 --verbose --runner=WrapperRunner --coverage-html ./coverage -c ./phpunit.xml"
+            "XDEBUG_MODE=coverage php ./vendor/bin/pest --parallel --processes=4 --coverage-html ./coverage -c ./phpunit.xml"
         ],
-        "phpstan": "./vendor/bin/phpstan analyse"
+        "phpstan": "./vendor/bin/phpstan analyse",
+        "test-coverage" : "php ./vendor/bin/phpunit --coverage-html ./coverage -c ./phpunit.xml"
     },
     "require": {
         "spatie/data-transfer-object": "^3.8",

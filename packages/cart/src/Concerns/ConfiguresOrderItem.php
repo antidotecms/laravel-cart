@@ -12,13 +12,10 @@ trait ConfiguresOrderItem
     public function initializeConfiguresOrderItem() : void
     {
         $this->fillable[] = 'name';
-
         $this->fillable[] = 'product_id';
-
         $this->fillable[] = 'product_data';
         $this->fillable[] = 'price';
         $this->fillable[] = 'quantity';
-
         $this->fillable[] = 'order_id';
     }
 

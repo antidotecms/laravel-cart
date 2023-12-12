@@ -4,6 +4,8 @@
          bootstrap="vendor/autoload.php"
          colors="true"
          requireCoverageMetadata="true"
+         cacheResult="false"
+         beStrictAboutCoverageMetadata="false"
 >
     <testsuites>
         <testsuite name="Feature">
@@ -18,7 +20,7 @@
             <directory suffix=".blade.php">./packages</directory>
         </exclude>
     </source>
-    <coverage pathCoverage="true">
+    <coverage includeUncoveredFiles="true" pathCoverage="true">
     </coverage>
     <php>
         <env name="APP_ENV" value="testing"/>
@@ -34,6 +36,7 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="XDEBUG_MODE" value="coverage,develop,debug"/>
         <env name="SAIL_XDEBUG_MODE" value="coverage,develop,debug"/>
     </php>
 </phpunit>

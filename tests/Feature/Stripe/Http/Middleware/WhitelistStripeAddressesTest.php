@@ -1,5 +1,7 @@
 <?php
 
+beforeEach(fn() => TiMacDonald\Log\LogFake::bind());
+
 it('will restrict access to the web hook controller', function() {
 
     $mockedRequest = $this->partialMock(\Illuminate\Http\Request::class, function(\Mockery\MockInterface $mock) {

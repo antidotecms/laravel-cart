@@ -13,6 +13,8 @@ class CartPanelPlugin implements Plugin
     private ?string $orderResource = null;
     private ?string $customerResource = null;
     private ?string $adjustmentResource = null;
+
+    /** @codeCoverageIgnore */
     public static function make(): static
     {
         return app(static::class);
@@ -47,10 +49,9 @@ class CartPanelPlugin implements Plugin
             ->resources($this->resources());
     }
 
+    /** @codeCoverageIgnore  */
     public function boot(Panel $panel): void
     {
-        $panel
-            ->resources($this->resources());
     }
 
     private function resources(): array

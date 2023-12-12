@@ -16,6 +16,7 @@ use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use TiMacDonald\Log\LogFake;
 
 /**
  * @covers \Antidote\LaravelCartStripe\Domain\PaymentIntent
@@ -271,6 +272,7 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
      */
     public function it_will_not_generate_a_new_payment_intent_if_one_already_exists()
     {
+        LogFake::bind();
 
         new MockStripeHttpClient();
 
@@ -302,6 +304,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
      */
     public function it_will_generate_a_new_payment_intent_if_the_old_one_has_been_cancelled()
     {
+        LogFake::bind();
+
         (new MockStripeHttpClient());
 
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
@@ -334,6 +338,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
      */
     public function it_will_update_a_payment_intent_if_the_order_amount_has_changed()
     {
+        LogFake::bind();
+
         (new MockStripeHttpClient())
             ->with('amount', 2000);
 
@@ -419,6 +425,8 @@ class PaymentIntentTest extends \Orchestra\Testbench\TestCase
      */
     public function it_will_get_the_payment_intent()
     {
+        LogFake::bind();
+
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
         (new MockStripeHttpClient());

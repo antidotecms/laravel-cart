@@ -4,12 +4,13 @@ namespace Antidote\LaravelCart\Concerns;
 
 use Illuminate\Support\Str;
 
+/**
+ * Allows objects to access an aggregates property and methods as their own
+ */
 trait MapsPropertiesToAggregates
 {
-    private function mapToAggregate(string|object $aggregate, string $property_or_method, mixed $default = null, ?array $params = null) : mixed
+    public function mapToAggregate(string|object $aggregate, string $property_or_method, mixed $default = null, ?array $params = null) : mixed
     {
-        //is_string($aggregate) & $aggregate = new $aggregate;
-
         if(is_string($aggregate)) {
             $aggregate = new $aggregate;
         }

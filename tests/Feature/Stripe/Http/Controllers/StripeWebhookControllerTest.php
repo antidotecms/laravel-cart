@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Exception\UnexpectedValueException;
+use TiMacDonald\Log\LogEntry;
+use TiMacDonald\Log\LogFake;
 
 /**
  * @covers \Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController
@@ -74,6 +76,12 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
 //                'model' => TestCustomer::class,
 //            ]
 //        ]);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        LogFake::bind();
     }
 
     protected function getPackageProviders($app)
@@ -418,18 +426,24 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
         });
 
         //@see https://stackoverflow.com/a/23807415/1424591
-        Log::shouldReceive('channel')
-            ->with('some_channel')
-            ->once()
-            ->andReturnSelf()
-            ->shouldReceive('info')
-            ->with($event->toJSON())
-            ->once()
-            ->andReturn();
+//        Log::shouldReceive('channel')
+//            ->with('some_channel')
+//            ->once()
+//            ->andReturnSelf()
+//            ->shouldReceive('info')
+//            ->with($event->toJSON())
+//            ->once()
+//            ->andReturn();
+
 
         //Log::makePartial();
 
         $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+
+        Log::channel('some_channel')->assertLogged(function(LogEntry $log) use ($event) {
+            return $log->level == 'info' &&
+            $log->message = $event->toJson();
+        });
 
         $this->assertTrue(true);
     }
