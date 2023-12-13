@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Cart;
 
+use Antidote\LaravelCart\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -9,16 +10,16 @@ use Illuminate\Support\Facades\Schema;
 /**
  * @covers \Antidote\LaravelCart\CartServiceProvider
  */
-class ServiceProviderTest extends \Orchestra\Testbench\TestCase
+class ServiceProviderTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function getPackageProviders($app)
-    {
-        return [
-            \Antidote\LaravelCart\CartServiceProvider::class
-        ];
-    }
+//    protected function getPackageProviders($app)
+//    {
+//        return [
+//            \Antidote\LaravelCart\CartServiceProvider::class
+//        ];
+//    }
 
     public function dataProviderColumns()
     {
@@ -80,6 +81,7 @@ class ServiceProviderTest extends \Orchestra\Testbench\TestCase
                 'table' => 'order_log_items',
                 'included' => [
                     'id',
+                    'event',
                     'message',
                     'order_id',
                     'created_at',

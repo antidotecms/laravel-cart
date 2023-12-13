@@ -17,6 +17,10 @@ trait ConfiguresOrderItem
         $this->fillable[] = 'price';
         $this->fillable[] = 'quantity';
         $this->fillable[] = 'order_id';
+
+        if(is_subclass_of(static::class, \Antidote\LaravelCartStripe\Contracts\StripeOrderLogItem::class)) {
+            $this->fillable[] = 'event';
+        }
     }
 
     public function getCasts() : array

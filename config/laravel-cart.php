@@ -2,19 +2,19 @@
 
 return [
     'classes' => [
-        'product' => \Antidote\LaravelCart\Models\Product::class,
-        'customer' => \Antidote\LaravelCart\Models\Customer::class,
-        'order' => \Antidote\LaravelCart\Models\Order::class,
-        'order_item' => \Antidote\LaravelCart\Models\OrderItem::class,
-        'order_adjustment' => \Antidote\LaravelCart\Models\OrderAdjustment::class,
-        'adjustment' => \Antidote\LaravelCart\Models\Adjustment::class,
-        'order_log_item' => \Antidote\LaravelCart\Models\OrderLogItem::class
+        'product' => env('does_not_exist', fn() => throw new \Exception('Configure models in cart plugin')), //\Antidote\LaravelCart\Models\Product::class,
+        'customer' => env('does_not_exist', fn() => throw new \Exception('Configure models in cart plugin')), //\Antidote\LaravelCart\Models\Customer::class,
+        'order' => env('does_not_exist', fn() => throw new \Exception('Configure models in cart plugin')), //\Antidote\LaravelCart\Models\Order::class,
+        'order_item' => env('does_not_exist', fn() => throw new \Exception('Configure models in cart plugin')), //\Antidote\LaravelCart\Models\OrderItem::class,
+        'order_adjustment' => env('does_not_exist', fn() => throw new \Exception('Configure models in cart plugin')), //\Antidote\LaravelCart\Models\OrderAdjustment::class,
+        'adjustment' => env('does_not_exist', fn() => throw new \Exception('Configure models in cart plugin')), //\Antidote\LaravelCart\Models\Adjustment::class,
+        'order_log_item' => env('does_not_exist', fn() => throw new \Exception('Configure models in cart plugin')), //\Antidote\LaravelCart\Models\OrderLogItem::class
     ],
-    'filament' => [
-        'order' => \Antidote\LaravelCartFilament\Resources\OrderResource::class,
-        'customer' => \Antidote\LaravelCartFilament\Resources\CustomerResource::class,
-        'adjustment' => \Antidote\LaravelCartFilament\Resources\AdjustmentResource::class
-    ],
+//    'filament' => [
+//        'order' => \Antidote\LaravelCartFilament\Resources\OrderResource::class,
+//        'customer' => \Antidote\LaravelCartFilament\Resources\CustomerResource::class,
+//        'adjustment' => \Antidote\LaravelCartFilament\Resources\AdjustmentResource::class
+//    ],
     'stripe' => [
         'api_key' => env('STRIPE_API_KEY'),
         'secret_key' => env('STRIPE_SECRET_KEY'),
@@ -27,10 +27,10 @@ return [
         'log' => false
     ],
     'urls' => [
-        'order_complete' => '/checkout/complete',
-        'checkout_confirm' => '/checkout/confirm',
+        'order_complete' => env('does_not_exist', fn() => throw new \Exception('Configure urls in cart plugin')),
+        'checkout_confirm' => env('does_not_exist', fn() => throw new \Exception('Configure urls in cart plugin')),
         'stripe' => [
-            'webhook_handler' => '/checkout/stripe'
+            'webhook_handler' => env('does_not_exist', fn() => throw new \Exception('Configure urls in cart plugin'))
         ]
     ],
     'views' => [

@@ -2,16 +2,12 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Cart\Listeners;
 
-use Antidote\LaravelCart\CartServiceProvider;
 use Antidote\LaravelCart\Mail\OrderComplete;
-use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
-use Antidote\LaravelCart\Models\OrderAdjustment;
-use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
-use Antidote\LaravelCart\Providers\EventServiceProvider;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
@@ -19,33 +15,33 @@ use Illuminate\Support\Facades\Mail;
 /**
  * @covers \Antidote\LaravelCart\Listeners\SendOrderConfirmation
  */
-class SendOrderConfirmationTest extends \Orchestra\Testbench\TestCase
+class SendOrderConfirmationTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadMigrationsFrom(__DIR__.'/../../../Fixtures/Cart/migrations');
-    }
-
-    protected function defineEnv($app)
-    {
-        $app->config->set('laravel-cart.classes.order', Order::class);
-        $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
-        $app->config->set('laravel-cart.classes.customer', Customer::class);
-        $app->config->set('laravel-cart.classes.product', TestProduct::class);
-        $app->config->set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
-        $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);
-        $app->config->set('laravel-cart.classes.order_log_item', OrderLogItem::class);
-    }
-
-    protected function getPackageProviders($app)
-    {
-        return [
-            CartServiceProvider::class,
-            EventServiceProvider::class
-        ];
-    }
+//    protected function defineDatabaseMigrations()
+//    {
+//        $this->loadMigrationsFrom(__DIR__.'/../../../Fixtures/Cart/migrations');
+//    }
+//
+//    protected function defineEnv($app)
+//    {
+//        $app->config->set('laravel-cart.classes.order', Order::class);
+//        $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
+//        $app->config->set('laravel-cart.classes.customer', Customer::class);
+//        $app->config->set('laravel-cart.classes.product', TestProduct::class);
+//        $app->config->set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
+//        $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);
+//        $app->config->set('laravel-cart.classes.order_log_item', OrderLogItem::class);
+//    }
+//
+//    protected function getPackageProviders($app)
+//    {
+//        return [
+//            CartServiceProvider::class,
+//            EventServiceProvider::class
+//        ];
+//    }
 
     /**
      * @test

@@ -2,12 +2,10 @@
 
 namespace Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages;
 
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\Concerns\ConfiguresAdjustmentResourcePages;
 use Filament\Resources\Pages\ListRecords;
 
 class ListAdjustments extends ListRecords
 {
-    public static function getResource(): string
-    {
-        return config('laravel-cart.filament.adjustment');
-    }
+    use ConfiguresAdjustmentResourcePages;
 }

@@ -2,6 +2,8 @@
 
 namespace Antidote\LaravelCart\Concerns;
 
+use Antidote\LaravelCartStripe\Contracts\StripeOrderLogItem;
+
 trait ConfiguresOrderLogItem
 {
     public function getTable()
@@ -13,5 +15,9 @@ trait ConfiguresOrderLogItem
     {
         $this->fillable[] = 'message';
         $this->fillable[] = 'order_id';
+
+        if(static::class == StripeOrderLogItem::class){
+            $this->fillable[] = 'event';
+        }
     }
 }

@@ -2,87 +2,80 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Cart\Http\Controllers;
 
-use Antidote\LaravelCart\CartServiceProvider;
-use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
-use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\OrderItem;
-use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
-use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
-use Livewire\LivewireServiceProvider;
-use Orchestra\Testbench\TestCase;
 
 /**
  * @covers \Antidote\LaravelCart\Http\Controllers\OrderCompleteController
  */
-class OrderCompleteControllerTest extends TestCase
+class OrderCompleteControllerTest extends \Antidote\LaravelCart\Tests\TestCase
 {
-    use RefreshDatabase;
-    use InteractsWithViews;
-    //use WithoutMiddleware;
-
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadMigrationsFrom(__DIR__.'/../../../../Fixtures/Cart/migrations');
-    }
-
-    public function defineEnv($app)
-    {
-        $app->config->set('laravel-cart.classes.order', Order::class);
-        $app->config->set('laravel-cart.classes.customer', Customer::class);
-        $app->config->set('laravel-cart.classes.payment', TestPayment::class);
-        $app->config->set('laravel-cart.classes.product', TestProduct::class);
-        $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
-        $app->config->set('laravel-cart.classes.order_log_item', OrderLogItem::class);
-        $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);
-        $app->config->set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
-
-        $app->config->set('laravel-cart.urls.order_complete', '/order-complete');
-        $app->config->set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');
-
-        $app->config->set('auth.guards.customer', [
-            'driver' => 'session',
-            'provider' => 'test_customer'
-        ]);
-
-        $app->config->set('auth.providers.test_customer', [
-            'driver' => 'eloquent',
-            'model' => Customer::class
-        ]);
-    }
-
-//    public function defineBindings($app)
+//    use RefreshDatabase;
+//    use InteractsWithViews;
+//    //use WithoutMiddleware;
+//
+//    protected function defineDatabaseMigrations()
 //    {
-//        $app->bind(
-//            Order::class,
-//            function() {
-//                if($order_id = request()->get('order_id')) {
-//                    $order = getClassNameFor('order')::where('id', $order_id)->first()->load('items.product.productType');
-//                    if($order->customer->id == auth()->guard('customer')->user()->id) {
-//                        return $order;
-//                    }
-//                }
-//            }
-//        );
+//        $this->loadMigrationsFrom(__DIR__.'/../../../../Fixtures/Cart/migrations');
 //    }
-
-    protected function defineRoutes($router)
-    {
-        $router->get('/login', null)->name('login');
-    }
-
-    protected function getPackageProviders($app)
-    {
-        return [
-            CartServiceProvider::class,
-            LivewireServiceProvider::class
-        ];
-    }
+//
+//    public function defineEnv($app)
+//    {
+//        $app->config->set('laravel-cart.classes.order', Order::class);
+//        $app->config->set('laravel-cart.classes.customer', Customer::class);
+//        $app->config->set('laravel-cart.classes.payment', TestPayment::class);
+//        $app->config->set('laravel-cart.classes.product', TestProduct::class);
+//        $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
+//        $app->config->set('laravel-cart.classes.order_log_item', OrderLogItem::class);
+//        $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);
+//        $app->config->set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
+//
+//        $app->config->set('laravel-cart.urls.order_complete', '/order-complete');
+//        $app->config->set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');
+//
+//        $app->config->set('auth.guards.customer', [
+//            'driver' => 'session',
+//            'provider' => 'test_customer'
+//        ]);
+//
+//        $app->config->set('auth.providers.test_customer', [
+//            'driver' => 'eloquent',
+//            'model' => Customer::class
+//        ]);
+//    }
+//
+////    public function defineBindings($app)
+////    {
+////        $app->bind(
+////            Order::class,
+////            function() {
+////                if($order_id = request()->get('order_id')) {
+////                    $order = getClassNameFor('order')::where('id', $order_id)->first()->load('items.product.productType');
+////                    if($order->customer->id == auth()->guard('customer')->user()->id) {
+////                        return $order;
+////                    }
+////                }
+////            }
+////        );
+////    }
+//
+//    protected function defineRoutes($router)
+//    {
+//        $router->get('/login', null)->name('login');
+//    }
+//
+//    protected function getPackageProviders($app)
+//    {
+//        return [
+//            CartServiceProvider::class,
+//            TestPanelProvider::class,
+//            LivewireServiceProvider::class
+//        ];
+//    }
 
     /**
      * @test

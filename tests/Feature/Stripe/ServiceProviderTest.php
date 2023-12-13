@@ -2,25 +2,25 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Stripe;
 
-use Antidote\LaravelCartStripe\StripeServiceProvider;
+use Antidote\LaravelCart\Tests\TestCase;
 use Illuminate\Support\Arr;
 
 /**
  * @covers \Antidote\LaravelCartStripe\StripeServiceProvider
  */
-class ServiceProviderTest extends \Orchestra\Testbench\TestCase
+class ServiceProviderTest extends TestCase
 {
-    protected function getPackageProviders($app)
-    {
-        return [
-            StripeServiceProvider::class
-        ];
-    }
-
-    protected function defineEnv($app)
-    {
-        $app->config->set('laravel-cart.urls.order_complete', '/order/complete');
-    }
+//    protected function getPackageProviders($app)
+//    {
+//        return [
+//            StripeServiceProvider::class
+//        ];
+//    }
+//
+//    protected function defineEnv($app)
+//    {
+//        $app->config->set('laravel-cart.urls.order_complete', '/order/complete');
+//    }
 
     /**
      * @test

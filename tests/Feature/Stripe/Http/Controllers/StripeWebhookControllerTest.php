@@ -2,7 +2,6 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Stripe\Http\Controllers;
 
-use Antidote\LaravelCart\CartServiceProvider;
 use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Models\Adjustment;
@@ -12,7 +11,7 @@ use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
-use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
+use Antidote\LaravelCart\Tests\TestCase;
 use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -37,7 +36,7 @@ use TiMacDonald\Log\LogFake;
  *
  * @group mock-issue
  */
-class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
+class StripeWebhookControllerTest extends TestCase
 {
     use RefreshDatabase;
     use WithoutMiddleware;
@@ -84,14 +83,14 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
         LogFake::bind();
     }
 
-    protected function getPackageProviders($app)
-    {
-        return [
-            CartServiceProvider::class,
-            \Antidote\LaravelCartStripe\StripeServiceProvider::class,
-            //LivewireServiceProvider::class
-        ];
-    }
+//    protected function getPackageProviders($app): array
+//    {
+//        return [
+//            CartServiceProvider::class,
+//            \Antidote\LaravelCartStripe\StripeServiceProvider::class,
+//            //LivewireServiceProvider::class
+//        ];
+//    }
 
     private function createStripeEvent(string $type, array $parameters = [])
     {
@@ -111,7 +110,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
 
     protected function defineRoutes($router)
     {
-        $router->post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class);
+        //$router->post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class);
         $router->get('/order-complete', OrderCompleteController::class)->middleware('auth:customer');
     }
 
@@ -152,7 +151,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
 //            ->with(json_encode($event))
 //            ->once();
 
-        $response = $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $response = $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
         $response->assertSuccessful();
 
         $order->refresh();
@@ -193,7 +192,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
                 ->andReturnTrue();
         });
 
-        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -230,7 +229,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
                 ->andReturnTrue();
         });
 
-        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -271,7 +270,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
                 ->andReturnTrue();
         });
 
-        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -310,7 +309,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
                 ->andReturnTrue();
         });
 
-        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -349,7 +348,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
                 ->andReturnTrue();
         });
 
-        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -389,7 +388,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
             ->once()
             ->andReturn();
 
-        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray())->assertSuccessful();
+        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray())->assertSuccessful();
     }
 
     /**
@@ -438,7 +437,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
 
         //Log::makePartial();
 
-        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         Log::channel('some_channel')->assertLogged(function(LogEntry $log) use ($event) {
             return $log->level == 'info' &&
@@ -483,7 +482,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
         Log::shouldReceive('info')
             ->never();
 
-        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         $this->assertTrue(true);
     }
@@ -520,7 +519,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
 
         Event::fake();
 
-        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         Event::assertDispatched(OrderCompleted::class);
     }
@@ -558,7 +557,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
 
         Event::fake();
 
-        $response = $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $response = $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         $response->assertStatus(400);
         $response->assertContent('');
@@ -596,7 +595,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
 
         Event::fake();
 
-        $response = $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $response = $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         $response->assertStatus(400);
         $response->assertContent('');
@@ -630,7 +629,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
 
         Event::fake();
 
-        $response = $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $response = $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         $response->assertStatus(400);
         $response->assertContent('');
@@ -664,7 +663,7 @@ class StripeWebhookControllerTest extends \Orchestra\Testbench\TestCase
                 ->andReturnTrue();
         });
 
-        $this->postJson(config('laravel-cart.urls.stripe.webhook_handler'), $event->toArray());
+        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 

@@ -7,6 +7,7 @@ namespace Antidote\LaravelCartStripe;
 use Antidote\LaravelCart\Providers\EventServiceProvider;
 use Antidote\LaravelCartStripe\Components\StripeCheckoutClientScriptComponent;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
+use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 
@@ -49,5 +50,9 @@ class StripeServiceProvider extends \Illuminate\Support\ServiceProvider
     private function routes() : void
     {
         $this->loadRoutesFrom(__DIR__.'../../routes/web.php');
+
+        $this->app->booting(function() {
+            $this->app['router']->post(app()->get('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), StripeWebhookController::class);
+        });
     }
 }

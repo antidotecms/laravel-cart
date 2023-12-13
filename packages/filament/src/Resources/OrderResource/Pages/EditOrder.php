@@ -11,10 +11,7 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditOrder extends EditRecord
 {
-    public static function getResource(): string
-    {
-        return config('laravel-cart.filament.order') ?? OrderResource::class;
-    }
+    use OrderResource\Pages\Concerns\ConfiguresOrderResourcePages;
 
     protected static ?string $title = 'Edit Order';
 

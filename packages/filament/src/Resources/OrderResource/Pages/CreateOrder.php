@@ -7,8 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateOrder extends CreateRecord
 {
-    public static function getResource(): string
-    {
-        return config('laravel-cart.filament.order') ?? OrderResource::class;
-    }
+    use OrderResource\Pages\Concerns\ConfiguresOrderResourcePages;
 }

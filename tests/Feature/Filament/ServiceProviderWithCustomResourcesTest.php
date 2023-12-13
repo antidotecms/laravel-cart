@@ -6,51 +6,63 @@ use Antidote\LaravelCart\Tests\Fixtures\Filament\Resources\CustomAdjustmentResou
 use Antidote\LaravelCart\Tests\Fixtures\Filament\Resources\CustomCustomerResource;
 use Antidote\LaravelCart\Tests\Fixtures\Filament\Resources\CustomOrderResource;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
-use Filament\FilamentServiceProvider;
-use Filament\Panel;
-use Filament\Support\SupportServiceProvider;
-use Livewire\LivewireServiceProvider;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\Concerns\ConfiguresAdjustmentResourcePages;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\CreateAdjustment;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\EditAdjustment;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\ListAdjustments;
+use Antidote\LaravelCartFilament\Resources\CustomerResource;
+use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\Concerns\ConfiguresCustomerResourcePages;
+use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\CreateCustomer;
+use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\EditCustomer;
+use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\ListCustomers;
+use Antidote\LaravelCartFilament\Resources\OrderResource;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\Concerns\ConfiguresOrderResourcePages;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\CreateOrder;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
+use Filament\FilamentManager;
 use Orchestra\Testbench\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+//use PHPUnit\Framework\TestCase;
+
 #[CoversClass(CartPanelPlugin::class)]
+#[CoversClass(ConfiguresAdjustmentResourcePages::class)]
+#[CoversClass(ConfiguresCustomerResourcePages::class)]
+#[CoversClass(ConfiguresOrderResourcePages::class)]
 class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomResourcesTestCase
 {
 
     /**
      * @test
+     * @group filament-resources
+     */
+    public function it_provides_default_resources()
+    {
+        $cart_plugin = new CartPanelPlugin(app());
+
+        setUpCartPlugin($cart_plugin);
+
+        expect(app()->get('filament')->getResources())
+            ->toEqualCanonicalizing([
+                'order' => OrderResource::class,
+                'adjustment' => AdjustmentResource::class,
+                'customer' => CustomerResource::class
+            ]);
+    }
+    /**
+     * @test
+     * @group filament-resources
      */
     public function provides_the_ability_to_override_resources()
     {
-        //$app_mock = \Mockery::mock(\Illuminate\Foundation\Application::class)->makePartial();
-
-
-
         $cart_plugin = new CartPanelPlugin(app());
         $cart_plugin->adjustmentResource(CustomAdjustmentResource::class)
             ->customerResource(CustomCustomerResource::class)
             ->orderResource(CustomOrderResource::class);
 
-        $fsp = new FilamentServiceProvider(app());
-        $ssp = new SupportServiceProvider(app());
-
-        app()->register(new LivewireServiceProvider(app()));
-        app()->register($fsp);
-        app()->register($ssp);
-        $p = new Panel();
-        $p->plugin($cart_plugin);
-        app()->get('filament')->setCurrentPanel($p);
-
-        $fsp->boot();
-
-        //dump(array_keys(app()->getBindings()));
-        //dump(app()->get('filament'));
-
-        //dump(app()->getLoadedProviders());
-
-//        $app_mock->shouldAllowMockingProtectedMethods()
-//            ->shouldReceive('bootProvider')
-//            ->with($cart_plugin);
+        setUpCartPlugin($cart_plugin);
 
         expect(app()->get('filament')->getResources())
             ->toEqualCanonicalizing([
@@ -58,5 +70,86 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
                 'adjustment' => CustomAdjustmentResource::class,
                 'customer' => CustomCustomerResource::class
             ]);
+    }
+
+    /**
+     * @test
+     * @group filament-resources
+     */
+    public function related_resource_pages_have_correct_resources()
+    {
+        $cart_plugin = new CartPanelPlugin(app());
+        $cart_plugin->adjustmentResource(CustomAdjustmentResource::class)
+            ->customerResource(CustomCustomerResource::class)
+            ->orderResource(CustomOrderResource::class);
+
+        setUpCartPlugin($cart_plugin);
+
+        expect(EditOrder::getResource())->toEqual(CustomOrderResource::class);
+        expect(CreateOrder::getResource())->toEqual(CustomOrderResource::class);
+        expect(ListOrders::getResource())->toEqual(CustomOrderResource::class);
+
+        expect(EditAdjustment::getResource())->toEqual(CustomAdjustmentResource::class);
+        expect(CreateAdjustment::getResource())->toEqual(CustomAdjustmentResource::class);
+        expect(ListAdjustments::getResource())->toEqual(CustomAdjustmentResource::class);
+
+        expect(EditCustomer::getResource())->toEqual(CustomCustomerResource::class);
+        expect(CreateCustomer::getResource())->toEqual(CustomCustomerResource::class);
+        expect(ListCustomers::getResource())->toEqual(CustomCustomerResource::class);
+    }
+
+    /**
+     * @test
+     * @group filament-resources
+     */
+    public function it_provides_default_models()
+    {
+        $cart_plugin = new CartPanelPlugin(app());
+
+        setUpCartPlugin($cart_plugin);
+    }
+
+    /**
+     * @test
+     * @group filament-resources
+     */
+    public function it_will_allow_overriding_default_models()
+    {
+
+    }
+
+    /**
+     * @test
+     * @group filament-resources
+     */
+    public function it_will_provide_a_default_order_complete_url()
+    {
+        $cart_plugin = new CartPanelPlugin(app());
+
+        setUpCartPlugin($cart_plugin);
+
+        /** @var $filamentManager FilamentManager */
+        $filamentManager = app('filament');
+        $orderCompleteUrl = $filamentManager->getPlugin('laravel-cart')->getOrderCompleteUrl();
+
+        expect($orderCompleteUrl)->toBe('order-complete');
+    }
+
+    /**
+     * @test
+     * @group filament-resources
+     */
+    public function it_will_override_the_order_complete_url()
+    {
+        $cart_plugin = new CartPanelPlugin(app());
+
+        setUpCartPlugin($cart_plugin);
+        $cart_plugin->orderCompleteUrl('a-different-url');
+
+        /** @var $filamentManager FilamentManager */
+        $filamentManager = app('filament');
+        $orderCompleteUrl = $filamentManager->getPlugin('laravel-cart')->getOrderCompleteUrl();
+
+        expect($orderCompleteUrl)->toBe('a-different-url');
     }
 }

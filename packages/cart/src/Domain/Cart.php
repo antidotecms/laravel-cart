@@ -295,7 +295,8 @@ class Cart
     private function getOrder($customer)
     {
         // create an order
-        $order_class = getClassNameFor('order');
+        //$order_class = getClassNameFor('order');
+        $order_class = config('laravel-cart.classes.order');
 
         $order = Cart::getActiveOrder() ?? $order_class::create([
             'customer_id' => $customer->id

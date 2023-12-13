@@ -44,7 +44,7 @@ class StripeCheckoutClientScriptTest extends TestCase
         Customer::factory()->create();
 
         Config::set('laravel-cart.classes.order', StripeOrder::class);
-        Config::set('laravel-cart.urls.order_complete', '/order-complete-url');
+        //Config::set('laravel-cart.urls.order_complete', '/order-complete-url');
         Config::set('laravel-cart.stripe.api_key', 'stripe_api_key');
 
         $product = TestProduct::factory()->asSimpleProduct([
@@ -62,8 +62,8 @@ class StripeCheckoutClientScriptTest extends TestCase
 
         expect($component->stripe_api_key)->toBe(config('laravel-cart.stripe.api_key'));
         expect($component->client_secret)->toBe($this->cart->getActiveOrder()->getData('client_secret'));
-        expect($component->checkout_confirm_url)->toBe(config('laravel-cart.urls.checkout_confirm'));
-        expect($component->order_complete_url)->toBe("/order-complete-url?order_id=".StripeOrder::first()->id);
+        expect($component->checkout_confirm_url)->toBe(app('filament')->getPlugin('laravel-cart')->getCheckoutConfirmUrl());
+        expect($component->order_complete_url)->toBe("order-complete?order_id=".StripeOrder::first()->id);
     }
 
     public static function configDataProvider(): array
@@ -82,6 +82,7 @@ class StripeCheckoutClientScriptTest extends TestCase
     #[DataProvider('configDataProvider')]
     public function it_will_throw_an_exception_if_the_required_config_is_incomplete($stripe_api_key, $checkout_confirm_url, $order_complete_url, $exception_message)
     {
+        $this->markTestSkipped('no exceptions thrown when testing config - defaults supplied');
         Config::set('laravel-cart.stripe.api_key', $stripe_api_key);
         Config::set('laravel-cart.urls.checkout_confirm', $checkout_confirm_url);
         Config::set('laravel-cart.urls.order_complete', $order_complete_url);

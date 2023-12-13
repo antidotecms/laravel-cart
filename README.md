@@ -2,6 +2,7 @@
 A simple implementation of a cart for use in Laravel applications. Very much a WIP!
 
 ## Installation
+<!--
 ### Database
 The package only requires on table creating of `cart_adjustments`. The package will migrate this for you or you can
 publish this to make amends using:
@@ -14,25 +15,48 @@ the config and setting the `product_data` config value:
 ```
 php artisan vendor:publish --tag=laravel-cart-config
 ```
+-->
+### Configuiration
+Configuration is handled via a Filament Panel Plugin which you should add to the relevant panel. You can also override the
+default resources with your own implementation.
+```php
+use \Antidote\LaravelCartFilament\CartPanelPlugin;
+
+public function panel(Panel $panel)
+{
+    return $panel
+        ->plugin(
+                CartPanelPlugin::make()
+                    ->customerResource(MyCustomerResource::class)
+                    ->orderResource(MyOrderresource::class)
+                    ->adjustmentResource(MyAdjustmentResource::class)
+            )
+        ...
+}
+```
 
 ## Products
-Your product models should use the trait `Antidote\LaravelCart\Concerns\IsProduct` as well as implement
+<!--
+Your product models should use the trait `Antidote\LaravelCart\Concerns\ConfiguresProduct` as well as implement
 `\Antidote\LaravelCart\Contracts\Product`.
 
 ```
 namespace \App\Models\Products;
 
 use \Anitidote\LaravelCart\Contracts\Product;
-use \Anitidote\LaravelCart\Concerns\IsProduct;
+use \Anitidote\LaravelCart\Concerns\ConfiguresProduct;
 use Illuminate\Database\Eloquent\Model;
 
 class MyProduct extends Model implements Product
 {
-    use isProduct;
+    use ConfiguresProduct;
 
     ...
 }
 ```
+-->
+
+Product models shoudl extend from `\Antidote\LaravelCart\Models\Product`
 
 Products are associated with a `ProductDataType` which encapsulates the nature of the product. For example, a
 `ClothesProductType` may need to store information about the colour and size of the product to be purchased.

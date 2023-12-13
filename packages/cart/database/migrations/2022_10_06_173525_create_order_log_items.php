@@ -17,9 +17,9 @@ return new class extends Migration {
 //                \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestOrderLogItem::class => null
 //            };
 
-            if(is_subclass_of(config('laravel-cart.classes.order_log_item'), \Antidote\LaravelCartStripe\Contracts\StripeOrderLogItem::class)) {
+            //if(is_subclass_of(config('laravel-cart.classes.order_log_item'), \Antidote\LaravelCartStripe\Contracts\StripeOrderLogItem::class)) {
                 $table->json('event')->nullable();
-            }
+            //}
 
             $table->foreignIdFor(\Antidote\LaravelCart\Models\Order::class);
 

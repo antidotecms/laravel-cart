@@ -17,14 +17,18 @@ class StripeCheckoutClientScriptComponent extends Component
 
     public function __construct(PaymentIntent $payment_intent, \Antidote\LaravelCart\Domain\Cart $cart)
     {
-        $this->validateRequiredConfig();
+        //$this->validateRequiredConfig();
 
         $this->client_secret = $payment_intent->getClientSecret($cart->getActiveOrder());
 
-        $this->checkout_confirm_url = config('laravel-cart.urls.checkout_confirm');
-        $this->order_complete_url = config('laravel-cart.urls.order_complete').'?order_id='.$cart->getActiveOrder()->id;
+        $this->checkout_confirm_url = app('filament')->getPlugin('laravel-cart')->getCheckoutConfirmUrl();
+        $this->order_complete_url = app('filament')->getPlugin('laravel-cart')->getOrderCompleteUrl() .'?order_id='.$cart->getActiveOrder()->id;
+        $this->stripe_api_key = config('laravel-cart.stripe.api_key');
     }
 
+    /**
+     * @deprecated
+     */
     private function validateRequiredConfig()
     {
         $data = [

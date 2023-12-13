@@ -12,7 +12,7 @@ class AllowStripeWebhooksDuringMaintenance extends Middleware
     public function getExcludedPaths(): array
     {
         return [
-            config('laravel-cart.urls.stripe.webhook_handler')
+            app()->get('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler')
         ];
     }
 }

@@ -7,10 +7,7 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListOrders extends ListRecords
 {
-    public static function getResource(): string
-    {
-        return config('laravel-cart.filament.order') ?? OrderResource::class;
-    }
+    use OrderResource\Pages\Concerns\ConfiguresOrderResourcePages;
 
     protected static ?string $title = 'Orders';
 }

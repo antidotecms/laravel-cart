@@ -12,7 +12,7 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../../config/laravel-cart.php','laravel-cart' );
+        //$this->mergeConfigFrom(__DIR__ . '/../../../config/laravel-cart.php','laravel-cart' );
         $this->bindings();
 
         Model::shouldBeStrict();
@@ -62,17 +62,25 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
 
     private function routes()
     {
-        if($this->app['config']->get('laravel-cart.urls.order_complete')) {
-            $this->app['router']->get(config('laravel-cart.urls.order_complete'), OrderCompleteController::class)
-                ->middleware(['web', 'auth:customer'])->name('laravel-cart.order_complete');
-        } else {
-            throw new \Exception('The order complete url has not been set in config');
-        }
+//        if($this->app['config']->get('laravel-cart.urls.order_complete')) {
+//            $this->app['router']->get(config('laravel-cart.urls.order_complete'), OrderCompleteController::class)
+//                ->middleware(['web', 'auth:customer'])->name('laravel-cart.order_complete');
+//        } else {
+//            throw new \Exception('The order complete url has not been set in config');
+//        }
 
-        $this->app['router']->get('/checkout/replace_cart/{order_id}', [OrderController::class, 'setOrderItemsAsCart'])
-            ->middleware(['web', 'auth:customer'])->name('laravel-cart.replace_cart');;
+        $this->app->booted(function() {
 
-        $this->app['router']->get('/checkout/add_to_cart/{order_id}', [OrderController::class, 'addOrderItemsToCart'])
-            ->middleware(['web', 'auth:customer'])->name('laravel-cart.add_to_cart');;
+            //dd(app('filament'));
+            $this->app['router']->get(app('filament')->getPlugin('laravel-cart')->getOrderCompleteUrl(), OrderCompleteController::class)
+                    ->middleware(['web', 'auth:customer'])->name('laravel-cart.order_complete');
+
+            $this->app['router']->get('/checkout/replace_cart/{order_id}', [OrderController::class, 'setOrderItemsAsCart'])
+                ->middleware(['web', 'auth:customer'])->name('laravel-cart.replace_cart');;
+
+            $this->app['router']->get('/checkout/add_to_cart/{order_id}', [OrderController::class, 'addOrderItemsToCart'])
+                ->middleware(['web', 'auth:customer'])->name('laravel-cart.add_to_cart');
+        });
+
     }
 }

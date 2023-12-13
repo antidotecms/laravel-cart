@@ -31,6 +31,9 @@ class TestPanelProvider extends \Filament\PanelProvider
                     ->orderResource(OrderResource::class)
                     ->customerResource(CustomerResource::class)
                     ->adjustmentResource(AdjustmentResource::class)
+                    ->urls([
+                        'stripe.webhookHandler' => 'checkout/stripe'
+                    ])
             ])
             ->middleware([
                 EncryptCookies::class,

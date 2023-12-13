@@ -54,7 +54,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         return [
             //'Antidote\LaravelCart\ServiceProvider',
-            CartServiceProvider::class,
             'Antidote\LaravelCartStripe\StripeServiceProvider',
             \Antidote\LaravelCartFilament\FilamentServiceProvider::class,
             ActionsServiceProvider::class,
@@ -69,7 +68,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
             //CartPanelPlugin::class
-            TestPanelProvider::class
+            TestPanelProvider::class,
+            CartServiceProvider::class,
         ];
     }
 
@@ -107,6 +107,11 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         $app->config->set('laravel-cart.urls.order_complete', '/order-complete');
         $app->config->set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');
+    }
+
+    protected function defineRoutes($router)
+    {
+        $router->get('/login', null)->name('login');
     }
 
 }

@@ -2,14 +2,12 @@
 
 namespace Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages;
 
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\Concerns\ConfiguresAdjustmentResourcePages;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateAdjustment extends CreateRecord
 {
-    public static function getResource(): string
-    {
-        return config('laravel-cart.filament.adjustment');
-    }
+    use ConfiguresAdjustmentResourcePages;
 
     protected function mutateFormDatabeforeCreate(array $data): array
     {
