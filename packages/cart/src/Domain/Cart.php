@@ -13,33 +13,6 @@ use Illuminate\Support\Collection;
 
 class Cart
 {
-//    public function __call($method, $arguments) : mixed
-//    {
-//        method_exists($this, $method) ?: throw new \BadMethodCallException();
-//
-//        $allowedMethods = [
-//            'add',
-//            'items',
-//            'clear',
-//            'remove',
-//            'getSubtotal',
-//            'getTotal',
-//            'getDiscountTotal',
-//            'isInCart',
-//            'createOrder',
-//            'getActiveOrder',
-//            'setActiveOrder',
-//            'addData',
-//            'getData',
-//            'getAdjustmentsTotal',
-//            'getValidAdjustments'
-//        ];
-//
-//        in_array($method, $allowedMethods) ?: throw new \BadMethodCallException("Cannot call {$method}");
-//
-//        return $this->$method(...$arguments);
-//    }
-
     public function items() : Collection
     {
         $cart_items = session()->get('cart_items') ?? [];
@@ -140,7 +113,8 @@ class Cart
     private function clearOrderAdjustments(Collection $cart_items)
     {
         if((bool) $this->getActiveOrder() & !$cart_items->count()) {
-            config('laravel-cart.classes.order_adjustment')::where('order_id', $this->getActiveOrder()->id)->delete();
+            $order_adjustment_class = app('filament')->getPlugin('laravel-cart')->getModel('order_adjustment');
+            $order_adjustment_class::where('order_id', $this->getActiveOrder()->id)->delete();
             $order = $this->getActiveOrder()->fresh();
             $this->setActiveOrder($order);
         }
@@ -190,11 +164,7 @@ class Cart
 
     public function getValidAdjustments(bool $applied_to_subtotal, array $except = []) : Collection
     {
-//        $class = $this->getActiveOrder() && $this->getActiveOrder()->isCompleted()
-//            ? config('laravel-cart.classes.order_adjustment')
-//            : config('laravel-cart.classes.adjustment');
-
-        $class = config('laravel-cart.classes.adjustment');
+        $class = app('filament')->getPlugin('laravel-cart')->getModel('adjustment');
 
         return $class::all()
             ->when($this->getActiveOrder(), function($query) {
@@ -209,20 +179,6 @@ class Cart
             )
             ->valid()
             ->active();
-
-        //filter those that should or should not be applied to the subtotal
-//            ->filter(function (OrderAdjustment|Adjustment $adjustment) use ($appled_to_subtotal) {
-//
-//                return $adjustment->apply_to_subtotal == $appled_to_subtotal;
-//            })
-        //filter those that are valid
-//            ->filter(function (OrderAdjustment|Adjustment $adjustment) {
-//                return $adjustment->is_valid;
-//            })
-        //filter those that are active
-//            ->filter(function (OrderAdjustment|Adjustment $adjustment) {
-//                return $adjustment->is_active;
-//            });
     }
 
     public function isInCart($product_id) : bool
@@ -248,11 +204,6 @@ class Cart
 
         $this->setOrderData($order);
 
-        //$this->syncCartWithOrder($order);
-
-        //$this->convertAdjustments($order);
-
-        //$this->syncAdjustmentsWithOrder();
         $this->sync($order);
 
         $order->save();
@@ -294,9 +245,7 @@ class Cart
 
     private function getOrder($customer)
     {
-        // create an order
-        //$order_class = getClassNameFor('order');
-        $order_class = config('laravel-cart.classes.order');
+        $order_class = app('filament')->getPlugin('laravel-cart')->getModel('order');
 
         $order = Cart::getActiveOrder() ?? $order_class::create([
             'customer_id' => $customer->id
@@ -310,12 +259,11 @@ class Cart
         $cart_items = Cart::items();
 
         $cart_items->each(function ($cart_item) use ($order) {
-            //$product_key = getKeyFor('product');
             $order->items()->create([
-                'name' => $cart_item->getProduct()->getName($cart_item->product_data),
+                'name' => $cart_item->getProduct()->getName($cart_item->product_data ?? []),
                 'product_id'=> $cart_item->product_id,
                 'product_data' => $cart_item->product_data,
-                'price' => $cart_item->getProduct()->getPrice($cart_item->product_data),
+                'price' => $cart_item->getProduct()->getPrice($cart_item->product_data ?? []),
                 'quantity' => $cart_item->quantity
             ]);
         });
@@ -336,10 +284,9 @@ class Cart
     private function convertAdjustments($order)
     {
         //@todo convert cart adjustments to order adjustments
-        //throw new \Exception('convert cart adjustments to order adjustments in Cart::createOrder');
         $this->getValidAdjustments(true)->concat($this->getValidAdjustments(false))->each(function($adjustment) use ($order) {
-        //foreach($this->getValidAdjustments(true)->concat($this->getValidAdjustments(false)) as $adjustment) {
-            config('laravel-cart.classes.order_adjustment')::create([
+            $order_adjustment_class = app('filament')->getPlugin('laravel-cart')->getModel('order_adjustment');
+            $order_adjustment_class::create([
                 'name' => $adjustment->name,
                 'original_parameters' => $adjustment->parameters,
                 'order_id' => $order->id,
@@ -379,8 +326,7 @@ class Cart
     {
         $cart_data = session()->get('cart_data') ?? [];
 
-        if($key)
-        {
+        if($key) {
             return $cart_data[$key] ?? '';
         }
 

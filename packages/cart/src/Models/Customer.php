@@ -12,18 +12,6 @@ use Illuminate\Notifications\Notifiable;
 class Customer extends Authenticatable
 {
     use HasFactory;
-
-    protected static function newFactory()
-    {
-        return CustomerFactory::new();
-    }
-
-    //@tdod create concern or refactor all concerns into their models?
-    public function getTable()
-    {
-        return 'customers';
-    }
-
     use Notifiable, MustVerifyEmail;
 
     /**
@@ -55,6 +43,21 @@ class Customer extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getForeignKey()
+    {
+        return 'customer_id';
+    }
+
+    protected static function newFactory()
+    {
+        return CustomerFactory::new();
+    }
+
+    public function getTable()
+    {
+        return 'customers';
+    }
 
     public function orders() : hasMany
     {

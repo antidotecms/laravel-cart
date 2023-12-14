@@ -1,11 +1,14 @@
 <?php
 
+use Antidote\LaravelCart\Models\Product;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\VariableProductDataType;
 
 test('a product type has a product', function()
 {
+    app('filament')->getPlugin('laravel-cart')->models(['product' => TestProduct::class]);
+
     $product_data = SimpleProductDataType::create([
         'price' => 100
     ]);
@@ -16,13 +19,10 @@ test('a product type has a product', function()
         'product_type_id' => $product_data->id
     ]);
 
-//    $product->productType()->associate($product_data);
-//    $product->save();
-
     expect(get_class($product_data->product))->toBe(TestProduct::class);
     expect($product_data->product->id)->toBe($product->id);
 })
-->coversClass(\Antidote\LaravelCart\Models\Product::class);
+->coversClass(Product::class);
 
 it('it can create a product and associated product data', function()
 {
@@ -44,12 +44,10 @@ it('it can create a product and associated product data', function()
     $this->assertEquals('It\'s really very simple', $product->getDescription());
     $this->assertEquals(100, $product->getPrice());
 })
-->coversClass(\Antidote\LaravelCart\Models\Product::class);
+->coversClass(Product::class);
 
 it('can utilize product data to determine name, price and specification', function()
 {
-    //$this->markTestIncomplete('sort out how products are named by default');
-
     $product_data = VariableProductDataType::create();
 
     $product = TestProduct::create([
@@ -72,7 +70,7 @@ it('can utilize product data to determine name, price and specification', functi
     ]));
 
 })
-->coversClass(\Antidote\LaravelCart\Models\Product::class);
+->coversClass(Product::class);
 
 it('products_will_return_the_correct_name_and_price', function () {
 
@@ -111,11 +109,8 @@ it('products_will_return_the_correct_name_and_price', function () {
     $this->assertEquals('A Variable Product with width of 20 and height of 10', $variable_product->getName($product_data));
     $this->assertEquals('A Variable Product', $variable_product->getDescription($product_data));
     $this->assertEquals(200, $variable_product->getPrice($product_data));
-    //$this->assertEquals('A Variable Product with width of 20 and height of 10', $variable_product->getName($product_data));
-    //$this->assertEquals(200, $variable_product->getPrice($specification));
-
 })
-->coversClass(\Antidote\LaravelCart\Models\Product::class);
+->coversClass(Product::class);
 
 it('will soft delete, force delete and restore product data type when soft deleted, force deleted and restored', function() {
 
@@ -156,7 +151,7 @@ it('will soft delete, force delete and restore product data type when soft delet
         ->and(VariableProductDataType::count())->toBe(0);
 
 })
-->coversClass(\Antidote\LaravelCart\Models\Product::class);
+->coversClass(Product::class);
 
 it('will not allow soft deletion of a product type if the product is not soft deleted', function () {
 
@@ -193,7 +188,7 @@ it('will not allow soft deletion of a product type if the product is not soft de
         ->and(VariableProductDataType::count())->toBe(0);
 
 })
-->coversClass(\Antidote\LaravelCart\Models\Product::class);
+->coversClass(Product::class);
 
 it('will not allow restoration of a product data type if the product is soft deleted', function() {
 
@@ -214,7 +209,7 @@ it('will not allow restoration of a product data type if the product is soft del
     expect(TestProduct::count())->toBe(1)
         ->and(VariableProductDataType::count())->toBe(1);
 })
-->coversClass(\Antidote\LaravelCart\Models\Product::class);
+->coversClass(Product::class);
 
 it('will defer an attribute to the product data type', function() {
 
@@ -226,7 +221,7 @@ it('will defer an attribute to the product data type', function() {
     expect($product->getName())->toBe('A Simple Product')
         ->and($product->getDescription())->toBe('This Description');
 })
-->coversClass(\Antidote\LaravelCart\Models\Product::class);
+->coversClass(Product::class);
 
 it('will throw an exception if a deferred attribute is not defined', function () {
 
@@ -237,7 +232,7 @@ it('will throw an exception if a deferred attribute is not defined', function ()
 
     $product->getFoo();
 })
-->coversClass(\Antidote\LaravelCart\Models\Product::class)
+->coversClass(Product::class)
 ->throws(Exception::class, "Define 'getFoo' on ".SimpleProductDataType::class);
 
 it('will check whether a product is valid from its product type', function () {
@@ -254,27 +249,14 @@ it('will check whether a product is valid from its product type', function () {
     };
 
     $spied_product_type = Mockery::spy($test_product_type::class);
-    //$spied_product = \Mockery\Mock::spy(TestProduct::class);
-
-    //$mock_product = Mockery::mock(TestProduct::class)->makePartial();
-    //$mock_product_type = Mockery::mock($test_product_type::class)->makePartial();
 
     $product->productType()->associate($spied_product_type);
     $product->save();
-    //$test_product_type->product()->save($mock_product);
 
     expect($product->productType)->not()->toBeNull();
 
-
-    //$mock_product->shouldReceive('checkValidity');
-//    $mock_product_type->shouldReceive('isValid')
-//        ->once()
-//        ->andReturnTrue();
-
-    //expect($product->checkValidity())->toBeTrue();
     $product->checkValidity();
 
     $spied_product_type->shouldHaveReceived('isValid')->withAnyArgs()->once();
-
 })
-->coversClass(\Antidote\LaravelCart\Models\Product::class);
+->coversClass(Product::class);

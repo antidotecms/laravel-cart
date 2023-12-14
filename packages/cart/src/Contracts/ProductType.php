@@ -9,7 +9,7 @@ abstract class ProductType extends Model
 {
     public function product(): MorphOne
     {
-        return $this->morphOne(getClassNameFor('product'), 'product_type')->withTrashed();
+        return $this->morphOne(getClassNameFor('product'), 'product_type')->withoutGlobalScope(SoftDeletingScope::class);
     }
 
     public abstract function isValid(?array $product_data = null): bool;
@@ -18,8 +18,7 @@ abstract class ProductType extends Model
     {
         static::deleting(function($product_type) {
 
-            if(is_null($product_type->product) || $product_type->product->trashed())
-            {
+            if(is_null($product_type->product) || $product_type->product->trashed()) {
                 return true;
             }
 

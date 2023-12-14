@@ -25,7 +25,7 @@ class SimpleProductDataType extends ProductType
     }
 
     public function getDescription() : string {
-        return $this->description;
+        return 'a simple product';
     }
 
     public function isValid(?array $product_data = null): bool

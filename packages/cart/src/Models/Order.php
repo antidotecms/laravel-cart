@@ -94,11 +94,6 @@ class Order extends Model
 
         $this->load('adjustments');
 
-//        $this->adjustments->each(function(OrderAdjustment $adjustment) use (&$adjustment_total, $is_in_subtotal) {
-//            //$adjustment_total += $adjustment->adjustment->apply_to_subtotal == $is_in_subtotal ? $adjustment->amount : 0;
-//            $adjustment_total += (new $adjustment->class)->applyToSubtotal() == $is_in_subtotal ? $adjustment->amount : 0;
-//        });
-
         $this->getAdjustments($is_in_subtotal)
             ->each(function(OrderAdjustment $adjustment) use (&$adjustment_total, $is_in_subtotal) {
                 $adjustment_total += $adjustment->amount;
@@ -118,7 +113,7 @@ class Order extends Model
 
     public function logItems() : hasMany
     {
-        return $this->hasMany(getClassNameFor('order_log_item'), 'order_id');
+        return $this->hasMany(app('filament')->getPlugin('laravel-cart')->getModel('order_log_item'), 'order_id');
     }
 
     public function log(string $message) : OrderLogItem

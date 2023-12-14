@@ -8,6 +8,7 @@ use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
 use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderItemRelationManager;
 use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager;
+use Filament\FilamentManager;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -25,22 +26,12 @@ class OrderResource extends Resource
 
     protected static ?string $navigationLabel = 'Orders';
 
-//    public static function getModel(): string
-//    {
-////        $classname = '\App\Models\Order';
-////        try {
-////            //$classname =  (string) getClassNameFor('order');
-////            $classname = config('laravel-cart.classes.order');
-////        } catch (\Exception $e) {}
-////        finally {
-////            return $classname;
-////        }
-//        return config('laravel-cart.classes.order');
-//    }
-
     public static function getModel(): string
     {
-        return config('laravel-cart.classes.order');
+        /** @var $filamentManager FilamentManager */
+        $filamentManager = app('filament');
+        $resource = $filamentManager->getPlugin('laravel-cart')->getModel('order');
+        return $resource;
     }
 
     public static function form(Form $form): Form

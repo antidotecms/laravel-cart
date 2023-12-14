@@ -43,8 +43,8 @@ class TestProduct extends \Antidote\LaravelCart\Models\Product
         ComplexProductDataType::class
     ];
 
-    public function getDescription() : string {
-        return $this->description ?? '';
+    public function getDescription(array $product_data = []) : string {
+        return $this->description ?? $this->productType->getDescription($product_data);
     }
 
     public function isValid() : bool {

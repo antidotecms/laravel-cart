@@ -1,10 +1,25 @@
 <?php
 
+use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\OrderLogItem;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
+use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager;
+
 beforeEach(function() {
 
-    $this->product = \Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct::factory()->asSimpleProduct()->create();
-    $this->customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-    $this->orders = \Antidote\LaravelCart\Models\Order::factory()
+    app('filament')->getPlugin('laravel-cart')->models(['product' => TestProduct::class]);
+
+    app('filament')->getPlugin('laravel-cart')->models(['order_log_item' => TestStripeOrderLogItem::class]);
+
+    $this->product = TestProduct::factory()->asSimpleProduct()->create();
+
+    $this->customer = Customer::factory()->create();
+
+    $this->orders = Order::factory()
         ->count(10)
         ->withProduct($this->product)
         ->forCustomer($this->customer)
@@ -12,14 +27,14 @@ beforeEach(function() {
             'status' => 'an order status'
         ]);
 
-    $this->user = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser::create([
+    $this->user = TestUser::create([
         'name' => 'Test User',
         'email' => 'test@user.com',
         'password' => \Illuminate\Support\Facades\Hash::make('password')
     ]);
 
     //@todo make factory
-    $order_log_item = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem::create([
+    $order_log_item = TestStripeOrderLogItem::create([
         'message' => 'This is an order log item',
         'order_id' => $this->orders->first()->id
     ]);
@@ -35,42 +50,39 @@ beforeEach(function() {
 
 it('will display the order log items', function() {
 
-    \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
-        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
+    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+        'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertCanSeeTableRecords($this->orders->first()->logitems);
 })
-->covers(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class);
+->covers(OrderLogItemRelationManager::class);
 
 it('will display the order log items columns', function() {
 
     $first_order_log_item = $this->orders->first()->logitems()->first();
 
-    \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
-        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
+    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+        'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertTableColumnStateSet('created_at', $first_order_log_item->created_at, $first_order_log_item)
     ->assertTableColumnStateSet('message', $first_order_log_item->message, $first_order_log_item);
 })
-->covers(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class);
+->covers(OrderLogItemRelationManager::class);
 
 it('will provide an action to view stripe event if stripe order log item is used', function () {
 
-    \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
-        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
+    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+        'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertTableActionExists('event');
 
-    class T extends \Antidote\LaravelCart\Models\OrderLogItem {}
+    app('filament')->getPlugin('laravel-cart')->models(['order_log_item' => OrderLogItem::class]);
 
-    $config = app('config');
-    $config->set('laravel-cart.classes.order_log_item', T::class);
-
-    \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
-        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
+    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+        'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertTableActionDoesNotExist('event');
@@ -83,8 +95,8 @@ it('will display the stripe event', function () {
     //$config = app('config');
     //$config->set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem::class);
 
-    \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
-        'pageClass' => \Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class,
+    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+        'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertTableActionExists('event')
@@ -100,7 +112,7 @@ test('the event modal view correctly returns the formatted data', function () {
 
     dump($this->orders->first()->logItems->first()->attributesToArray());
 
-    \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager::class, [
+    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
         'ownerRecord' => $this->orders->first()
     ])
     ->callTableAction('event', $this->orders->first()->logitems()->first())

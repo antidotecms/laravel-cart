@@ -85,6 +85,8 @@ it('displays the correct form', function($mode, $form) {
 
 it('will render the relevant pages', function () {
 
+    $this->withoutExceptionHandling();
+
     $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\AdjustmentResource::getUrl('index'))
         ->assertSuccessful();
 

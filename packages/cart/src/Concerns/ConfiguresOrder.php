@@ -13,7 +13,7 @@ trait ConfiguresOrder
 
     public function initializeConfiguresOrder() : void
     {
-        $customer_class = getClassNameFor('customer');
+        $customer_class = app('filament')->getPlugin('laravel-cart')->getModel('customer');
         $this->fillable[] = (new $customer_class)->getForeignKey();
         $this->append('total');
     }

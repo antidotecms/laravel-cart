@@ -3,17 +3,9 @@
 namespace Antidote\LaravelCart\Tests;
 
 use Antidote\LaravelCart\CartServiceProvider;
-use Antidote\LaravelCart\Models\Adjustment;
-use Antidote\LaravelCart\Models\Customer;
-use Antidote\LaravelCart\Models\Order;
-use Antidote\LaravelCart\Models\OrderAdjustment;
-use Antidote\LaravelCart\Models\OrderItem;
-use Antidote\LaravelCart\Models\OrderLogItem;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Antidote\LaravelCart\Tests\Fixtures\Filament\TestPanelProvider;
-use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
-use Antidote\LaravelCartFilament\Resources\CustomerResource;
+use Antidote\LaravelCartStripe\StripeServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
@@ -31,20 +23,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
 {
     use RefreshDatabase;
 
-//    protected function migrateUsing()
-//    {
-//        return [
-//            '--path' => [
-//                './database/migrations/cart'
-//            ]
-//        ];
-//    }
-
-//    protected function defineDatabaseMigrations()
-//    {
-//        $this->loadMigrationsFrom(__DIR__.'/laravel/database/migrations');
-//    }
-
     protected function defineDatabaseMigrations()
     {
         $this->loadMigrationsFrom(__DIR__.'/Fixtures/Cart/migrations');
@@ -53,8 +31,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app): array
     {
         return [
-            //'Antidote\LaravelCart\ServiceProvider',
-            'Antidote\LaravelCartStripe\StripeServiceProvider',
+            StripeServiceProvider::class,
             \Antidote\LaravelCartFilament\FilamentServiceProvider::class,
             ActionsServiceProvider::class,
             BladeCaptureDirectiveServiceProvider::class,
@@ -67,16 +44,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
             SupportServiceProvider::class,
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
-            //CartPanelPlugin::class
             TestPanelProvider::class,
             CartServiceProvider::class,
         ];
     }
-
-//    protected function getBasePath()
-//    {
-//        return __DIR__.'/laravel';
-//    }
 
     protected function getEnvironmentSetUp($app)
     {
@@ -88,24 +59,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'prefix'   => '',
         ]);
 
-        $app->config->set('laravel-cart.classes.product', TestProduct::class);
-        $app->config->set('laravel-cart.classes.customer', Customer::class);
-        $app->config->set('laravel-cart.classes.order', Order::class);
-        $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
-        $app->config->set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
-        $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);
-        $app->config->set('laravel-cart.classes.payment', TestPayment::class);
-        $app->config->set('laravel-cart.classes.order_log_item', OrderLogItem::class);
         $app->config->set('laravel-cart.tax_rate', 0.2);
-
-//        $app->config->set('laravel-cart.filament.order', OrderResource::class);
-        $app->config->set('laravel-cart.filament.customer', CustomerResource::class);
-        $app->config->set('laravel-cart.filament.adjustment', AdjustmentResource::class);
-
 
         $app->config->set('laravel-cart.stripe.secret_key', 'secret_key');
 
-        $app->config->set('laravel-cart.urls.order_complete', '/order-complete');
         $app->config->set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');
     }
 

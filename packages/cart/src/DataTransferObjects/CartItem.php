@@ -3,11 +3,12 @@
 namespace Antidote\LaravelCart\DataTransferObjects;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Spatie\DataTransferObject\DataTransferObject;
 
-class CartItem extends \Spatie\DataTransferObject\DataTransferObject implements Arrayable
+class CartItem extends DataTransferObject implements Arrayable
 {
     public int $product_id;
-    public array | null $product_data;
+    public ?array $product_data;
     public int $quantity;
 
     public function getProduct()
@@ -17,6 +18,6 @@ class CartItem extends \Spatie\DataTransferObject\DataTransferObject implements 
 
     public function getCost() : int
     {
-        return $this->getProduct()->getPrice($this->product_data) * $this->quantity;
+        return $this->getProduct()->getPrice($this->product_data ?? []) * $this->quantity;
     }
 }

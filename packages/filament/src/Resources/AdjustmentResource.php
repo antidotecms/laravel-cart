@@ -5,6 +5,7 @@ namespace Antidote\LaravelCartFilament\Resources;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\CreateAdjustment;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\EditAdjustment;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\ListAdjustments;
+use Filament\FilamentManager;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -35,7 +36,11 @@ class AdjustmentResource extends Resource
 
     public static function getModel(): string
     {
-        return config('laravel-cart.classes.adjustment');
+        //return config('laravel-cart.classes.adjustment');
+        /** @var $filamentManager FilamentManager */
+        $filamentManager = app('filament');
+        $resource = $filamentManager->getPlugin('laravel-cart')->getModel('adjustment');
+        return $resource;
     }
 
     public static function table(Table $table): Table

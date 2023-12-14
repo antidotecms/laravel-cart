@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('simple_product_data_types', function (Blueprint $table) {
             $table->id();
             $table->integer('price');
-            $table->foreignIdFor(config('laravel-cart.classes.product'))->nullable();
+            $table->foreignIdFor(\Antidote\LaravelCart\Models\Product::class)->nullable();
             $table->timestamps();
         });
     }

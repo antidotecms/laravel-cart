@@ -10,12 +10,16 @@
 //uses(\Antidote\LaravelCart\Tests\TestCase::class)->in('Feature/Filament');
 //uses(\Antidote\LaravelCart\Tests\StripeTestCase::class)->in('Feature/Stripe/Http/Controllers');
 //uses(\Antidote\LaravelCart\Tests\BrowserTestCase::class)->in('Browser');
+use Antidote\LaravelCart\CartServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Panel;
 use Filament\Support\SupportServiceProvider;
 use Livewire\LivewireServiceProvider;
 
-uses(\Antidote\LaravelCart\Tests\TestCase::class)->in('Feature/Cart', 'Feature/Stripe');
+uses(\Antidote\LaravelCart\Tests\TestCase::class)->in(
+    'Feature/Cart',
+    'Feature/Stripe',
+);
 uses(\Antidote\LaravelCart\Tests\StripeTestCase::class)->in('Feature/Filament');
 uses(\Orchestra\Testbench\PHPUnit\TestCase::class)->in(
     \Tests\Feature\Filament\ServiceProviderWithCustomResourcesTest::class
@@ -33,6 +37,7 @@ function setUpCartPlugin(\Antidote\LaravelCartFilament\CartPanelPlugin $plugin)
     $filamentServiceProvider = new FilamentServiceProvider(app());
     $supportServiceprovider = new SupportServiceProvider(app());
     $livewireServiceProvider = new LivewireServiceProvider(app());
+    $cartServiceProvider = new CartServiceProvider(app());
 
     app()->register($livewireServiceProvider);
     app()->register($filamentServiceProvider);
@@ -43,7 +48,10 @@ function setUpCartPlugin(\Antidote\LaravelCartFilament\CartPanelPlugin $plugin)
     $panel->plugin($plugin);
     app()->get('filament')->setCurrentPanel($panel);
 
+    app()->register($cartServiceProvider);
+
     $filamentServiceProvider->boot();
+    $cartServiceProvider->boot();
 }
 
 

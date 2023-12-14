@@ -6,6 +6,8 @@
          requireCoverageMetadata="true"
          cacheResult="false"
          beStrictAboutCoverageMetadata="false"
+         stopOnError="true"
+         stopOnFailure="true"
 >
     <testsuites>
         <testsuite name="Feature">

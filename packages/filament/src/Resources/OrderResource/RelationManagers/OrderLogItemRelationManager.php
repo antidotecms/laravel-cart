@@ -29,11 +29,11 @@ class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\R
     // @codeCoverageIgnoreStart
     // Test fails to due to error in `callTableAction`
     // @link https://github.com/filamentphp/filament/discussions/8048
+    // @todo write test to confirm action exists and is set correctly - @see OrderLogItemRelationManagerTest.php:L74 and expand to test configuration
     private static function getActions() : array
     {
         //@todo better way to determine payment provider needed?
-        if(is_subclass_of(getClassNameFor('order_log_item'), StripeOrderLogItem::class)) {
-//        if(is_a(TestStripeOrderLogItem::class,StripeOrderLogItem::class)) {
+        if(is_subclass_of(app('filament')->getPlugin('laravel-cart')->getModel('order_log_item'), StripeOrderLogItem::class)) {
             return [
                 Action::make('event')
                     //@todo need action to trigger the modal
