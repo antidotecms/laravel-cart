@@ -1,14 +1,22 @@
 <?php
 
+use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
+use Antidote\LaravelCartFilament\Resources\OrderResource;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
+use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Facades\Hash;
 use function Pest\Livewire\livewire;
 
 beforeEach(function() {
 
     $this->product = TestProduct::factory()->asSimpleProduct()->create();
-    $this->customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
-    $this->orders = \Antidote\LaravelCart\Models\Order::factory()
+    $this->customer = Customer::factory()->create();
+    $this->orders = Order::factory()
         ->count(10)
         ->withProduct($this->product)
         ->forCustomer($this->customer)
@@ -19,48 +27,89 @@ beforeEach(function() {
     $this->user = TestUser::create([
         'name' => 'Test User',
         'email' => 'test@user.com',
-        'password' => \Illuminate\Support\Facades\Hash::make('password')
+        'password' => Hash::make('password')
     ]);
 
 });
 
 it('will list the orders', function () {
 
-    livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders::class)
+    livewire(ListOrders::class)
         ->assertCanSeeTableRecords($this->orders);
 })
-->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class)
+->coversClass(OrderResource::class)
 ->group('order_resource_table_records');
 
 it('has the correct columns', function () {
 
-    livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders::class)
+    livewire(ListOrders::class)
         ->assertTableColumnStateSet('id', $this->orders->first()->id, $this->orders->first())
         ->assertTableColumnStateSet('order_total', $this->orders->first()->total, $this->orders->first())
         ->assertTableColumnStateSet('status', $this->orders->first()->status, $this->orders->first())
         ->assertTableColumnStateSet('customer.name', $this->customer->name, $this->orders->first());
 })
-->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class)
+->coversClass(OrderResource::class)
 ->group('order_resource_table_columns');
 
 it('can render the pages', function () {
 
-    $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('index'))
+    $this->actingAs($this->user)->get(OrderResource::getUrl('index'))
         ->assertSuccessful();
 
-    $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('create'))
+    $this->actingAs($this->user)->get(OrderResource::getUrl('create'))
         ->assertForbidden();
 
-    $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\OrderResource::getUrl('edit', [
+    $this->actingAs($this->user)->get(OrderResource::getUrl('edit', [
         'record' => $this->orders->first()->getKey()
     ]))->assertSuccessful();
 })
-->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class)
+->coversClass(OrderResource::class)
 ->group('order_resource_urls');
 
 it('has the required fields', function () {
 
-    livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class, [
+    $firstOrder = $this->orders->first();
+
+    // @todo Unable to run this with `livewire(CreateOrder::class)...`. Possible bug with Filament. Investigate
+    livewire(EditOrder::class, [
+        'record' => $this->orders->first()->getKey()
+    ])
+        ->assertFormFieldExists('id', function(TextInput $field) {
+            return $field->isDisabled() &&
+                !$field->isDehydrated();
+        })
+        ->assertFormFieldExists('customer', function(Select $field) {
+            return $field->isDisabled() &&
+                !$field->isDehydrated() &&
+                $field->hasRelationship() &&
+                $field->getRelationshipName() == 'customer' &&
+                $field->getRelationshipTitleAttribute() == 'name';
+        })
+        ->assertFormFieldExists('order_subtotal', function(TextInput $field) use ($firstOrder) {
+            return $field->isDisabled() &&
+                !$field->isDehydrated() &&
+                $field->getState() == NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($firstOrder->subtotal/100, 'GBP');
+        })
+        ->assertFormFieldExists('tax', function(TextInput $field) use ($firstOrder) {
+            return $field->isDisabled() &&
+                !$field->isDehydrated() &&
+                $field->getState() == NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($firstOrder->tax/100, 'GBP');
+        })
+        ->assertFormFieldExists('order_total', function(TextInput $field) use ($firstOrder) {
+            return $field->isDisabled() &&
+                !$field->isDehydrated() &&
+                $field->getState() == NumberFormatter::create('en_GB', NumberFormatter::CURRENCY)->formatCurrency($firstOrder->total/100, 'GBP');
+        })
+        ->assertFormFieldExists('status', function(TextInput $field) use ($firstOrder) {
+            return $field->isDisabled() &&
+                !$field->isDehydrated() &&
+                $field->getState() == $firstOrder->status;
+        });
+});
+
+it('sets the state correctly', function () {
+
+    livewire(EditOrder::class, [
         'record' => $this->orders->first()->getKey()
     ])
     ->assertFormSet([
@@ -75,14 +124,14 @@ it('has the required fields', function () {
     ->call('save')
     ->assertHasNoErrors();
 })
-->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class)
+->coversClass(OrderResource::class)
 ->group('order_resource_form_fields_all');
 
 test('the id field is disabled', function () {
 
-    livewire(\Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder::class, [
+    livewire(EditOrder::class, [
         'record' => $this->orders->first()->id
     ])
     ->assertFormFieldIsDisabled('id');
 })
-->coversClass(\Antidote\LaravelCartFilament\Resources\OrderResource::class);
+->coversClass(OrderResource::class);
