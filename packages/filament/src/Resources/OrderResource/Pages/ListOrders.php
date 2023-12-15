@@ -8,6 +8,4 @@ use Filament\Resources\Pages\ListRecords;
 class ListOrders extends ListRecords
 {
     use OrderResource\Pages\Concerns\ConfiguresOrderResourcePages;
-
-    protected static ?string $title = 'Orders';
 }
