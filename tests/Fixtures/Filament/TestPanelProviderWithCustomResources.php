@@ -28,9 +28,13 @@ class TestPanelProviderWithCustomResources extends \Filament\PanelProvider
             ->default()
             ->plugins([
                 CartPanelPlugin::make()
-                    ->orderResource(CustomOrderResource::class)
-                    ->customerResource(CustomCustomerResource::class)
-                    ->adjustmentResource(CustomAdjustmentResource::class)
+                    ->config([
+                        'resources' => [
+                            'order' => CustomOrderResource::class,
+                            'customer' => CustomCustomerResource::class,
+                            'adjustment' => CustomAdjustmentResource::class
+                        ]
+                    ])
             ])
             ->middleware([
                 EncryptCookies::class,

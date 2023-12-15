@@ -9,6 +9,7 @@ use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\Product;
 use Antidote\LaravelCart\Types\ValidCartItem;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Illuminate\Support\Collection;
 
 class Cart
@@ -113,7 +114,7 @@ class Cart
     private function clearOrderAdjustments(Collection $cart_items)
     {
         if((bool) $this->getActiveOrder() & !$cart_items->count()) {
-            $order_adjustment_class = app('filament')->getPlugin('laravel-cart')->getModel('order_adjustment');
+            $order_adjustment_class = CartPanelPlugin::get('models.order_adjustment');
             $order_adjustment_class::where('order_id', $this->getActiveOrder()->id)->delete();
             $order = $this->getActiveOrder()->fresh();
             $this->setActiveOrder($order);
@@ -164,7 +165,7 @@ class Cart
 
     public function getValidAdjustments(bool $applied_to_subtotal, array $except = []) : Collection
     {
-        $class = app('filament')->getPlugin('laravel-cart')->getModel('adjustment');
+        $class = CartPanelPlugin::get('models.adjustment');
 
         return $class::all()
             ->when($this->getActiveOrder(), function($query) {
@@ -245,7 +246,7 @@ class Cart
 
     private function getOrder($customer)
     {
-        $order_class = app('filament')->getPlugin('laravel-cart')->getModel('order');
+        $order_class = CartPanelPlugin::get('models.order');
 
         $order = Cart::getActiveOrder() ?? $order_class::create([
             'customer_id' => $customer->id
@@ -273,7 +274,6 @@ class Cart
     {
         //saving additional cart/order data
         //@todo possibly expand to allow "hooks" or events to trigger methods depending on keys/values set?
-        //$cart_data = $this->getData();
 
         collect($this->getData())->each(function($value, $key) use ($order) {
             $order->setData($key, $value);
@@ -285,7 +285,7 @@ class Cart
     {
         //@todo convert cart adjustments to order adjustments
         $this->getValidAdjustments(true)->concat($this->getValidAdjustments(false))->each(function($adjustment) use ($order) {
-            $order_adjustment_class = app('filament')->getPlugin('laravel-cart')->getModel('order_adjustment');
+            $order_adjustment_class = CartPanelPlugin::get('models.order_adjustment');
             $order_adjustment_class::create([
                 'name' => $adjustment->name,
                 'original_parameters' => $adjustment->parameters,

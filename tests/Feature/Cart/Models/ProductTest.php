@@ -4,10 +4,11 @@ use Antidote\LaravelCart\Models\Product;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\VariableProductDataType;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 
 test('a product type has a product', function()
 {
-    app('filament')->getPlugin('laravel-cart')->models(['product' => TestProduct::class]);
+    CartPanelPlugin::set('models.product', TestProduct::class);
 
     $product_data = SimpleProductDataType::create([
         'price' => 100

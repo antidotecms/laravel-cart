@@ -2,10 +2,10 @@
 
 namespace Antidote\LaravelCartFilament\Resources;
 
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\CreateAdjustment;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\EditAdjustment;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\ListAdjustments;
-use Filament\FilamentManager;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -22,25 +22,9 @@ class AdjustmentResource extends Resource
 
     protected static ?string $navigationGroup = 'Orders';
 
-//    public static function getModel(): string
-//    {
-////        $classname = '\App\Models\Adjustment';
-////        try {
-////            $classname =  (string) getClassNameFor('adjustment');
-////        } catch (\Exception $e) {}
-////        finally {
-////            return $classname;
-////        }
-//        return config('laravel-cart.classes.adjustment');
-//    }
-
     public static function getModel(): string
     {
-        //return config('laravel-cart.classes.adjustment');
-        /** @var $filamentManager FilamentManager */
-        $filamentManager = app('filament');
-        $resource = $filamentManager->getPlugin('laravel-cart')->getModel('adjustment');
-        return $resource;
+        return CartPanelPlugin::get('models.adjustment');
     }
 
     public static function table(Table $table): Table
@@ -64,7 +48,7 @@ class AdjustmentResource extends Resource
                 TextInput::make('name')
                     ->required(),
                 Select::make('class')
-                    ->options(config('laravel-cart.adjustments'))
+                    ->options(CartPanelPlugin::get('adjustments'))
                     ->required()
                     ->reactive(),
                 Toggle::make('apply_to_subtotal')

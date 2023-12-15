@@ -2,7 +2,8 @@
 
 if(!function_exists('getClassNameFor')) {
 
+    /** @todo remove - get config directly from CartPanelPlugin */
     function getClassNameFor($item) {
-        return app('filament')->getPlugin('laravel-cart')->getModel($item);
+        return \Antidote\LaravelCartFilament\CartPanelPlugin::get('models.'.$item);
     }
 }

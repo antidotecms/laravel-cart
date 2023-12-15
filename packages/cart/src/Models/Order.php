@@ -4,6 +4,7 @@ namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Concerns\ConfiguresOrder;
 use Antidote\LaravelCart\Database\Factories\OrderFactory;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -113,7 +114,7 @@ class Order extends Model
 
     public function logItems() : hasMany
     {
-        return $this->hasMany(app('filament')->getPlugin('laravel-cart')->getModel('order_log_item'), 'order_id');
+        return $this->hasMany(CartPanelPlugin::get('models.order_log_item'), 'order_id');
     }
 
     public function log(string $message) : OrderLogItem

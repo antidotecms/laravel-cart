@@ -12,17 +12,23 @@ class OrderControllerTestCase extends \Orchestra\Testbench\TestCase
 
     protected function defineDatabaseMigrations()
     {
-        //$this->loadMigrationsFrom(__DIR__.'../../packages/cart/database/migrations');
         $this->loadMigrationsFrom(__DIR__.'/Fixtures/Cart/migrations');
     }
 
     protected function defineEnvironment($app)
     {
-        $cart_plugin = (new CartPanelPlugin())
-            ->models(['order' => TestOrder::class])
-            ->urls(['orderComplete' => 'order-complete']);
+        $cart_plugin = new CartPanelPlugin($app);
 
         setUpCartPlugin($cart_plugin);
+
+        $cart_plugin->config([
+            'models' => [
+                'order' => TestOrder::class
+            ],
+            'urls' => [
+                'orderComplete' => 'order-complete'
+            ]
+        ]);
     }
 
     protected function getEnvironmentSetUp($app)

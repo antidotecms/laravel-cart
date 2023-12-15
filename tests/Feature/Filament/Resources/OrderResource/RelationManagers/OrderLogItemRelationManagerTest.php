@@ -6,14 +6,19 @@ use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager;
+use function Pest\Livewire\livewire;
 
 beforeEach(function() {
 
-    app('filament')->getPlugin('laravel-cart')->models(['product' => TestProduct::class]);
-
-    app('filament')->getPlugin('laravel-cart')->models(['order_log_item' => TestStripeOrderLogItem::class]);
+    CartPanelPlugin::make()->config([
+        'models' => [
+            'product' => TestProduct::class,
+            'order_log_item' => TestStripeOrderLogItem::class
+        ]
+    ]);
 
     $this->product = TestProduct::factory()->asSimpleProduct()->create();
 
@@ -50,7 +55,7 @@ beforeEach(function() {
 
 it('will display the order log items', function() {
 
-    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+    livewire(OrderLogItemRelationManager::class, [
         'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
@@ -62,7 +67,7 @@ it('will display the order log items columns', function() {
 
     $first_order_log_item = $this->orders->first()->logitems()->first();
 
-    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+    livewire(OrderLogItemRelationManager::class, [
         'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
@@ -73,15 +78,15 @@ it('will display the order log items columns', function() {
 
 it('will provide an action to view stripe event if stripe order log item is used', function () {
 
-    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+    livewire(OrderLogItemRelationManager::class, [
         'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
     ->assertTableActionExists('event');
 
-    app('filament')->getPlugin('laravel-cart')->models(['order_log_item' => OrderLogItem::class]);
+    CartPanelPlugin::set('models.order_log_item', OrderLogItem::class);
 
-    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+    livewire(OrderLogItemRelationManager::class, [
         'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
@@ -90,12 +95,7 @@ it('will provide an action to view stripe event if stripe order log item is used
 
 it('will display the stripe event', function () {
 
-    //$this->markTestIncomplete('need assertion to test view and data from action - @link https://github.com/filamentphp/filament/discussions/8048');
-
-    //$config = app('config');
-    //$config->set('laravel-cart.classes.order_log_item', \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem::class);
-
-    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+    livewire(OrderLogItemRelationManager::class, [
         'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
@@ -112,7 +112,7 @@ test('the event modal view correctly returns the formatted data', function () {
 
     dump($this->orders->first()->logItems->first()->attributesToArray());
 
-    \Pest\Livewire\livewire(OrderLogItemRelationManager::class, [
+    livewire(OrderLogItemRelationManager::class, [
         'ownerRecord' => $this->orders->first()
     ])
     ->callTableAction('event', $this->orders->first()->logitems()->first())

@@ -3,12 +3,12 @@
 namespace Antidote\LaravelCartFilament\Resources;
 
 use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\CreateOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
 use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderItemRelationManager;
 use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderLogItemRelationManager;
-use Filament\FilamentManager;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -28,10 +28,7 @@ class OrderResource extends Resource
 
     public static function getModel(): string
     {
-        /** @var $filamentManager FilamentManager */
-        $filamentManager = app('filament');
-        $resource = $filamentManager->getPlugin('laravel-cart')->getModel('order');
-        return $resource;
+        return CartPanelPlugin::get('models.order');
     }
 
     public static function form(Form $form): Form

@@ -2,15 +2,12 @@
 
 namespace Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\Concerns;
 
-use Filament\FilamentManager;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 
 trait ConfiguresCustomerResourcePages
 {
     public static function getResource(): string
     {
-        /** @var $filamentManager FilamentManager */
-        $filamentManager = app('filament');
-        $resource = $filamentManager->getPlugin('laravel-cart')->getCustomerResource();
-        return $resource;
+        return CartPanelPlugin::get('resources.customer');
     }
 }

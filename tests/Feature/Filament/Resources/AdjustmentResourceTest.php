@@ -1,10 +1,27 @@
 <?php
 
+use Antidote\LaravelCart\Models\Adjustment;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\SimpleAdjustmentCalculation;
+use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\CreateAdjustment;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\EditAdjustment;
+use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\ListAdjustments;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\IconColumn;
+use Illuminate\Support\Facades\Hash;
+use function Pest\Livewire\livewire;
+
 beforeEach(function() {
 
-    $this->adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->create([
+    $this->adjustment = Adjustment::factory()->create([
         'name' => '10% for all orders',
-        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
+        'class' => DiscountAdjustmentCalculation::class,
         'parameters' => [
             'type' => 'percentage', //or fixed
             'rate' => 10
@@ -13,23 +30,22 @@ beforeEach(function() {
     ]);
 
 
-    \Antidote\LaravelCart\Models\Adjustment::factory(9)->create();
+    Adjustment::factory(9)->create();
 
-    $this->not_active_adjustment = \Antidote\LaravelCart\Models\Adjustment::all()->skip(1)->first();
+    $this->not_active_adjustment = Adjustment::all()->skip(1)->first();
     $this->not_active_adjustment->is_active = false;
     $this->not_active_adjustment->save();
 
-    $this->user = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser::create([
+    $this->user = TestUser::create([
         'name' => 'Test User',
         'email' => 'test@user.com',
-        'password' => \Illuminate\Support\Facades\Hash::make('password')
+        'password' => Hash::make('password')
     ]);
 });
 
 it('displays the correct form', function($mode, $form) {
 
-    $config = app('config');
-    $config->set('laravel-cart.adjustments', [
+    CartPanelPlugin::set('adjustments', [
         'an_adjustment_class' => 'An Adjustment Class',
         'a_second_adjustment_class' => 'A Second Adjustment Class'
     ]);
@@ -45,73 +61,73 @@ it('displays the correct form', function($mode, $form) {
         ];
     }
 
-    $this->be(\Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser::factory()->create());
+    $this->be(TestUser::factory()->create());
 
-    \Pest\Livewire\livewire(...$form_config)
-        ->assertFormFieldExists('name', function(\Filament\Forms\Components\TextInput $field) {
+    livewire(...$form_config)
+        ->assertFormFieldExists('name', function(TextInput $field) {
             return $field->isRequired();
         })
-        ->assertFormFieldExists('class', function(\Filament\Forms\Components\Select $field) {
+        ->assertFormFieldExists('class', function(Select $field) {
             return $field->getOptions() == [
                     'an_adjustment_class' => 'An Adjustment Class',
                     'a_second_adjustment_class' => 'A Second Adjustment Class'
                 ] && $field->isRequired()
                 && $field->isLive();
         })
-        ->assertFormFieldExists('apply_to_subtotal', function(\Filament\Forms\Components\Toggle $field) {
+        ->assertFormFieldExists('apply_to_subtotal', function(Toggle $field) {
             return $field->getDefaultState() == true;
         })
-        ->assertFormFieldExists('is_active', function(\Filament\Forms\Components\Toggle $field) {
+        ->assertFormFieldExists('is_active', function(Toggle $field) {
             return $field->getDefaultState() == false;
         })
-        ->assertSectionLayoutExists('Settings', function(\Filament\Forms\Components\Section $section) use ($mode) {
+        ->assertSectionLayoutExists('Settings', function(Section $section) use ($mode) {
             return $section->isHidden() == ($mode == 'create');
         })
-        ->assertSectionLayoutExists('Settings', function(\Filament\Forms\Components\Section $section) use ($mode) {
+        ->assertSectionLayoutExists('Settings', function(Section $section) use ($mode) {
             return $section->getChildComponents() == match($mode) {
                 'create' => [],
                 'edit' => [
-                    \Filament\Forms\Components\TextInput::make('test_field')
+                    TextInput::make('test_field')
                 ]
             };
         });
 })
 ->with([
-    ['create', \Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\CreateAdjustment::class],
-    ['edit', \Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\EditAdjustment::class]
+    ['create', CreateAdjustment::class],
+    ['edit', EditAdjustment::class]
 ])
-->covers(\Antidote\LaravelCartFilament\Resources\AdjustmentResource::class)
+->covers(AdjustmentResource::class)
 ->group('adjustment_resource', 'adjustment_resource_form_all');
 
 it('will render the relevant pages', function () {
 
     $this->withoutExceptionHandling();
 
-    $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\AdjustmentResource::getUrl('index'))
+    $this->actingAs($this->user)->get(AdjustmentResource::getUrl('index'))
         ->assertSuccessful();
 
-    $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\AdjustmentResource::getUrl('create'))
+    $this->actingAs($this->user)->get(AdjustmentResource::getUrl('create'))
         ->assertSuccessful();
 
-    $this->actingAs($this->user)->get(\Antidote\LaravelCartFilament\Resources\AdjustmentResource::getUrl('edit', [
+    $this->actingAs($this->user)->get(AdjustmentResource::getUrl('edit', [
         'record' => $this->adjustment
     ]))->assertSuccessful();
 
 })
-->covers(\Antidote\LaravelCartFilament\Resources\AdjustmentResource::class, \Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\ListAdjustments::class)
+->covers(AdjustmentResource::class, ListAdjustments::class)
 ->group('adjustment_resource', 'adjustment_resource_urls');
 
 it('displays the table', function () {
 
-    \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\ListAdjustments::class)
-        ->assertCanSeeTableRecords(\Antidote\LaravelCart\Models\Adjustment::all())
+    livewire(ListAdjustments::class)
+        ->assertCanSeeTableRecords(Adjustment::all())
         ->assertTableColumnStateSet('id', $this->adjustment->id, $this->adjustment)
         ->assertTableColumnStateSet('name', $this->adjustment->name, $this->adjustment)
         ->assertTableColumnStateSet('class', $this->adjustment->class, $this->adjustment)
-        ->assertTableColumnExists('is_active', function(\Filament\Tables\Columns\IconColumn $column) {
+        ->assertTableColumnExists('is_active', function(IconColumn $column) {
             return $column->getIcon($column->getState()) == 'heroicon-o-check-badge';
         }, $this->adjustment)
-        ->assertTableColumnExists('is_active', function(\Filament\Tables\Columns\IconColumn $column) {
+        ->assertTableColumnExists('is_active', function(IconColumn $column) {
             return $column->getIcon($column->getState()) == 'heroicon-o-x-circle';
         }, $this->not_active_adjustment);
 })
@@ -119,13 +135,13 @@ it('displays the table', function () {
 
 it('will create a record', function () {
 
-    \Antidote\LaravelCart\Models\Adjustment::truncate();
+    Adjustment::truncate();
 
-    expect(\Antidote\LaravelCart\Models\Adjustment::count())->toBe(0);
+    expect(Adjustment::count())->toBe(0);
 
-    $new_adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->make([
+    $new_adjustment = Adjustment::factory()->make([
         'name' => '10% for all orders',
-        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
+        'class' => DiscountAdjustmentCalculation::class,
         'parameters' => [
             'type' => 'percentage', //or fixed
             'rate' => 10
@@ -133,7 +149,7 @@ it('will create a record', function () {
         'is_active' => true
     ]);
 
-    \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\CreateAdjustment::class)
+    livewire(CreateAdjustment::class)
         ->fillForm(array_merge($new_adjustment->attributesToArray(), ['parameters' => [
             'type' => 'percentage',
             'rate' => 10,
@@ -142,9 +158,9 @@ it('will create a record', function () {
         ->call('create')
         ->assertHasNoFormErrors();
 
-    expect(\Antidote\LaravelCart\Models\Adjustment::count())->toBe(1);
+    expect(Adjustment::count())->toBe(1);
 
-    $saved_adjustment = \Antidote\LaravelCart\Models\Adjustment::first();
+    $saved_adjustment = Adjustment::first();
 
     //expect($saved_adjustment->attributesToArray())->toEqual($new_adjustment->attributesToArray());
     expect($saved_adjustment->name)->toEqual($new_adjustment->name);
@@ -153,20 +169,20 @@ it('will create a record', function () {
         'rate' => 10,
         'test_field' => 'some test data for the adjustment'
     ]);
-    expect($saved_adjustment->class)->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class);
+    expect($saved_adjustment->class)->toBe(DiscountAdjustmentCalculation::class);
     expect($saved_adjustment->is_active)->toBeTruthy();
 })
-->covers(\Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\CreateAdjustment::class);
+->covers(CreateAdjustment::class);
 
 it('will update a record', function () {
 
-    \Antidote\LaravelCart\Models\Adjustment::truncate();
+    Adjustment::truncate();
 
-    expect(\Antidote\LaravelCart\Models\Adjustment::count())->toBe(0);
+    expect(Adjustment::count())->toBe(0);
 
-    $saved_adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->create([
+    $saved_adjustment = Adjustment::factory()->create([
         'name' => '10% for all orders',
-        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class,
+        'class' => DiscountAdjustmentCalculation::class,
         'parameters' => [
             'type' => 'percentage', //or fixed
             'rate' => 10
@@ -174,46 +190,46 @@ it('will update a record', function () {
         'is_active' => true
     ]);
 
-    expect(\Antidote\LaravelCart\Models\Adjustment::count())->toBe(1);
+    expect(Adjustment::count())->toBe(1);
 
-    $new_adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->make([
+    $new_adjustment = Adjustment::factory()->make([
         'name' => '20% for all orders',
-        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\SimpleAdjustmentCalculation::class,
+        'class' => SimpleAdjustmentCalculation::class,
         'is_active' => false
     ]);
 
-    \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\EditAdjustment::class ,[
+    livewire(EditAdjustment::class ,[
         'record' => $saved_adjustment->id
     ])
         ->fillForm($new_adjustment->attributesToArray())
         ->call('save')
         ->assertHasNoFormErrors();
 
-    expect(\Antidote\LaravelCart\Models\Adjustment::count())->toBe(1);
+    expect(Adjustment::count())->toBe(1);
 
-    $saved_adjustment = \Antidote\LaravelCart\Models\Adjustment::first();
+    $saved_adjustment = Adjustment::first();
 
     //expect($saved_adjustment->attributesToArray())->toEqual($new_adjustment->attributesToArray());
     expect($saved_adjustment->name)->toEqual($new_adjustment->name);
     expect($saved_adjustment->parameters)->toEqualCanonicalizing([]);
-    expect($saved_adjustment->class)->toBe(\Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\SimpleAdjustmentCalculation::class);
+    expect($saved_adjustment->class)->toBe(SimpleAdjustmentCalculation::class);
     expect($saved_adjustment->is_active)->toBeFalsy();
 })
-->covers(\Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\EditAdjustment::class);
+->covers(EditAdjustment::class);
 
 it('will parameters to an empty array if not supplied', function () {
 
-    $new_adjustment = \Antidote\LaravelCart\Models\Adjustment::factory()->make([
+    $new_adjustment = Adjustment::factory()->make([
         'name' => '20% for all orders',
-        'class' => \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\SimpleAdjustmentCalculation::class,
+        'class' => SimpleAdjustmentCalculation::class,
         'is_active' => false
     ]);
 
     $new_adjustment->parameters = null;
 
-    \Pest\Livewire\livewire(\Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\CreateAdjustment::class)
+    livewire(CreateAdjustment::class)
         ->fillForm($new_adjustment->attributesToArray())
         ->call('create')
         ->assertHasNoFormErrors();
 })
-->covers(\Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\CreateAdjustment::class);
+->covers(CreateAdjustment::class);

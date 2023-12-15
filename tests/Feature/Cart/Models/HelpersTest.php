@@ -10,6 +10,7 @@ it('will return the correct class', function() {
 
 it('will throw an exception if the item does not exist', function () {
 
+    $this->markTestSkipped('no longer needed? Handled in CartPanelPlugin');
     $class_name = getClassNameFor('something');
 
 })

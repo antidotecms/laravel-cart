@@ -50,8 +50,8 @@ function setUpCartPlugin(\Antidote\LaravelCartFilament\CartPanelPlugin $plugin)
 
     app()->register($cartServiceProvider);
 
-    $filamentServiceProvider->boot();
     $cartServiceProvider->boot();
+    //$filamentServiceProvider->boot();
 }
 
 

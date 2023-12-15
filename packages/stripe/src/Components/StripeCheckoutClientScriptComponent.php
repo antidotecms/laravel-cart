@@ -3,6 +3,7 @@
 namespace Antidote\LaravelCartStripe\Components;
 
 use Antidote\LaravelCart\Facades\Cart;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\Component;
@@ -21,8 +22,8 @@ class StripeCheckoutClientScriptComponent extends Component
 
         $this->client_secret = $payment_intent->getClientSecret($cart->getActiveOrder());
 
-        $this->checkout_confirm_url = app('filament')->getPlugin('laravel-cart')->getCheckoutConfirmUrl();
-        $this->order_complete_url = app('filament')->getPlugin('laravel-cart')->getOrderCompleteUrl() .'?order_id='.$cart->getActiveOrder()->id;
+        $this->checkout_confirm_url = CartPanelPlugin::get('urls.checkoutConfirm');
+        $this->order_complete_url = CartPanelPlugin::get('urls.orderComplete') .'?order_id='.$cart->getActiveOrder()->id;
         $this->stripe_api_key = config('laravel-cart.stripe.api_key');
     }
 
@@ -31,6 +32,8 @@ class StripeCheckoutClientScriptComponent extends Component
      */
     private function validateRequiredConfig()
     {
+        throw new \Exception('Deprecated');
+
         $data = [
             'stripe_api_key' => config('laravel-cart.stripe.api_key'),
             'checkout_confirm_url' => config('laravel-cart.urls.checkout_confirm'),

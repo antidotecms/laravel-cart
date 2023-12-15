@@ -3,9 +3,6 @@
 namespace Antidote\LaravelCart\Tests\Fixtures\Filament;
 
 use Antidote\LaravelCartFilament\CartPanelPlugin;
-use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
-use Antidote\LaravelCartFilament\Resources\CustomerResource;
-use Antidote\LaravelCartFilament\Resources\OrderResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -28,12 +25,6 @@ class TestPanelProvider extends \Filament\PanelProvider
             ->default()
             ->plugins([
                 CartPanelPlugin::make()
-                    ->orderResource(OrderResource::class)
-                    ->customerResource(CustomerResource::class)
-                    ->adjustmentResource(AdjustmentResource::class)
-                    ->urls([
-                        'stripe.webhookHandler' => 'checkout/stripe'
-                    ])
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -14,31 +14,32 @@ use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Illuminate\Support\Arr;
 
 class CartPanelPlugin implements Plugin
 {
-    /** Resources */
-    private ?string $orderResource = null;
-    private ?string $customerResource = null;
-    private ?string $adjustmentResource = null;
-
-    /** Urls */
-    private array $urls = [
-    ];
-    private string $orderCompleteUrl = 'order-complete';
-    private string $checkoutConfirmUrl = 'checkout-confirm';
-
-    private string $stripeWebhookHandler = 'checkout/stripe';
-
-    /** $models */
-    private array $models = [
-        'product' => Product::class,
-        'customer' => Customer::class,
-        'order' => Order::class,
-        'order_item' => OrderItem::class,
-        'order_adjustment' => OrderAdjustment::class,
-        'adjustment' => Adjustment::class,
-        'order_log_item' => OrderLogItem::class
+    private array $config = [
+        'models' => [
+            'product' => Product::class,
+            'customer' => Customer::class,
+            'order' => Order::class,
+            'order_item' => OrderItem::class,
+            'order_adjustment' => OrderAdjustment::class,
+            'adjustment' => Adjustment::class,
+            'order_log_item' => OrderLogItem::class
+        ],
+        'resources' => [
+            'order' => OrderResource::class,
+            'customer' => CustomerResource::class,
+            'adjustment' => AdjustmentResource::class
+        ],
+        'urls' => [
+            'orderComplete' => 'order-complete',
+            'checkoutConfirm' => 'checkout-confirm',
+            'stripe' => [
+                'webhookHandler' => 'checkout/stripe'
+            ]
+        ]
     ];
 
     /** @codeCoverageIgnore */
@@ -47,37 +48,29 @@ class CartPanelPlugin implements Plugin
         return app(static::class);
     }
 
-    public function orderResource(string $orderResource)
+    public static function get(string $key, mixed $default = null) : mixed
     {
-        $this->orderResource = $orderResource;
+        //$config = app('filament')->getPlugin('laravel-cart')->getConfig();
+        $config = static::make()->getConfig();
+        return Arr::get($config, $key, $default);
+    }
+
+    public static function set(?string $key, mixed $value)
+    {
+        //$config = &app()->get('filament')->getPlugin('laravel-cart')->getConfig();
+        $config = &static::make()->getConfig();
+        Arr::set($config, $key, $value);
+    }
+
+    protected function &getConfig(): array
+    {
+        return $this->config;
+    }
+
+    public function config(array $config)
+    {
+        static::set(null, array_replace_recursive(static::getConfig(), $config));
         return $this;
-    }
-
-    public function getOrderResource(): string
-    {
-        return $this->orderResource;
-    }
-
-    public function customerResource(string $customerResource)
-    {
-        $this->customerResource = $customerResource;
-        return $this;
-    }
-
-    public function getCustomerResource(): string
-    {
-        return $this->customerResource;
-    }
-
-    public function adjustmentResource(string $adjustmentResource)
-    {
-        $this->adjustmentResource = $adjustmentResource;
-        return $this;
-    }
-
-    public function getAdjustmentResource(): string
-    {
-        return $this->adjustmentResource;
     }
 
     public function getId(): string
@@ -98,74 +91,6 @@ class CartPanelPlugin implements Plugin
 
     private function resources(): array
     {
-        return [
-            'order' => $this->orderResource ?? OrderResource::class,
-            'customer' => $this->customerResource ?? CustomerResource::class,
-            'adjustment' => $this->adjustmentResource ?? AdjustmentResource::class
-        ];
-    }
-
-    public function orderCompleteUrl(string $orderCompleteUrl)
-    {
-        $this->orderCompleteUrl = $orderCompleteUrl;
-        return $this;
-    }
-
-    public function getOrderCompleteUrl(): string
-    {
-        return $this->orderCompleteUrl;
-    }
-
-    public function checkoutConfirmUrl(string $checkoutConfirmUrl)
-    {
-        $this->checkoutConfirmUrl = $checkoutConfirmUrl;
-        return $this;
-    }
-
-    public function getCheckoutConfirmUrl(): string
-    {
-        return $this->checkoutConfirmUrl;
-    }
-
-    public function urls(array $urls)
-    {
-        $this->urls = array_merge(
-            [
-                'checkoutConfirm' => $this->checkoutConfirmUrl,
-                'orderComplete' => $this->orderCompleteUrl,
-                'stripe.webbokHandler' => $this->stripeWebhookHandler
-            ],
-            $urls
-        );
-
-        return $this;
-    }
-
-    public function getUrl(string $name)
-    {
-        if(!array_key_exists($name, $this->urls)) {
-            throw new \Exception('Url key does not exist');
-        }
-
-        return $this->urls[$name];
-    }
-
-    public function models(array $models)
-    {
-        $this->models = array_merge(
-            $this->models,
-            $models
-        );
-
-        return $this;
-    }
-
-    public function getModel(string $name)
-    {
-        if(!array_key_exists($name, $this->models)) {
-            throw new \Exception('Model key does not exist');
-        }
-
-        return $this->models[$name];
+        return Arr::get($this->config, 'resources');
     }
 }

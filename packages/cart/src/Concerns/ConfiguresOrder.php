@@ -2,6 +2,8 @@
 
 namespace Antidote\LaravelCart\Concerns;
 
+use Antidote\LaravelCartFilament\CartPanelPlugin;
+
 /** @mixin Illuminate\Database\Eloquent\Model */
 
 trait ConfiguresOrder
@@ -13,7 +15,7 @@ trait ConfiguresOrder
 
     public function initializeConfiguresOrder() : void
     {
-        $customer_class = app('filament')->getPlugin('laravel-cart')->getModel('customer');
+        $customer_class = CartPanelPlugin::get('models.customer');
         $this->fillable[] = (new $customer_class)->getForeignKey();
         $this->append('total');
     }

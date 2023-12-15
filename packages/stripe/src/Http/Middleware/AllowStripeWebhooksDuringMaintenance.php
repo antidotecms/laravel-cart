@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCartStripe\Http\Middleware;
 
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Middleware;
 
 class AllowStripeWebhooksDuringMaintenance extends Middleware
@@ -12,7 +13,7 @@ class AllowStripeWebhooksDuringMaintenance extends Middleware
     public function getExcludedPaths(): array
     {
         return [
-            app()->get('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler')
+            CartPanelPlugin::get('urls.stripe.webhookHandler')
         ];
     }
 }

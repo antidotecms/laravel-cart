@@ -61,7 +61,8 @@
             "XDEBUG_MODE=coverage php ./vendor/bin/pest --parallel --processes=4 --coverage-html ./coverage -c ./phpunit.xml"
         ],
         "phpstan": "./vendor/bin/phpstan analyse",
-        "test-coverage" : "php ./vendor/bin/phpunit --coverage-html ./coverage -c ./phpunit.xml"
+        "test-coverage" : "php ./vendor/bin/phpunit --coverage-html ./coverage -c ./phpunit.xml",
+        "test" : "XDEBUG_MODE=debug php ./vendor/bin/pest"
     },
     "require": {
         "spatie/data-transfer-object": "^3.8",

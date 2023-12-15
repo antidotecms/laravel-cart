@@ -21,7 +21,6 @@ use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\Concerns\Configur
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\CreateOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
-use Filament\FilamentManager;
 use Orchestra\Testbench\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -40,11 +39,16 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
      */
     public function it_provides_default_resources()
     {
+        //dump(app('filament'));
+
         $cart_plugin = new CartPanelPlugin(app());
 
         setUpCartPlugin($cart_plugin);
 
-        expect(app()->get('filament')->getResources())
+        //dump(app('filament'));
+
+//        expect(app()->get('filament')->getResources())
+        expect(CartPanelPlugin::get('resources'))
             ->toEqualCanonicalizing([
                 'order' => OrderResource::class,
                 'adjustment' => AdjustmentResource::class,
@@ -58,13 +62,22 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
     public function provides_the_ability_to_override_resources()
     {
         $cart_plugin = new CartPanelPlugin(app());
-        $cart_plugin->adjustmentResource(CustomAdjustmentResource::class)
-            ->customerResource(CustomCustomerResource::class)
-            ->orderResource(CustomOrderResource::class);
-
         setUpCartPlugin($cart_plugin);
 
-        expect(app()->get('filament')->getResources())
+        $cart_plugin
+//            ->adjustmentResource(CustomAdjustmentResource::class)
+//            ->customerResource(CustomCustomerResource::class)
+//            ->orderResource(CustomOrderResource::class);
+            ->config([
+                'resources' => [
+                    'adjustment' => CustomAdjustmentResource::class,
+                    'customer' => CustomCustomerResource::class,
+                    'order' => CustomOrderResource::class
+                ]
+            ]);
+
+
+        expect(CartPanelPlugin::get('resources'))
             ->toEqualCanonicalizing([
                 'order' => CustomOrderResource::class,
                 'adjustment' => CustomAdjustmentResource::class,
@@ -79,11 +92,16 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
     public function related_resource_pages_have_correct_resources()
     {
         $cart_plugin = new CartPanelPlugin(app());
-        $cart_plugin->adjustmentResource(CustomAdjustmentResource::class)
-            ->customerResource(CustomCustomerResource::class)
-            ->orderResource(CustomOrderResource::class);
-
         setUpCartPlugin($cart_plugin);
+        $cart_plugin
+            ->config([
+                'resources' => [
+                    'adjustment' => CustomAdjustmentResource::class,
+                    'customer' => CustomCustomerResource::class,
+                    'order' => CustomOrderResource::class
+                ]
+            ]);
+
 
         expect(EditOrder::getResource())->toEqual(CustomOrderResource::class);
         expect(CreateOrder::getResource())->toEqual(CustomOrderResource::class);
@@ -128,11 +146,7 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
 
         setUpCartPlugin($cart_plugin);
 
-        /** @var $filamentManager FilamentManager */
-        $filamentManager = app('filament');
-        $orderCompleteUrl = $filamentManager->getPlugin('laravel-cart')->getOrderCompleteUrl();
-
-        expect($orderCompleteUrl)->toBe('order-complete');
+        expect(CartPanelPlugin::get('urls.orderComplete'))->toBe('order-complete');
     }
 
     /**
@@ -144,12 +158,13 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
         $cart_plugin = new CartPanelPlugin(app());
 
         setUpCartPlugin($cart_plugin);
-        $cart_plugin->orderCompleteUrl('a-different-url');
 
-        /** @var $filamentManager FilamentManager */
-        $filamentManager = app('filament');
-        $orderCompleteUrl = $filamentManager->getPlugin('laravel-cart')->getOrderCompleteUrl();
+        $cart_plugin->config([
+            'urls' => [
+                'orderComplete' => 'a-different-url'
+            ]
+        ]);
 
-        expect($orderCompleteUrl)->toBe('a-different-url');
+        expect(CartPanelPlugin::get('urls.orderComplete'))->toBe('a-different-url');
     }
 }

@@ -4,14 +4,11 @@ namespace Antidote\LaravelCart\Tests\Feature\Stripe\Http\Controllers;
 
 use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
-use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
-use Antidote\LaravelCart\Models\OrderAdjustment;
-use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
 use Antidote\LaravelCart\Tests\TestCase;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -48,33 +45,8 @@ class StripeWebhookControllerTest extends TestCase
 
     protected function defineEnv($app)
     {
-        $app->config->set('laravel-cart.classes.order', StripeOrder::class);
-        $app->config->set('laravel-cart.classes.order_item', OrderItem::class);
-        $app->config->set('laravel-cart.classes.customer', Customer::class);
-        $app->config->set('laravel-cart.classes.product', TestProduct::class);
-        $app->config->set('laravel-cart.classes.order_adjustment', OrderAdjustment::class);
-        $app->config->set('laravel-cart.classes.adjustment', Adjustment::class);
-        $app->config->set('laravel-cart.classes.order_log_item', TestStripeOrderLogItem::class);
-
-        $app->config->set('laravel-cart.urls.stripe.webhook_handler', '/stripe-webhook-handler');
-
         $app->config->set('laravel-cart.stripe.log', true);
-
         $app->config->set('laravel-cart.tax_rate', 0.2);
-
-//        $app->config->set('auth.guards', [
-//            'web' => [
-//                'driver' => 'session',
-//                'provider' => 'test_customers',
-//            ]
-//        ]);
-//
-//        $app->config->set('auth.providers', [
-//            'test_customers' => [
-//                'driver' => 'eloquent',
-//                'model' => TestCustomer::class,
-//            ]
-//        ]);
     }
 
     protected function setUp(): void
@@ -82,15 +54,6 @@ class StripeWebhookControllerTest extends TestCase
         parent::setUp();
         LogFake::bind();
     }
-
-//    protected function getPackageProviders($app): array
-//    {
-//        return [
-//            CartServiceProvider::class,
-//            \Antidote\LaravelCartStripe\StripeServiceProvider::class,
-//            //LivewireServiceProvider::class
-//        ];
-//    }
 
     private function createStripeEvent(string $type, array $parameters = [])
     {
@@ -110,7 +73,6 @@ class StripeWebhookControllerTest extends TestCase
 
     protected function defineRoutes($router)
     {
-        //$router->post(config('laravel-cart.urls.stripe.webhook_handler'), StripeWebhookController::class);
         $router->get('/order-complete', OrderCompleteController::class)->middleware('auth:customer');
     }
 
@@ -129,17 +91,9 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        //dump($order->total);
-
         expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
 
         $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => $order->id], 'id' => 'payment_intent_identifier']]]);
-
-//        $this->mock('alias:Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                //@link https://stackoverflow.com/a/54062568/1424591
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
 
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
@@ -147,11 +101,7 @@ class StripeWebhookControllerTest extends TestCase
                 ->andReturnTrue();
         });
 
-//        Log::shouldReceive('info')
-//            ->with(json_encode($event))
-//            ->once();
-
-        $response = $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
         $response->assertSuccessful();
 
         $order->refresh();
@@ -181,18 +131,13 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('payment_intent.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
-
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
                 ->andReturnTrue();
         });
 
-        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -218,18 +163,13 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
-
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
                 ->andReturnTrue();
         });
 
-        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -238,8 +178,6 @@ class StripeWebhookControllerTest extends TestCase
         expect($order->logItems->skip(1)->first()->message)->toBe('Order complete mail sent to '.$customer->email);
 
         expect($order->status)->toBe('succeeded');
-
-        //$this->forgetMock('alias:\Stripe\Webhook');
     }
 
     /**
@@ -259,18 +197,13 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('payment_intent.cancelled', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
-
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
                 ->andReturnTrue();
         });
 
-        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -298,18 +231,13 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('payment_intent.payment_failed', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
-
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
                 ->andReturnTrue();
         });
 
-        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -337,18 +265,13 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('unknown_event', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
-
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
                 ->andReturnTrue();
         });
 
-        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -372,11 +295,6 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => 1]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
-
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
@@ -388,7 +306,7 @@ class StripeWebhookControllerTest extends TestCase
             ->once()
             ->andReturn();
 
-        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray())->assertSuccessful();
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
     }
 
     /**
@@ -398,11 +316,6 @@ class StripeWebhookControllerTest extends TestCase
     public function will_log_an_event_to_the_specified_channel()
     {
         Config::set('laravel-cart.stripe.log', 'some_channel');
-//        Config::set('logging.channels.some_channel', [
-//            'driver' => 'single',
-//            'path' => storage_path('logs/php-deprecation-warnings.log')
-//        ]);
-        //Config::set('logging.default', 'stack');
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
@@ -413,31 +326,13 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => StripeOrder::first()->id]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
-
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
                 ->andReturnTrue();
         });
 
-        //@see https://stackoverflow.com/a/23807415/1424591
-//        Log::shouldReceive('channel')
-//            ->with('some_channel')
-//            ->once()
-//            ->andReturnSelf()
-//            ->shouldReceive('info')
-//            ->with($event->toJSON())
-//            ->once()
-//            ->andReturn();
-
-
-        //Log::makePartial();
-
-        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         Log::channel('some_channel')->assertLogged(function(LogEntry $log) use ($event) {
             return $log->level == 'info' &&
@@ -464,11 +359,6 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => 1]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
-
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
@@ -482,7 +372,7 @@ class StripeWebhookControllerTest extends TestCase
         Log::shouldReceive('info')
             ->never();
 
-        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         $this->assertTrue(true);
     }
@@ -506,11 +396,6 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
-
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
@@ -519,7 +404,7 @@ class StripeWebhookControllerTest extends TestCase
 
         Event::fake();
 
-        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         Event::assertDispatched(OrderCompleted::class);
     }
@@ -542,11 +427,6 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andThrow(SignatureVerificationException::class);
-//        });
-
         $this->forgetMock('alias:\Stripe\WebhookSignature');
 
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
@@ -557,7 +437,7 @@ class StripeWebhookControllerTest extends TestCase
 
         Event::fake();
 
-        $response = $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         $response->assertStatus(400);
         $response->assertContent('');
@@ -588,14 +468,9 @@ class StripeWebhookControllerTest extends TestCase
             ->withAnyArgs()
             ->andThrow(UnexpectedValueException::class);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andThrow(UnexpectedValueException::class);
-//        });
-
         Event::fake();
 
-        $response = $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         $response->assertStatus(400);
         $response->assertContent('');
@@ -629,7 +504,7 @@ class StripeWebhookControllerTest extends TestCase
 
         Event::fake();
 
-        $response = $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         $response->assertStatus(400);
         $response->assertContent('');
@@ -652,25 +527,18 @@ class StripeWebhookControllerTest extends TestCase
 
         $event = $this->createStripeEvent('unknown_event', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
-//        $this->mock('alias:\Stripe\Webhook', function(\Mockery\MockInterface $mock) use ($event) {
-//            $mock->shouldReceive('constructEvent')
-//                ->andReturn(json_decode(json_encode($event, JSON_FORCE_OBJECT)));
-//        });
-
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
                 ->andReturnTrue();
         });
 
-        $this->postJson(app('filament')->getPlugin('laravel-cart')->getUrl('stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
         expect($order->logItems()->count())->toBe(1);
         expect($order->logItems->first()->message)->toBe('Unknown Event');
-
-        //expect($order->status)->toBe('requires_payment_method');
     }
 
     protected function tearDown(): void

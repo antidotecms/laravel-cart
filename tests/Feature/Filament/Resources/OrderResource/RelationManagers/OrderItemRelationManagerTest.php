@@ -4,12 +4,14 @@ use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers\OrderItemRelationManager;
+use function Pest\Livewire\livewire;
 
 beforeEach(function() {
 
-    app('filament')->getPlugin('laravel-cart')->models(['product' => TestProduct::class]);
+    CartPanelPlugin::set('models.product', TestProduct::class);
 
     $this->product = TestProduct::factory()->asSimpleProduct()->create([
         'description' => 'a very very simple product'
@@ -35,7 +37,7 @@ beforeEach(function() {
 
 it('will display the order items', function() {
 
-    \Pest\Livewire\livewire(OrderItemRelationManager::class, [
+    livewire(OrderItemRelationManager::class, [
         'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])
@@ -47,7 +49,7 @@ it('will display the order item columns', function () {
 
     $first_order_item = $this->orders->first()->items()->first();
 
-    \Pest\Livewire\livewire(OrderItemRelationManager::class, [
+    livewire(OrderItemRelationManager::class, [
         'pageClass' => EditOrder::class,
         'ownerRecord' => $this->orders->first()
     ])

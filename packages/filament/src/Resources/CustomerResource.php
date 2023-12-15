@@ -2,11 +2,11 @@
 
 namespace Antidote\LaravelCartFilament\Resources;
 
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\CreateCustomer;
 use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\EditCustomer;
 use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\ListCustomers;
 use Antidote\LaravelCartFilament\Resources\CustomerResource\RelationManagers\OrderRelationManager;
-use Filament\FilamentManager;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,10 +21,7 @@ class CustomerResource extends Resource
 
     public static function getModel(): string
     {
-        /** @var $filamentManager FilamentManager */
-        $filamentManager = app('filament');
-        $resource = $filamentManager->getPlugin('laravel-cart')->getModel('customer');
-        return $resource;
+        return CartPanelPlugin::get('models.customer');
     }
 
     public static function table(Table $table): Table
