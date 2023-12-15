@@ -62,7 +62,10 @@
         ],
         "phpstan": "./vendor/bin/phpstan analyse",
         "test-coverage" : "php ./vendor/bin/phpunit --coverage-html ./coverage -c ./phpunit.xml",
-        "test" : "XDEBUG_MODE=debug php ./vendor/bin/pest"
+        "test" : [
+            "XDEBUG_MODE=debug php ./vendor/bin/pest --parallel --processes=4 --testdox",
+            "php /var/www/html/vendor/phpunit/phpunit/phpunit --testsuite=Webhook --testdox"
+        ]
     },
     "require": {
         "spatie/data-transfer-object": "^3.8",
