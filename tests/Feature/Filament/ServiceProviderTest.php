@@ -6,6 +6,7 @@ use Antidote\LaravelCart\Tests\TestCase;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
 use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
+use Antidote\LaravelCartFilament\Resources\ProductResource;
 
 /**
  * @covers \Antidote\LaravelCartFilament\FilamentServiceProvider
@@ -21,7 +22,8 @@ class ServiceProviderTest extends TestCase
             ->toEqualCanonicalizing([
                 'order' => OrderResource::class,
                 'adjustment' => AdjustmentResource::class,
-                'customer' => CustomerResource::class
+                'customer' => CustomerResource::class,
+                'product' => ProductResource::class
             ]);
     }
 }

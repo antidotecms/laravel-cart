@@ -12,6 +12,7 @@ use Antidote\LaravelCart\Models\Product;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
 use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
+use Antidote\LaravelCartFilament\Resources\ProductResource;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Illuminate\Support\Arr;
@@ -31,7 +32,8 @@ class CartPanelPlugin implements Plugin
         'resources' => [
             'order' => OrderResource::class,
             'customer' => CustomerResource::class,
-            'adjustment' => AdjustmentResource::class
+            'adjustment' => AdjustmentResource::class,
+            'product' => ProductResource::class
         ],
         'urls' => [
             'orderComplete' => 'order-complete',

@@ -5,6 +5,7 @@ namespace Tests\Feature\Filament;
 use Antidote\LaravelCart\Tests\Fixtures\Filament\Resources\CustomAdjustmentResource;
 use Antidote\LaravelCart\Tests\Fixtures\Filament\Resources\CustomCustomerResource;
 use Antidote\LaravelCart\Tests\Fixtures\Filament\Resources\CustomOrderResource;
+use Antidote\LaravelCart\Tests\Fixtures\Filament\Resources\CustomProductResource;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource\Pages\Concerns\ConfiguresAdjustmentResourcePages;
@@ -21,6 +22,10 @@ use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\Concerns\Configur
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\CreateOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\ListOrders;
+use Antidote\LaravelCartFilament\Resources\ProductResource;
+use Antidote\LaravelCartFilament\Resources\ProductResource\Pages\CreateProduct;
+use Antidote\LaravelCartFilament\Resources\ProductResource\Pages\EditProduct;
+use Antidote\LaravelCartFilament\Resources\ProductResource\Pages\ListProducts;
 use Orchestra\Testbench\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -39,20 +44,16 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
      */
     public function it_provides_default_resources()
     {
-        //dump(app('filament'));
-
         $cart_plugin = new CartPanelPlugin(app());
 
         setUpCartPlugin($cart_plugin);
 
-        //dump(app('filament'));
-
-//        expect(app()->get('filament')->getResources())
         expect(CartPanelPlugin::get('resources'))
             ->toEqualCanonicalizing([
                 'order' => OrderResource::class,
                 'adjustment' => AdjustmentResource::class,
-                'customer' => CustomerResource::class
+                'customer' => CustomerResource::class,
+                'product' => ProductResource::class
             ]);
     }
     /**
@@ -65,14 +66,12 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
         setUpCartPlugin($cart_plugin);
 
         $cart_plugin
-//            ->adjustmentResource(CustomAdjustmentResource::class)
-//            ->customerResource(CustomCustomerResource::class)
-//            ->orderResource(CustomOrderResource::class);
             ->config([
                 'resources' => [
                     'adjustment' => CustomAdjustmentResource::class,
                     'customer' => CustomCustomerResource::class,
-                    'order' => CustomOrderResource::class
+                    'order' => CustomOrderResource::class,
+                    'product' => CustomProductResource::class
                 ]
             ]);
 
@@ -81,7 +80,8 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
             ->toEqualCanonicalizing([
                 'order' => CustomOrderResource::class,
                 'adjustment' => CustomAdjustmentResource::class,
-                'customer' => CustomCustomerResource::class
+                'customer' => CustomCustomerResource::class,
+                'product' => CustomProductResource::class
             ]);
     }
 
@@ -98,7 +98,8 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
                 'resources' => [
                     'adjustment' => CustomAdjustmentResource::class,
                     'customer' => CustomCustomerResource::class,
-                    'order' => CustomOrderResource::class
+                    'order' => CustomOrderResource::class,
+                    'product' => CustomProductResource::class
                 ]
             ]);
 
@@ -114,6 +115,10 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
         expect(EditCustomer::getResource())->toEqual(CustomCustomerResource::class);
         expect(CreateCustomer::getResource())->toEqual(CustomCustomerResource::class);
         expect(ListCustomers::getResource())->toEqual(CustomCustomerResource::class);
+
+        expect(EditProduct::getResource())->toEqual(CustomProductResource::class);
+        expect(CreateProduct::getResource())->toEqual(CustomProductResource::class);
+        expect(ListProducts::getResource())->toEqual(CustomProductResource::class);
     }
 
     /**
