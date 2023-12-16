@@ -21,7 +21,7 @@ beforeEach(function() {
 
     if(!class_exists(A::class)) {
         class A {
-            use \Antidote\LaravelCart\Concerns\MapsPropertiesToAggregates;
+            use \Antidote\LaravelCart\Concerns\MapsToAggregates;
 
             private B $b;
 
@@ -77,13 +77,13 @@ it('will defer a property to an aggregate', function() {
 
     expect((new A)->getValue())->toBe(5);
 })
-->covers(\Antidote\LaravelCart\Concerns\MapsPropertiesToAggregates::class);
+->covers(\Antidote\LaravelCart\Concerns\MapsToAggregates::class);
 
 it('will supply a default if the property does not exist', function () {
 
     expect((new A)->getAnotherValue())->toBe(10);
 })
-->covers(\Antidote\LaravelCart\Concerns\MapsPropertiesToAggregates::class);;
+->covers(\Antidote\LaravelCart\Concerns\MapsToAggregates::class);;
 
 it('will defer a method to an aggregate', function () {
 
@@ -91,13 +91,13 @@ it('will defer a method to an aggregate', function () {
     expect((new A)->sayHelloAgain())->toBe('hello');
     expect((new A)->getValueByClass())->toBe(5);
 })
-->covers(\Antidote\LaravelCart\Concerns\MapsPropertiesToAggregates::class);
+->covers(\Antidote\LaravelCart\Concerns\MapsToAggregates::class);
 
 it('will defer a method to an aggregate with arguments', function () {
     expect((new A)->sayHelloWithArgs(['hello']))->toBe('hello');
     expect((new A)->sayHelloWithArgsWithInstance('hello'))->toBe('hello');
 })
-->covers(\Antidote\LaravelCart\Concerns\MapsPropertiesToAggregates::class);
+->covers(\Antidote\LaravelCart\Concerns\MapsToAggregates::class);
 
 it('returns the default if the method or property does not exist', function () {
     expect((new A)->doesNotExist())->toBe('does not exist');

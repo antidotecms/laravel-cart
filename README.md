@@ -147,6 +147,32 @@ product type and are required to provide a migration for it.
 You are also required to provide two methods `isValid` and `getPrice` to determine validity and price. In addition, you must also provide a static
 method of `form` which returns an array of fields to be used when creating or editing the product and product type in Filament.
 
+You may optionally define a `getName` method to provide a name for more complex products which is dependent on
+its configuration. For example, a "Blue Jumper" where you have a "Jumper" `Product` which needs to be qualified by its
+colour.
+
+If required, further methods can be added to a `Product` which can optionally defer their methods or properties to the underlying
+`ProductType` object. Typically, this can be defined as:
+
+```php
+use Antidote\LaravelCart\Concerns\MapsToAggregates;
+
+public function getWarehouseLocation(?array $product_data = []): string
+{
+    /** @var $this \Antidote\LaravelCart\Models\Product */
+    return $this->mapToAggregate(
+        aggregate: $this->productType,
+        property_or_method: 'getWarehouseLocation',
+        default: $this->warehouseLocation,
+        params: $product_data
+    );
+```
+The `mapToAggregate` method will look for a property or method in the aggregate and return that result. If the
+property or method cannot be found, the default will be provided.
+
+A class name can be passed as an aggregate in which case a new instance will be created and probed for
+the property or method.
+
 
 ## Cart
 The `Cart` facade is session based and provides the following methods

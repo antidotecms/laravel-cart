@@ -3,7 +3,7 @@
 namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Concerns\ConfiguresProduct;
-use Antidote\LaravelCart\Concerns\MapsPropertiesToAggregates;
+use Antidote\LaravelCart\Concerns\MapsToAggregates;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class Product extends Model
 {
-    use MapsPropertiesToAggregates;
+    use MapsToAggregates;
     use ConfiguresProduct;
     use SoftDeletes;
 

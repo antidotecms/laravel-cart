@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 /**
  * Allows objects to access an aggregates property and methods as their own
  */
-trait MapsPropertiesToAggregates
+trait MapsToAggregates
 {
     public function mapToAggregate(string|object $aggregate, string $property_or_method, mixed $default = null, ?array $params = null) : mixed
     {

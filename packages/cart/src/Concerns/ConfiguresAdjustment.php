@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 trait ConfiguresAdjustment
 {
-    use MapsPropertiesToAggregates;
+    use MapsToAggregates;
 
     public function getTable()
     {
