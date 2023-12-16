@@ -11,6 +11,7 @@ trait ConfiguresProduct
 
     public function initializeConfiguresProduct() : void
     {
+        $this->fillable[] = 'name';
         $this->fillable[] = 'product_type_type';
         $this->fillable[] = 'product_type_id';
     }

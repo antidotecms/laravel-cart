@@ -9,6 +9,7 @@ use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\Models\Product;
+use Antidote\LaravelCart\Models\Products\SimpleProductType;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
 use Antidote\LaravelCartFilament\Resources\CustomerResource;
 use Antidote\LaravelCartFilament\Resources\OrderResource;
@@ -41,6 +42,9 @@ class CartPanelPlugin implements Plugin
             'stripe' => [
                 'webhookHandler' => 'checkout/stripe'
             ]
+        ],
+        'productTypes' => [
+            SimpleProductType::class => 'Simple'
         ]
     ];
 

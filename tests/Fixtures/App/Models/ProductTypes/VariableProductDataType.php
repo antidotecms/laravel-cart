@@ -23,7 +23,7 @@ class VariableProductDataType extends ProductType
         return "width: {$product_data['width']}, height: {$product_data['height']}";
     }
 
-    public function getPrice(array $product_data) : int
+    public function getPrice(?array $product_data = null) : int
     {
         return $product_data['width'] * $product_data['height'];
     }

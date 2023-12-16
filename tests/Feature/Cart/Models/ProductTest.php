@@ -247,6 +247,10 @@ it('will check whether a product is valid from its product type', function () {
         public function isValid(?array $product_data = null): bool {
             return true;
         }
+
+        public function getPrice(?array $product_data = null): int {
+            return 100;
+        }
     };
 
     $spied_product_type = Mockery::spy($test_product_type::class);

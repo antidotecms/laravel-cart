@@ -139,6 +139,15 @@ $price = $product->getPrice($product_data);  // 1000
 
 ```
 
+### Product Types
+Product Types are models that are related to the main Product model through a morph relationship. They should extend from
+`\Antidote\LaravelCart\Cart\Contracts\ProductType`. You are free to add whatever fields are necessary to support the
+product type and are required to provide a migration for it.
+
+You are also required to provide two methods `isValid` and `getPrice` to determine validity and price. In addition, you must also provide a static
+method of `form` which returns an array of fields to be used when creating or editing the product and product type in Filament.
+
+
 ## Cart
 The `Cart` facade is session based and provides the following methods
 

@@ -34,9 +34,10 @@ class Product extends Model
     {
         static::deleted(function ($product) {
 
-            if($product->isForceDeleting()) {
+            //@todo tighten this up and ensure items are not deleted when attached to other items such as orders
+            if($product->isForceDeleting() && $product->productType) {
                 $product->productType->forceDelete();
-            } else {
+            } elseif($product->productType) {
                 $product->productType->delete();
             }
         });

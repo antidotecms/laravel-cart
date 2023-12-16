@@ -14,6 +14,8 @@ abstract class ProductType extends Model
 
     public abstract function isValid(?array $product_data = null): bool;
 
+    public abstract function getPrice(?array $product_data = null): int;
+
     protected static function booted()
     {
         static::deleting(function($product_type) {
