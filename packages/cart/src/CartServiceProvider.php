@@ -6,7 +6,6 @@ use Antidote\LaravelCart\Domain\Cart;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Http\Controllers\OrderController;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
 class CartServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -14,8 +13,6 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
     public function register()
     {
         $this->bindings();
-
-        Model::shouldBeStrict();
 
         app()->singleton(CartPanelPlugin::class, fn() => new CartPanelPlugin());
     }
