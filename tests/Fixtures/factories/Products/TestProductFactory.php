@@ -2,10 +2,10 @@
 
 namespace Antidote\LaravelCart\Tests\Fixtures\factories\Products;
 
+use Antidote\LaravelCart\Models\Products\SimpleProductType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\ComplexProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\InvalidSimpleProductDataType;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\VariableProductDataType;
 
 class TestProductFactory extends \Illuminate\Database\Eloquent\Factories\Factory
@@ -18,7 +18,7 @@ class TestProductFactory extends \Illuminate\Database\Eloquent\Factories\Factory
         ];
     }
 
-    public function asSimpleProduct(array $definition = [])
+    public function asSimpleProduct(array $definition = []): static
     {
         return $this->afterCreating(function($product) use ($definition) {
 
@@ -26,7 +26,8 @@ class TestProductFactory extends \Illuminate\Database\Eloquent\Factories\Factory
                 'price' => rand(50, 1000)
             ], $definition);
             //@todo create factory and remove nullable from field in migration
-            $simple_product_type = SimpleProductDataType::create($definition);
+            //$simple_product_type = SimpleProductDataType::create($definition);
+            $simple_product_type = SimpleProductType::create($definition);
             $product->productType()->associate($simple_product_type);
             $product->save();
 

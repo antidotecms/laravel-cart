@@ -11,9 +11,9 @@ beforeEach(function() {
                 return "hello";
             }
 
-            public function sayHelloWithArgs(string $arg)
+            public function sayHelloWithArgs(array $args)
             {
-                return $arg;
+                return $args[0];
             }
         }
 
@@ -40,9 +40,9 @@ beforeEach(function() {
                 return $this->mapToAggregate(B::class, 'value', 5);
             }
 
-            public function sayHelloWithArgs(string $arg): string
+            public function sayHelloWithArgs(array $args): string
             {
-                return $this->mapToAggregate(B::class, 'sayHelloWithArgs', 'default', [$arg]);
+                return $this->mapToAggregate(B::class, 'sayHelloWithArgs', 'default', $args);
             }
 
             public function sayHelloWithArgsWithInstance(string $arg): string
@@ -94,7 +94,7 @@ it('will defer a method to an aggregate', function () {
 ->covers(\Antidote\LaravelCart\Concerns\MapsPropertiesToAggregates::class);
 
 it('will defer a method to an aggregate with arguments', function () {
-    expect((new A)->sayHelloWithArgs('hello'))->toBe('hello');
+    expect((new A)->sayHelloWithArgs(['hello']))->toBe('hello');
     expect((new A)->sayHelloWithArgsWithInstance('hello'))->toBe('hello');
 })
 ->covers(\Antidote\LaravelCart\Concerns\MapsPropertiesToAggregates::class);

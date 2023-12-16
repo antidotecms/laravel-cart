@@ -3,6 +3,7 @@
 namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Concerns\ConfiguresProduct;
+use Antidote\LaravelCart\Concerns\MapsPropertiesToAggregates;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,6 +11,7 @@ use Illuminate\Support\Str;
 
 class Product extends Model
 {
+    use MapsPropertiesToAggregates;
     use ConfiguresProduct;
     use SoftDeletes;
 
@@ -84,7 +86,8 @@ class Product extends Model
 
     public function getName(array $product_data = []): string
     {
-        return $this->productType->getName($product_data);
+        //return $this->productType->getName($product_data);
+        return $this->mapToAggregate($this->productType, 'getName', $this->name, $product_data);
     }
 
     public function getDescription(array $product_data =  []): string

@@ -16,7 +16,7 @@ trait MapsPropertiesToAggregates
         }
 
         if(method_exists($aggregate, $property_or_method)) {
-            return $params ? $aggregate->$property_or_method(...$params) : $aggregate->$property_or_method();
+            return $params ? $aggregate->$property_or_method($params) : $aggregate->$property_or_method();
         }
 
         //$property_or_method = Str::of($property_or_method)->studly()->lcfirst()->value();

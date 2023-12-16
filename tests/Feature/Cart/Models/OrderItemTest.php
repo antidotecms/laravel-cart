@@ -97,7 +97,9 @@ it('will not change values of product after being created as an order', function
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1999
-    ])->create();
+    ])->create([
+        'name' => 'A Simple Product'
+    ]);
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 

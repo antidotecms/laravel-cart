@@ -2,9 +2,9 @@
 
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
 use Antidote\LaravelCart\Facades\Cart;
+use Antidote\LaravelCart\Models\Products\SimpleProductType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\ComplexProductDataType;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\VariableProductDataType;
 
 beforeEach(function() {
@@ -15,7 +15,7 @@ beforeEach(function() {
  */
 it('can add a product to the cart', function() {
 
-    $product_data = SimpleProductDataType::create([
+    $product_data = SimpleProductType::create([
         'price' => '2000'
     ]);
 
@@ -32,8 +32,8 @@ it('can add a product to the cart', function() {
 
     $product_data = new CartItem([
         'product_id' => $product->id,
-        'product_type' => SimpleProductDataType::class,
-        'product' => SimpleProductDataType::find($product->id),
+        'product_type' => SimpleProductType::class,
+        'product' => SimpleProductType::find($product->id),
         'quantity' => 1,
         'specification' => null
     ]);
@@ -84,7 +84,7 @@ it('will get a cart items cost', function() {
 
 it('can add a product and specify quantity', function () {
 
-    $product_data = SimpleProductDataType::create([
+    $product_data = SimpleProductType::create([
         'price' => '2000'
     ]);
 
@@ -109,7 +109,7 @@ it('can remove a product by product id', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $product_data = SimpleProductDataType::create([
+    $product_data = SimpleProductType::create([
         'price' => '2000'
     ]);
 
@@ -139,7 +139,7 @@ it('can remove a product by product id specifying quantity', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $product_data = SimpleProductDataType::create([
+    $product_data = SimpleProductType::create([
         'price' => '2000'
     ]);
 
@@ -217,7 +217,7 @@ it('it can remove a product by product id and product data', function () {
 
 it('it can remove a product by product id and product data specifying quantity', function () {
 
-    $product_data = SimpleProductDataType::create([
+    $product_data = SimpleProductType::create([
         'price' => '2000'
     ]);
 
@@ -279,7 +279,7 @@ it('will not remove an item if it is not in the cart', function () {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $product_data = SimpleProductDataType::create([
+    $product_data = SimpleProductType::create([
         'price' => '2000'
     ]);
 
@@ -322,7 +322,7 @@ it('will not remove an item if the cart is empty', function () {
 
 it('can clear the contents of the cart', function () {
 
-    $product_data = SimpleProductDataType::create([
+    $product_data = SimpleProductType::create([
         'price' => '2000'
     ]);
 
@@ -333,7 +333,7 @@ it('can clear the contents of the cart', function () {
     $product->productType()->associate($product_data);
     $product->save();
 
-    $this->assertEquals(1, SimpleProductDataType::count());
+    $this->assertEquals(1, SimpleProductType::count());
 
     $this->cart->add($product, 5);
 
@@ -349,7 +349,7 @@ it('can clear the contents of the cart', function () {
 
 it('provide the subtotal', function () {
 
-    $product_data1 = SimpleProductDataType::create([
+    $product_data1 = SimpleProductType::create([
         'price' => '2000'
     ]);
 
@@ -359,7 +359,7 @@ it('provide the subtotal', function () {
     $product1->productType()->associate($product_data1);
     $product1->save();
 
-    $product_data2 = SimpleProductDataType::create([
+    $product_data2 = SimpleProductType::create([
         'price' => '150'
     ]);
 
@@ -384,7 +384,7 @@ it('provide the subtotal', function () {
 
 it('provides the correct subtotal when a price of a product is calculated', function () {
 
-    $simple_product_data = SimpleProductDataType::create([
+    $simple_product_data = SimpleProductType::create([
         'price' => '2000'
     ]);
 
@@ -417,7 +417,7 @@ it('provides the correct subtotal when a price of a product is calculated', func
 
 it('will state whether a product is in the cart', function () {
 
-    $simple_product_data = SimpleProductDataType::create([
+    $simple_product_data = SimpleProductType::create([
         'price' => '2000'
     ]);
 
@@ -480,7 +480,7 @@ it('will increment the quantity of a cart item if the cart already has a product
 {
     $variable_product_data = VariableProductDataType::create();
 
-    $simple_product_data = SimpleProductDataType::create([
+    $simple_product_data = SimpleProductType::create([
         'price' => 100
     ]);
 

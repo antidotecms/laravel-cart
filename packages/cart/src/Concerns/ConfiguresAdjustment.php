@@ -38,7 +38,7 @@ trait ConfiguresAdjustment
     protected function calculatedAmount() : Attribute
     {
         return Attribute::make(
-            get: fn($value) => $this->mapToAggregate($this->class, 'calculatedAmount', 0, [$this->parameters])
+            get: fn($value) => $this->mapToAggregate($this->class, 'calculatedAmount', 0, $this->parameters)
         );
     }
 

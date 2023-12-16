@@ -1,8 +1,8 @@
 <?php
 
 use Antidote\LaravelCart\Models\Product;
+use Antidote\LaravelCart\Models\Products\SimpleProductType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\SimpleProductDataType;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\ProductTypes\VariableProductDataType;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 
@@ -10,13 +10,13 @@ test('a product type has a product', function()
 {
     CartPanelPlugin::set('models.product', TestProduct::class);
 
-    $product_data = SimpleProductDataType::create([
+    $product_data = SimpleProductType::create([
         'price' => 100
     ]);
 
     $product = TestProduct::create([
         'name' => 'Simple Product Type',
-        'product_type_type' => SimpleProductDataType::class,
+        'product_type_type' => SimpleProductType::class,
         'product_type_id' => $product_data->id
     ]);
 
@@ -27,7 +27,7 @@ test('a product type has a product', function()
 
 it('it can create a product and associated product data', function()
 {
-    $product_data = SimpleProductDataType::create([
+    $product_data = SimpleProductType::create([
         'price' => 100
     ]);
 
@@ -78,6 +78,7 @@ it('products_will_return_the_correct_name_and_price', function () {
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 100
     ])->create([
+        'name' => 'A Simple Product',
         'description' => 'its really very simple'
     ]);
 
@@ -214,12 +215,13 @@ it('will not allow restoration of a product data type if the product is soft del
 
 it('will defer an attribute to the product data type', function() {
 
+    //@todo is this needed? Mapping to aggregates is tested on its own
     $product = TestProduct::factory()->asSimpleProduct()->create([
         'name' => 'This Product',
         'description' => 'This Description'
     ]);
 
-    expect($product->getName())->toBe('A Simple Product')
+    expect($product->getName())->toBe('This Product')
         ->and($product->getDescription())->toBe('This Description');
 })
 ->coversClass(Product::class);
@@ -234,7 +236,7 @@ it('will throw an exception if a deferred attribute is not defined', function ()
     $product->getFoo();
 })
 ->coversClass(Product::class)
-->throws(Exception::class, "Define 'getFoo' on ".SimpleProductDataType::class);
+->throws(Exception::class, "Define 'getFoo' on ". SimpleProductType::class);
 
 it('will check whether a product is valid from its product type', function () {
 

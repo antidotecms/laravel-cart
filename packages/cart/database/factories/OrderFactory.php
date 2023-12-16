@@ -27,7 +27,7 @@ class OrderFactory extends Factory
         return $this->afterCreating(function(Model $order) use ($product, $quantity, $product_data) {
             /** @var Order $order */
             OrderItem::factory()->create([
-                'name' => $product->getName($product_data),
+                'name' => $product->name,
                 'product_id' => $product->id,
                 'price' => $product->getPrice($product_data),
                 'product_data' => $product_data,
