@@ -36,9 +36,7 @@ class EditProduct extends EditRecord
                 'name' => $data['name'],
                 'product_type_type' => $data['product_type_type']
             ],
-            'productType' => [
-                'price' => $this->getRecord()->productType->attributesToArray()['price']
-            ]
+            'productType' => $this->getRecord()->productType->attributesToArray()
         ];
     }
 
