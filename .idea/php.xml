@@ -186,8 +186,8 @@
   </component>
   <component name="PhpInterpreters">
     <interpreters>
-      <interpreter id="375e2954-3067-4910-96ce-91fe5e411087" name="laravel-cart.laravel" home="docker-compose://DATA" debugger_id="php.debugger.XDebug">
-        <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" INITIALIZED="false" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="laravel-cart.package" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
+      <interpreter id="375e2954-3067-4910-96ce-91fe5e411087" name="laravel-cart.laravel" home="docker-compose://DATA" auto="false" debugger_id="php.debugger.XDebug">
+        <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="laravel-cart.package" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
           <type_data command="RUN" />
           <dockerComposeConfigurationPaths>
             <item value="$PROJECT_DIR$/docker-compose.yml" />
@@ -282,9 +282,11 @@
   <component name="PhpStan">
     <PhpStan_settings>
       <PhpStanConfiguration tool_path="$PROJECT_DIR$/vendor/bin/phpstan" />
+      <phpstan_by_interpreter interpreter_id="375e2954-3067-4910-96ce-91fe5e411087" tool_path="$PROJECT_DIR$/../../../../../html/vendor/bin/phpstan" timeout="60000" />
     </PhpStan_settings>
   </component>
   <component name="PhpStanOptionsConfiguration">
+    <option name="config" value="$PROJECT_DIR$/phpstan.neon" />
     <option name="transferred" value="true" />
   </component>
   <component name="PhpUnit">
