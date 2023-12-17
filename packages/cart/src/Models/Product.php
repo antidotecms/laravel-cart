@@ -4,10 +4,17 @@ namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Concerns\ConfiguresProduct;
 use Antidote\LaravelCart\Concerns\MapsToAggregates;
+use Antidote\LaravelCart\Contracts\ProductType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+
+/**
+ * @mixin Model
+ * @property ProductType $productType
+ * @method static find(int $id): static
+ */
 
 class Product extends Model
 {
