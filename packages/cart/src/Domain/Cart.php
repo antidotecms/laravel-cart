@@ -22,6 +22,23 @@ class Cart
         return $cart->cart_items ?? collect([]);
     }
 
+    public function updateQuantity($product, int $newQuantity, $product_data = null)
+    {
+        $cart_items = $this->items();
+
+        $cart_items->filter(function($cart_item) use ($product, $product_data) {
+                return
+                    $cart_item->getProduct()->product_type_type == get_class($product->productType) &&
+                    $cart_item->product_id == $product->id &&
+                    $cart_item->product_data == $product_data;
+            })
+            ->map(fn($item) => $item->quantity = $newQuantity);
+
+        session()->put('cart_items', $cart_items->toArray());
+
+
+    }
+
     public function add($product, int $quantity = 1, $product_data = null) : void
     {
         $cart_item = ValidCartItem::create(new CartItem([
@@ -148,8 +165,14 @@ class Cart
 
         $total += $this->getAdjustmentsTotal(true);
         $total += $this->getAdjustmentsTotal(false);
+        $total += $this->getTax();
 
         return $total;
+    }
+
+    public function getTax() : int
+    {
+        return ceil(ceil(($this->getSubtotal() + $this->getAdjustmentsTotal(true)) * config('laravel-cart.tax_rate')) * 100)/100;
     }
 
     public function getAdjustmentsTotal(bool $applied_to_subtotal, array $except = [])

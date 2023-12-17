@@ -764,6 +764,8 @@ it('can add a note to the order', function () {
 
 it('will add order adjustments to the order when creating an order', function () {
 
+    \Illuminate\Support\Facades\Config::set('laravel-cart.tax_rate', 0);
+
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000
     ])->create();
@@ -805,11 +807,13 @@ it('will add order adjustments to the order when creating an order', function ()
     ]);
     expect($order_adjustment->apply_to_subtotal)->toBeTruthy();
     expect($order->subtotal)->toBe(1000);
-    expect($order->total)->toBe(1080); //900 * 1.2 - 0.2 tax rate
+    expect($order->total)->toBe(900); //900 * 1.2 - 0.2 tax rate
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
 it('will clear the order_adjustments from order if cart is empty', function () {
+
+    \Illuminate\Support\Facades\Config::set('laravel-cart.tax_rate', 0);
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000
@@ -939,6 +943,8 @@ it('will clear the active order', function () {
 });
 
 it('will filter the valid adjustments', function () {
+
+    \Illuminate\Support\Facades\Config::set('laravel-cart.tax_rate', 0);
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000

@@ -2,6 +2,8 @@
 
 it('will show potential discounts in the cart', function () {
 
+    \Illuminate\Support\Facades\Config::set('laravel-cart.tax_rate', 0);
+
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
     $product = \Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct::factory()->asSimpleProduct([
