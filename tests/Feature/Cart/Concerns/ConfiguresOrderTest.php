@@ -7,4 +7,4 @@ it('adds fillable fields', function () {
         'customer_id'
     ]);
 })
-->covers(\Antidote\LaravelCart\Concerns\ConfiguresOrder::class);
+->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresOrder::class);

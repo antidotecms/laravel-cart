@@ -8,4 +8,4 @@ it('adds fillable fields', function () {
         'order_id'
     ]);
 })
-->covers(\Antidote\LaravelCart\Concerns\ConfiguresOrderLogItem::class);
+->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresOrderLogItem::class);

@@ -2,8 +2,8 @@
 
 namespace Antidote\LaravelCart\Models;
 
-use Antidote\LaravelCart\Concerns\ConfiguresOrder;
 use Antidote\LaravelCart\Database\Factories\OrderFactory;
+use Antidote\LaravelCart\Models\Concerns\ConfiguresOrder;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

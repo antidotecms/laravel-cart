@@ -3,7 +3,7 @@
 namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Collections\AdjustmentCollection;
-use Antidote\LaravelCart\Concerns\ConfiguresOrderAdjustment;
+use Antidote\LaravelCart\Models\Concerns\ConfiguresOrderAdjustment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

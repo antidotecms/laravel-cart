@@ -28,4 +28,9 @@ abstract class ProductType extends Model
 
         });
     }
+
+    public function clientForm(): array
+    {
+        return [];
+    }
 }

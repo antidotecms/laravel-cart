@@ -3,6 +3,7 @@
 namespace Antidote\LaravelCart\Models\Products;
 
 use Antidote\LaravelCart\Contracts\ProductType;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 
 class SimpleProductType extends ProductType
@@ -20,6 +21,18 @@ class SimpleProductType extends ProductType
         ];
     }
 
+    public function clientForm(): array
+    {
+        return [
+            Select::make('colour')
+                ->required()
+                ->options([
+                    'red',
+                    'blue'
+                ])
+        ];
+    }
+
     public function isValid(?array $product_data = null): bool
     {
         return true;
@@ -28,5 +41,10 @@ class SimpleProductType extends ProductType
     public function getPrice(?array $product_data = null): int
     {
         return $this->price;
+    }
+
+    public function getDescription(?array $product_data = null): string
+    {
+        return 'A description';
     }
 }

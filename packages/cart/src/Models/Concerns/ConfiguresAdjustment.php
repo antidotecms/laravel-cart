@@ -1,7 +1,8 @@
 <?php
 
-namespace Antidote\LaravelCart\Concerns;
+namespace Antidote\LaravelCart\Models\Concerns;
 
+use Antidote\LaravelCart\Concerns\MapsToAggregates;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**

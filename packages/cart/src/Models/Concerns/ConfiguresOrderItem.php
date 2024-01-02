@@ -1,6 +1,6 @@
 <?php
 
-namespace Antidote\LaravelCart\Concerns;
+namespace Antidote\LaravelCart\Models\Concerns;
 
 trait ConfiguresOrderItem
 {

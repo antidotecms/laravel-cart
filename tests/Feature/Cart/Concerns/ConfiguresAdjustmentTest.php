@@ -4,7 +4,7 @@ beforeAll(function() {
 
     if(!class_exists(InlineTestAdjustmentClass::class)) {
         class InlineTestAdjustment extends \Illuminate\Database\Eloquent\Model {
-            use \Antidote\LaravelCart\Concerns\ConfiguresAdjustment;
+            use \Antidote\LaravelCart\Models\Concerns\ConfiguresAdjustment;
 
             public function calculatedAmount(): int
             {
@@ -31,7 +31,7 @@ it('adds fillable fields', function () {
         'is_active'
     ]);
 })
-->covers(\Antidote\LaravelCart\Concerns\ConfiguresAdjustment::class);
+->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresAdjustment::class);
 
 it('adds a cast for parameters', function () {
 
@@ -41,7 +41,7 @@ it('adds a cast for parameters', function () {
         'parameters' => 'array'
     ]);
 })
-->covers(\Antidote\LaravelCart\Concerns\ConfiguresAdjustment::class);
+->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresAdjustment::class);
 
 it('will defer the calculated amount to its adjustment class', function() {
 
@@ -51,7 +51,7 @@ it('will defer the calculated amount to its adjustment class', function() {
 
     expect($adjustment->calculated_amount)->toBe(100);
 })
-->covers(\Antidote\LaravelCart\Concerns\ConfiguresAdjustment::class);
+->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresAdjustment::class);
 
 it('will defer the validity to its adjustment class', function() {
 
@@ -61,4 +61,4 @@ it('will defer the validity to its adjustment class', function() {
 
     expect($adjustment->is_valid)->toBe(true);
 })
-->covers(\Antidote\LaravelCart\Concerns\ConfiguresAdjustment::class);
+->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresAdjustment::class);

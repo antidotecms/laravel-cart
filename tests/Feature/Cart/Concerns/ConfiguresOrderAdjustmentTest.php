@@ -12,7 +12,7 @@ it('sets up the corect fillable properties', function() {
         'apply_to_subtotal'
     ]);
 })
-->covers(\Antidote\LaravelCart\Concerns\ConfiguresOrderAdjustment::class);
+->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresOrderAdjustment::class);
 
 it('sets up the correct casts', function () {
 
@@ -22,4 +22,4 @@ it('sets up the correct casts', function () {
         'original_parameters' => 'array'
     ]);
 })
-->covers(\Antidote\LaravelCart\Concerns\ConfiguresOrderAdjustment::class);
+->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresOrderAdjustment::class);

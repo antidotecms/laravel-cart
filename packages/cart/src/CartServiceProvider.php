@@ -5,7 +5,9 @@ namespace Antidote\LaravelCart;
 use Antidote\LaravelCart\Domain\Cart;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Http\Controllers\OrderController;
+use Antidote\LaravelCart\Livewire\Cart\CartItem;
 use Antidote\LaravelCart\Livewire\Product;
+use Antidote\LaravelCart\Livewire\TestComponent;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Illuminate\Support\Facades\Config;
 use Illuminate\View\Compilers\BladeCompiler;
@@ -41,6 +43,8 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->callAfterResolving(BladeCompiler::class, function () {
             Livewire::component('laravel-cart::product', Product::class);
+            Livewire::component('laravel-cart::cart', \Antidote\LaravelCart\Livewire\Cart\Cart::class);
+            Livewire::component('laravel-cart::cart.item', CartItem::class);
         });
 
     }

@@ -9,4 +9,4 @@ it('adds fillable fields', function () {
         'name'
     ]);
 })
-->covers(\Antidote\LaravelCart\Concerns\ConfiguresProduct::class);
+->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresProduct::class);

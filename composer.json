@@ -71,7 +71,8 @@
         "spatie/data-transfer-object": "^3.8",
         "stripe/stripe-php": "^9.6",
         "filament/filament": "^3.0-stable",
-        "livewire/livewire": "^3.0.0"
+        "livewire/livewire": "^3.0.0",
+        "ext-intl": "*"
     },
     "config": {
         "allow-plugins": {

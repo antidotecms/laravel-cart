@@ -2,7 +2,7 @@
 
 namespace Antidote\LaravelCart\Models;
 
-use Antidote\LaravelCart\Concerns\ConfiguresOrderLogItem;
+use Antidote\LaravelCart\Models\Concerns\ConfiguresOrderLogItem;
 
 class OrderLogItem extends \Illuminate\Database\Eloquent\Model
 {

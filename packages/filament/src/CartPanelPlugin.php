@@ -37,6 +37,7 @@ class CartPanelPlugin implements Plugin
             'product' => ProductResource::class
         ],
         'urls' => [
+            'cart' => 'cart',
             'orderComplete' => 'order-complete',
             'checkoutConfirm' => 'checkout-confirm',
             'stripe' => [

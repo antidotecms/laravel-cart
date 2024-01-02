@@ -1,7 +1,8 @@
 <?php
 
-namespace Antidote\LaravelCart\Concerns;
+namespace Antidote\LaravelCart\Models\Concerns;
 
+use Antidote\LaravelCart\Concerns\Illuminate;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 
 /** @mixin Illuminate\Database\Eloquent\Model */

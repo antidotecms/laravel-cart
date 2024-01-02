@@ -2,8 +2,8 @@
 
 namespace Antidote\LaravelCart\Models;
 
-use Antidote\LaravelCart\Concerns\ConfiguresOrderItem;
 use Antidote\LaravelCart\Database\Factories\OrderItemFactory;
+use Antidote\LaravelCart\Models\Concerns\ConfiguresOrderItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

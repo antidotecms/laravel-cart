@@ -12,7 +12,7 @@ it('sets up the corect fillable properties', function() {
         'order_id',
     ]);
 })
-    ->covers(\Antidote\LaravelCart\Concerns\ConfiguresOrderItem::class);
+    ->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresOrderItem::class);
 
 it('sets up the correct casts', function () {
 
@@ -22,4 +22,4 @@ it('sets up the correct casts', function () {
         'product_data' => 'array'
     ]);
 })
-->covers(\Antidote\LaravelCart\Concerns\ConfiguresOrderItem::class);
+->covers(\Antidote\LaravelCart\Models\Concerns\ConfiguresOrderItem::class);

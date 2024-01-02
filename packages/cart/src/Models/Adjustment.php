@@ -3,8 +3,8 @@
 namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Collections\AdjustmentCollection;
-use Antidote\LaravelCart\Concerns\ConfiguresAdjustment;
 use Antidote\LaravelCart\Database\Factories\AdjustmentFactory;
+use Antidote\LaravelCart\Models\Concerns\ConfiguresAdjustment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
