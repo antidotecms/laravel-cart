@@ -7,6 +7,7 @@ use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Http\Controllers\OrderController;
 use Antidote\LaravelCart\Livewire\Cart\CartItem;
 use Antidote\LaravelCart\Livewire\Customer\Dashboard;
+use Antidote\LaravelCart\Livewire\Customer\Details;
 use Antidote\LaravelCart\Livewire\Customer\Login;
 use Antidote\LaravelCart\Livewire\Product;
 use Antidote\LaravelCart\Livewire\TestComponent;
@@ -49,6 +50,7 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
             Livewire::component('laravel-cart::cart.item', CartItem::class);
             Livewire::component('laravel-cart::customer.login', Login::class);
             Livewire::component('laravel-cart::customer.dashboard', Dashboard::class);
+            Livewire::component('laravel-cart::customer.details', Details::class);
         });
 
     }
