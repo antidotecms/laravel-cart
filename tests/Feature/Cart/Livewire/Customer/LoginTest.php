@@ -1,16 +1,19 @@
 <?php
 
-it('will log a user in', function() {
+beforeEach(function() {
 
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create([
+    $this->customer = \Antidote\LaravelCart\Models\Customer::factory()->create([
         'email' => 'customer@somedomain.co.uk',
         'password' => \Illuminate\Support\Facades\Hash::make('password')
     ]);
 
     expect(\Illuminate\Support\Facades\Auth::guard('customer')->check())->toBeFalse();
+});
+
+it('will log a user in', function() {
 
     \Pest\Livewire\livewire(\Antidote\LaravelCart\Livewire\Customer\Login::class)
-        ->set('data.email', $customer->email)
+        ->set('data.email', $this->customer->email)
         ->set('data.password', 'password')
         ->call('login')
         ->assertHasNoFormErrors()
@@ -22,15 +25,8 @@ it('will log a user in', function() {
 
 it('will display an error if login was unsuccessful', function () {
 
-    $customer = \Antidote\LaravelCart\Models\Customer::factory()->create([
-        'email' => 'customer@somedomain.co.uk',
-        'password' => \Illuminate\Support\Facades\Hash::make('password')
-    ]);
-
-    expect(\Illuminate\Support\Facades\Auth::guard('customer')->check())->toBeFalse();
-
     \Pest\Livewire\livewire(\Antidote\LaravelCart\Livewire\Customer\Login::class)
-        ->set('data.email', $customer->email)
+        ->set('data.email', $this->customer->email)
         ->set('data.password', 'not the password')
         ->call('login')
         ->assertHasErrors(['fail'])
