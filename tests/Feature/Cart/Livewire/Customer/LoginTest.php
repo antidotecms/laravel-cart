@@ -17,11 +17,23 @@ it('will log a user in', function() {
         ->set('data.password', 'password')
         ->call('login')
         ->assertHasNoFormErrors()
-        ->assertRedirect('/yup');
+        ->assertRedirect(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.dashboard'));
 
     expect(\Illuminate\Support\Facades\Auth::guard('customer')->check())->toBeTrue();
 })
 ->covers(\Antidote\LaravelCart\Livewire\Customer\Login::class);
+
+test('a custom dashboard location can be set', function () {
+
+    \Antidote\LaravelCartFilament\CartPanelPlugin::set('urls.dashboard', 'custom_location');
+
+    \Pest\Livewire\livewire(\Antidote\LaravelCart\Livewire\Customer\Login::class)
+        ->set('data.email', $this->customer->email)
+        ->set('data.password', 'password')
+        ->call('login')
+        ->assertHasNoFormErrors()
+        ->assertRedirect('custom_location');
+});
 
 it('will display an error if login was unsuccessful', function () {
 

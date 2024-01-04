@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Livewire\Customer;
 
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -34,7 +35,7 @@ class Login extends Component implements HasForms
             'email' => $this->form->getState()['email'],
             'password' => $this->form->getState()['password']
         ])) {
-            $this->redirect('/yup');
+            $this->redirect(CartPanelPlugin::get('urls.dashboard'));
         } else {
             $this->addError('fail', 'no such user');
         }
