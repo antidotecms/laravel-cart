@@ -1,10 +1,5 @@
 <div>
-    @error('fail')
-        <x-laravel-cart::error :message='$message'/>
-    @enderror
-    <form wire:submit="login">
+    <form wire:enter='login' x-on:keyup.enter='$wire.login()'>
     {{ $this->form }}
-        <button>Login</button>
     </form>
-
 </div>

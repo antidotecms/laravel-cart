@@ -72,7 +72,8 @@ class CartItem extends Component implements HasForms
             ->title('Item removed from cart')
             ->send();
 
-        //$this->dispatch('update', $this->cartitemId)->self();
+        $this->dispatch('updateCartCount');
+
         $this->dispatch('update')->to(Cart::class);
     }
 

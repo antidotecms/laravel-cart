@@ -3,7 +3,11 @@
 namespace Antidote\LaravelCart\Livewire\Customer;
 
 use Antidote\LaravelCartFilament\CartPanelPlugin;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ViewField;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -20,10 +24,22 @@ class Login extends Component implements HasForms
         return $form
             ->statePath('data')
             ->schema([
-            TextInput::make('email')
-                ->required(),
-            TextInput::make('password')
-                ->password()
+                Section::make('Login')
+                    ->schema([
+                        ViewField::make('laravel-cart::components.error')
+                            ->view('laravel-cart::errors')
+                            ->visible(fn($livewire) => $livewire->getErrorBag()->get('fail')),
+                        TextInput::make('email')
+                            ->email()
+                            ->required(),
+                        TextInput::make('password')
+                            ->required()
+                            ->password(),
+                        Actions::make([
+                            Action::make('Login')
+                                ->action(fn() => $this->login())
+                        ])
+                    ])
         ]);
     }
 

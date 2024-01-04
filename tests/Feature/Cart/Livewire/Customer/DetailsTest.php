@@ -39,3 +39,21 @@ it('will update the users details', function () {
     expect($this->customer->name)->toBe('a different name');
 })
 ->covers(\Antidote\LaravelCart\Livewire\Customer\Details::class);
+
+it('will send a notifictaion when the details are updated', function () {
+
+    $address = \Antidote\LaravelCart\Models\Address::factory()->make();
+
+    livewire(\Antidote\LaravelCart\Livewire\Customer\Details::class)
+        ->set('data.name', 'a different name')
+        ->call('save')
+        ->assertHasNoFormErrors()
+        ->assertNotified(
+            \Filament\Notifications\Notification::make()
+                ->title('Details Updated')
+                ->success()
+        );
+
+
+})
+->covers(\Antidote\LaravelCart\Livewire\Customer\Details::class);;

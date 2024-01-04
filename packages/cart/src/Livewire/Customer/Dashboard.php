@@ -58,7 +58,8 @@ class Dashboard extends Component implements HasForms
                         ]),
                     Tab::make('Your Delivery Address')
                         ->schema([
-
+                            ViewField::make('address')
+                                ->view('laravel-cart::filament.fields.customer-address')
                         ])
                 ]),
         ]);

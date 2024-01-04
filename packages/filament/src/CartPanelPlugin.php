@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCartFilament;
 
+use Antidote\LaravelCart\Models\Address;
 use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
@@ -28,7 +29,8 @@ class CartPanelPlugin implements Plugin
             'order_item' => OrderItem::class,
             'order_adjustment' => OrderAdjustment::class,
             'adjustment' => Adjustment::class,
-            'order_log_item' => OrderLogItem::class
+            'order_log_item' => OrderLogItem::class,
+            'address' => Address::class
         ],
         'resources' => [
             'order' => OrderResource::class,

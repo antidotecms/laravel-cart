@@ -63,4 +63,9 @@ class Customer extends Authenticatable
     {
         return $this->hasMany(getClassNameFor('order'));
     }
+
+    public function address()
+    {
+        return $this->hasOne(getClassNameFor('address'));
+    }
 }

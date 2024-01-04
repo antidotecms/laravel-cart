@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Models;
 
+use Antidote\LaravelCart\Database\Factories\AddressFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,10 +11,15 @@ class Address extends Model
     use HasFactory;
 
     protected $fillable = [
-        'address_line_1',
-        'address_line_2',
+        'line_1',
+        'line_2',
         'town_city',
         'county',
         'postcode',
     ];
+
+    public static function factory($count = null, $state = [])
+    {
+        return AddressFactory::new();
+    }
 }

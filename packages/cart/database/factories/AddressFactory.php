@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Antidote\LaravelCart\Database\Factories;
 
 use Antidote\LaravelCart\Models\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -13,8 +13,8 @@ class AddressFactory extends Factory
     public function definition(): array
     {
         return [
-            'address_line_1' => $this->faker->address(),
-            'address_line_2' => $this->faker->address(),
+            'line_1' => $this->faker->address(),
+            'line_2' => $this->faker->address(),
             'town_city' => $this->faker->city(),
             'county' => $this->faker->word(),
             'postcode' => $this->faker->postcode(),

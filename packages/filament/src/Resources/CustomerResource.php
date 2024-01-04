@@ -7,6 +7,7 @@ use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\CreateCustomer
 use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\EditCustomer;
 use Antidote\LaravelCartFilament\Resources\CustomerResource\Pages\ListCustomers;
 use Antidote\LaravelCartFilament\Resources\CustomerResource\RelationManagers\OrderRelationManager;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -40,7 +41,30 @@ class CustomerResource extends Resource
                 TextInput::make('id'),
                 TextInput::make('name'),
                 TextInput::make('email')
-                    ->email()
+                    ->email(),
+                Section::make('Address')
+                    ->relationship('address')
+                    ->schema([
+                        TextInput::make('line_1')
+                            ->required()
+                            ->hiddenLabel()
+                            ->placeholder('Line 1 (*)'),
+                        TextInput::make('line_2')
+                            ->hiddenLabel()
+                            ->placeholder('Line 2'),
+                        TextInput::make('town_city')
+                            ->required()
+                            ->hiddenLabel()
+                            ->placeholder('Town/City (*)'),
+                        TextInput::make('county')
+                            ->required()
+                            ->hiddenLabel()
+                            ->placeholder('County (*)'),
+                        TextInput::make('postcode')
+                            ->required()
+                            ->hiddenLabel()
+                            ->placeholder('Postcode (*)'),
+                    ])
             ]);
     }
 

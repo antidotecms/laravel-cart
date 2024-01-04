@@ -92,6 +92,8 @@ class Product extends Component implements HasForms
 
         $cartUrl = CartPanelPlugin::get('urls.cart') ?? '/cart';
 
+        $this->dispatch('updateCartCount');
+
         Notification::make()
             ->success()
             ->title('Item added to cart')

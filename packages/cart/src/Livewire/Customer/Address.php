@@ -12,7 +12,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Livewire\Component;
 
-class Details extends Component implements HasForms
+class Address extends Component implements HasForms
 {
     use InteractsWithForms;
 
@@ -23,49 +23,62 @@ class Details extends Component implements HasForms
     public function mount(): void
     {
         $this->customer = $this->getCustomer();
-        $this->form->fill($this->customer->toArray());
+        $this->form->fill($this->customer->address->toArray());
     }
 
     private function getCustomer() : Customer
     {
         /** @var Customer $customer */
         $customer = auth('customer')->user();
+        $customer->load('address');
         return $customer;
     }
 
     public function form(Form $form): Form
     {
         return $form->schema([
-            TextInput::make('name')
-                ->required(),
-            TextInput::make('email')
+            TextInput::make('line_1')
                 ->required()
-                ->disabled(),
+                ->hiddenLabel()
+                ->placeholder('Line 1 (*)'),
+            TextInput::make('line_2')
+                ->hiddenLabel()
+                ->placeholder('Line 2'),
+            TextInput::make('town_city')
+                ->required()
+                ->hiddenLabel()
+                ->placeholder('Town/City (*)'),
+            TextInput::make('county')
+                ->required()
+                ->hiddenLabel()
+                ->placeholder('County (*)'),
+            TextInput::make('postcode')
+                ->required()
+                ->hiddenLabel()
+                ->placeholder('Postcode (*)'),
             Actions::make([
                 Action::make('Save')
                     ->action(fn() => $this->save())
-                ])
+            ])
         ])
-        ->model($this->customer)
-        ->statePath('data');
+            ->model($this->customer->address)
+            ->statePath('data');
     }
 
     public function save()
     {
         $this->form->validate();
 
-        $this->customer->update($this->form->getState());
-
-        $this->dispatch('detailsUpdated')->to(Dashboard::class);
+        $this->customer->address->update($this->form->getState());
 
         Notification::make()
-            ->title('Details Updated')
+            ->title('Address Updated')
             ->success()
             ->send();
     }
 
     public function render()
     {
-        return view('laravel-cart::livewire.customer.details');
+        return view('laravel-cart::livewire.customer.address');
     }
 }
