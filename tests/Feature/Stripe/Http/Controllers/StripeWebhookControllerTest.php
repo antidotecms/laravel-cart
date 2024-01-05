@@ -5,10 +5,10 @@ namespace Antidote\LaravelCart\Tests\Feature\Stripe\Http\Controllers;
 use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\TestCase;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
-use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Arr;
@@ -323,7 +323,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => StripeOrder::first()->id]]]]);
+        $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => Order::first()->id]]]]);
 
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
             $mock->shouldReceive('verifyHeader')
