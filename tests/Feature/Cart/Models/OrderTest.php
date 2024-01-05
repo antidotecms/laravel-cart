@@ -374,6 +374,7 @@ it('will overwrite data with the same key', function () {
 
 it('will throw an exception when attempting to update status', function () {
 
+    $this->markTestSkipped('status obtained via related payment model');
     $order = Order::factory()->create();
     $order->updateStatus();
 })
@@ -382,6 +383,7 @@ it('will throw an exception when attempting to update status', function () {
 
 it('will throw an exception when attempting to determine if the order is completed', function () {
 
+    $this->markTestSkipped('status obtained via related payment model');
     $order = Order::factory()->create();
     $order->isCompleted();
 })

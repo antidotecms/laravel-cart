@@ -9,6 +9,7 @@ use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\OrderItem;
 use Antidote\LaravelCart\Models\OrderLogItem;
+use Antidote\LaravelCart\Models\Payment;
 use Antidote\LaravelCart\Models\Product;
 use Antidote\LaravelCart\Models\Products\SimpleProductType;
 use Antidote\LaravelCartFilament\Resources\AdjustmentResource;
@@ -30,7 +31,8 @@ class CartPanelPlugin implements Plugin
             'order_adjustment' => OrderAdjustment::class,
             'adjustment' => Adjustment::class,
             'order_log_item' => OrderLogItem::class,
-            'address' => Address::class
+            'address' => Address::class,
+            'payment_method' => Payment::class
         ],
         'resources' => [
             'order' => OrderResource::class,
@@ -49,6 +51,8 @@ class CartPanelPlugin implements Plugin
         ],
         'productTypes' => [
             SimpleProductType::class => 'Simple'
+        ],
+        'paymentMethods' => [
         ]
     ];
 

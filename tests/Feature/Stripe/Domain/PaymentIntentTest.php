@@ -2,14 +2,15 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Stripe\Domain;
 
+use Antidote\LaravelCart\Enums\PaymentMethod;
 use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\Payment;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
 use Antidote\LaravelCart\Tests\TestCase;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
-use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Antidote\LaravelCartStripe\Models\StripeOrderLogItem;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,7 +44,7 @@ class PaymentIntentTest extends TestCase
             'price' => 1000
         ])->create();
 
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product, 1)
             ->forCustomer(Customer::factory()->create())
             ->create();
@@ -70,7 +71,7 @@ class PaymentIntentTest extends TestCase
             'price' => 1000
         ])->create();
 
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product, 1)
             ->forCustomer(Customer::factory()->create())
             ->create();
@@ -95,7 +96,7 @@ class PaymentIntentTest extends TestCase
             'price' => 1
         ])->create();
 
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product, 1)
             ->forCustomer(Customer::factory()->create())
             ->create();
@@ -119,7 +120,7 @@ class PaymentIntentTest extends TestCase
             'price' => 1000000000
         ])->create();
 
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product, 1)
             ->create();
 
@@ -167,7 +168,7 @@ class PaymentIntentTest extends TestCase
 
         CartPanelPlugin::make()->config([
             'models' => [
-                'order' => StripeOrder::class,
+                'order' => Order::class,
                 'order_log_item' => StripeOrderLogItem::class
             ]
         ]);
@@ -186,6 +187,12 @@ class PaymentIntentTest extends TestCase
         Config::set('laravel-cart.tax_rate', 0.2);
 
         $order = $this->cart->createOrder($customer);
+
+        $payment = Payment::make([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
+        $order->payment()->save($payment);
 
         expect($order->total)->toBe(1200); //with 20% tax
 
@@ -208,7 +215,7 @@ class PaymentIntentTest extends TestCase
 
         CartPanelPlugin::make()->config([
             'models' => [
-                'order' => TestStripeOrder::class,
+                'order' => Order::class,
                 'order_log_item' => StripeOrderLogItem::class
             ]
         ]);
@@ -227,6 +234,13 @@ class PaymentIntentTest extends TestCase
         Config::set('laravel-cart.tax_rate', 0.2);
 
         $order = $this->cart->createOrder($customer);
+
+        $payment = Payment::make([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
+        $order->payment()->save($payment);
+
         expect($order->total)->toBe(1200); //with 20% tax
 
         $this->expectException($exception_class);
@@ -242,7 +256,7 @@ class PaymentIntentTest extends TestCase
     {
         CartPanelPlugin::make()->config([
             'models' => [
-                'order' => TestStripeOrder::class,
+                'order' => Order::class,
                 'order_log_item' => StripeOrderLogItem::class
             ]
         ]);
@@ -255,21 +269,27 @@ class PaymentIntentTest extends TestCase
 
         $customer = Customer::factory()->create();
 
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
             ->forCustomer($customer)
             ->create();
 
-        expect(TestStripeOrder::count())->toBe(1);
+        $payment = Payment::make([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
+        $order->payment()->save($payment);
+
+        expect(Order::count())->toBe(1);
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->create($order);
 
-        $payment_intent_id = TestStripeOrder::first()->getData('payment_intent_id');
+        $payment_intent_id = Order::first()->getData('payment_intent_id');
 
         $payment_intent->create($order);
 
-        expect(TestStripeOrder::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
+        expect(Order::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
 
     }
 
@@ -281,7 +301,7 @@ class PaymentIntentTest extends TestCase
     {;
         CartPanelPlugin::make()->config([
             'models' => [
-                'order' => TestStripeOrder::class,
+                'order' => Order::class,
                 'order_log_item' => StripeOrderLogItem::class
             ]
         ]);
@@ -294,22 +314,28 @@ class PaymentIntentTest extends TestCase
 
         $customer = Customer::factory()->create();
 
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
             ->forCustomer($customer)
             ->create();
 
-        expect(TestStripeOrder::count())->toBe(1);
+        $payment = Payment::make([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
+        $order->payment()->save($payment);
+
+        expect(Order::count())->toBe(1);
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->create($order);
 
-        $payment_intent_id = TestStripeOrder::first()->getData('payment_intent_id');
+        $payment_intent_id = Order::first()->getData('payment_intent_id');
 
         (new MockStripeHttpClient())->with('canceled_at', 'hello')->with('amount', $order->total);
         $payment_intent->create($order);
 
-        expect(TestStripeOrder::first()->getData('payment_intent_id'))->not()->toBe($payment_intent_id);
+        expect(Order::first()->getData('payment_intent_id'))->not()->toBe($payment_intent_id);
 
     }
 
@@ -321,7 +347,7 @@ class PaymentIntentTest extends TestCase
     {
         CartPanelPlugin::make()->config([
             'models' => [
-                'order' => TestStripeOrder::class,
+                'order' => Order::class,
                 'order_log_item' => StripeOrderLogItem::class
             ]
         ]);
@@ -335,22 +361,28 @@ class PaymentIntentTest extends TestCase
 
         $customer = Customer::factory()->create();
 
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct(TestProduct::factory()->asSimpleProduct(['price' => 3000])->create(), 1)
             ->forCustomer($customer)
             ->create();
 
-        expect(TestStripeOrder::count())->toBe(1);
+        $payment = Payment::make([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
+        $order->payment()->save($payment);
+
+        expect(Order::count())->toBe(1);
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->create($order);
 
-        $payment_intent_id = TestStripeOrder::first()->getData('payment_intent_id');;
+        $payment_intent_id = Order::first()->getData('payment_intent_id');;
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->create($order);
 
-        expect(TestStripeOrder::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
+        expect(Order::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
     }
 
     /**
@@ -367,7 +399,7 @@ class PaymentIntentTest extends TestCase
             'price' => 1000
         ])->create();
 
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product, 1)
             ->forCustomer(Customer::factory()->create())
             ->create();
@@ -390,7 +422,7 @@ class PaymentIntentTest extends TestCase
             'price' => 1000
         ])->create();
 
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product, 1)
             ->forCustomer(Customer::factory()->create())
             ->create();
@@ -411,14 +443,14 @@ class PaymentIntentTest extends TestCase
     {
         CartPanelPlugin::make()->config([
             'models' => [
-                'order' => TestStripeOrder::class,
+                'order' => Order::class,
                 'order_log_item' => TestStripeOrderLogItem::class
             ]
         ]);
 
         CartPanelPlugin::make()->config([
             'models' => [
-                'order' => TestStripeOrder::class,
+                'order' => Order::class,
                 'order_log_item' => StripeOrderLogItem::class
             ]
         ]);
@@ -433,10 +465,16 @@ class PaymentIntentTest extends TestCase
             'price' => 1000
         ])->create();
 
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product, 1)
             ->forCustomer(Customer::factory()->create())
             ->create();
+
+        $payment = Payment::make([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
+        $order->payment()->save($payment);
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->create($order);

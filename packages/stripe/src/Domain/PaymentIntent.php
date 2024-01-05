@@ -2,7 +2,7 @@
 
 namespace Antidote\LaravelCartStripe\Domain;
 
-use Antidote\LaravelCartStripe\Models\StripeOrder;
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
@@ -22,7 +22,7 @@ class PaymentIntent
         return new MockStripeHttpClient();
     }
 
-    public function create(StripeOrder $order) : void
+    public function create(Order $order) : void
     {
         $this->checkValidOrderAmount($order);
 
@@ -36,20 +36,20 @@ class PaymentIntent
 
     }
 
-    private function checkValidOrderAmount(StripeOrder $order): void
+    private function checkValidOrderAmount(Order $order): void
     {
         if($order->total < 30 | $order->total > 99999999) {
             throw new InvalidArgumentException('The order total must be greater than £0.30 and less that £999,999.99. See https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts');
         }
     }
 
-    private function logError(StripeOrder $order, string $type, \Exception $exception, \stdClass $event) : void
+    private function logError(Order $order, string $type, \Exception $exception, \stdClass $event) : void
     {
         $this->logMessage($order, $type.' : '.$exception, $event);
         //return $exception;
     }
 
-    private function logMessage(StripeOrder $order, string $message, \stdClass $event) : void
+    private function logMessage(Order $order, string $message, \stdClass $event) : void
     {
         $order->logItems()->create([
             'message' => $message,
@@ -57,7 +57,7 @@ class PaymentIntent
         ]);
     }
 
-    private function createPaymentIntent(StripeOrder $order) : \stdClass
+    private function createPaymentIntent(Order $order) : \stdClass
     {
         //throws ApiErrorException
         $payment_intent = $this->getClient()->paymentIntents->create([
@@ -82,7 +82,7 @@ class PaymentIntent
         return $event;
     }
 
-    private function updatePaymentIntent(StripeOrder $order) : \stdClass
+    private function updatePaymentIntent(Order $order) : \stdClass
     {
         $payment_intent_response = $this->getClient()->paymentIntents->update($order->getData('payment_intent_id'), [
             'amount' => $order->total
@@ -104,7 +104,7 @@ class PaymentIntent
         return $payment_intent_response;
     }
 
-    public function retrieveStatus(StripeOrder $order) : void
+    public function retrieveStatus(Order $order) : void
     {
         if($order->getData('payment_intent_id')) {
 
@@ -119,7 +119,7 @@ class PaymentIntent
         }
     }
 
-    public function getClientSecret(StripeOrder $order): string
+    public function getClientSecret(Order $order): string
     {
         $client_secret = '';
 
@@ -135,7 +135,7 @@ class PaymentIntent
         return $client_secret;
     }
 
-    private function getPaymentIntent(StripeOrder $order): \stdClass
+    private function getPaymentIntent(Order $order): \stdClass
     {
         $payment_intent_response = null;
 
@@ -158,11 +158,11 @@ class PaymentIntent
         return $payment_intent_response;
     }
 
-    private function requiresPaymentIntent(StripeOrder $order, \Closure $callback): \stdClass|null
+    private function requiresPaymentIntent(Order $order, \Closure $callback): \stdClass|null
     {
         $event = null;
 
-        if(!$order->isCompleted() & !$order->getData('payment_intent_id')) {
+        if(!$order->payment->isCompleted() & !$order->getData('payment_intent_id')) {
             $event = $callback();
         }
 
@@ -178,7 +178,7 @@ class PaymentIntent
         return $event;
     }
 
-    private function mismatchedTotals(StripeOrder $order, \stdClass $event, \Closure $callback): \stdClass|null
+    private function mismatchedTotals(Order $order, \stdClass $event, \Closure $callback): \stdClass|null
     {
         if($event->amount != $order->total) {
             $event = $callback();

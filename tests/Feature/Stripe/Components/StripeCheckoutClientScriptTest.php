@@ -4,11 +4,11 @@ namespace Antidote\LaravelCart\Tests\Feature\Stripe\Components;
 
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Models\Customer;
+use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 use Antidote\LaravelCart\Tests\TestCase;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\Components\StripeCheckoutClientScriptComponent;
-use Antidote\LaravelCartStripe\Models\StripeOrder;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithSession;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
@@ -42,7 +42,7 @@ class StripeCheckoutClientScriptTest extends TestCase
 
         Customer::factory()->create();
 
-        CartPanelPlugin::set('models.order', StripeOrder::class);
+        //CartPanelPlugin::set('models.order', StripeOrder::class);
         Config::set('laravel-cart.stripe.api_key', 'stripe_api_key');
 
         $product = TestProduct::factory()->asSimpleProduct([
@@ -61,6 +61,6 @@ class StripeCheckoutClientScriptTest extends TestCase
         expect($component->stripe_api_key)->toBe(config('laravel-cart.stripe.api_key'));
         expect($component->client_secret)->toBe($this->cart->getActiveOrder()->getData('client_secret'));
         expect($component->checkout_confirm_url)->toBe(CartPanelPlugin::get('urls.checkoutConfirm'));
-        expect($component->order_complete_url)->toBe("order-complete?order_id=".StripeOrder::first()->id);
+        expect($component->order_complete_url)->toBe("order-complete?order_id=".Order::first()->id);
     }
 }

@@ -6,7 +6,6 @@ use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
 use Antidote\LaravelCart\Tests\TestCase;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\Models\StripeOrder;
@@ -86,7 +85,7 @@ class StripeWebhookControllerTest extends TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = StripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -122,7 +121,7 @@ class StripeWebhookControllerTest extends TestCase
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -154,7 +153,7 @@ class StripeWebhookControllerTest extends TestCase
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -188,7 +187,7 @@ class StripeWebhookControllerTest extends TestCase
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -222,7 +221,7 @@ class StripeWebhookControllerTest extends TestCase
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -256,7 +255,7 @@ class StripeWebhookControllerTest extends TestCase
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -288,7 +287,7 @@ class StripeWebhookControllerTest extends TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = StripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -319,7 +318,7 @@ class StripeWebhookControllerTest extends TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = StripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -352,7 +351,7 @@ class StripeWebhookControllerTest extends TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = StripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -387,7 +386,7 @@ class StripeWebhookControllerTest extends TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = StripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -418,7 +417,7 @@ class StripeWebhookControllerTest extends TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = StripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -453,7 +452,7 @@ class StripeWebhookControllerTest extends TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = StripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -486,7 +485,7 @@ class StripeWebhookControllerTest extends TestCase
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = StripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
@@ -518,7 +517,7 @@ class StripeWebhookControllerTest extends TestCase
     {
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
-        $order = TestStripeOrder::factory()
+        $order = Order::factory()
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();

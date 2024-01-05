@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static TestStripeOrderFactory|TestStripeOrder factory(...$parameters)
  */
 
+/** @deprecated */
 class TestStripeOrder extends StripeOrder
 {
     use SoftDeletes;

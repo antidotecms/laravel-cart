@@ -5,7 +5,7 @@ it('has orders', function() {
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 
-    $order = \Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder::factory()
+    $order = \Antidote\LaravelCart\Models\Order::factory()
         ->for($customer)
         ->create();
 

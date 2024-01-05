@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Builder|static query()
@@ -125,16 +126,18 @@ class Order extends Model
     }
 
     //@tdo should this return an exception to inform developer that it must be overridden in their own class
-    public function updateStatus()
-    {
-        throw new \Exception('Order should be overriden and implement updateStatus');
-    }
+//    public function updateStatus()
+//    {
+//        //throw new \Exception('Order should be overriden and implement updateStatus');
+//        (new $this->payment->payment_method_type)->updateStatus();
+//    }
 
     //@tdo should this return an exception to inform developer that it must be overridden in their own class
-    public function isCompleted()
-    {
-        throw new \Exception('Order should be overriden and implement isCompleted');
-    }
+//    public function isCompleted()
+//    {
+//        //throw new \Exception('Order should be overriden and implement isCompleted');
+//        (new $this->payment->payment_method_type)->isCompleted();
+//    }
 
     public function data()
     {
@@ -156,5 +159,10 @@ class Order extends Model
         }
 
         return null;
+    }
+
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payment::class);
     }
 }

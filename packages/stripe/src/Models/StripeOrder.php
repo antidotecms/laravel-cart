@@ -26,8 +26,14 @@ use Antidote\LaravelCartStripe\Domain\PaymentIntent;
  * @method static StripeOrderFactory|StripeOrder factory(...$parameters)
  */
 
+/** @deprecated */
 class StripeOrder extends \Antidote\LaravelCart\Models\Order
 {
+    public function __construct()
+    {
+        throw new \Exception('StripeOrder is deprecated');
+    }
+
     protected static function newFactory()
     {
         return StripeOrderFactory::new();

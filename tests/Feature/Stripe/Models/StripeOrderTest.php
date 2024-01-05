@@ -2,7 +2,10 @@
 
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrder;
+
+beforeEach(function() {
+    $this->markTestSkipped('No longer using TestStripe model - use order instead');
+});
 
 it('provides a factory', function() {
 
@@ -13,7 +16,7 @@ it('provides a factory', function() {
 
 it('will update the status of an order', function () {
 
-    $order = TestStripeOrder::factory()->create();
+    $order = Order::factory()->create();
 
     $mock = $this->mock(\Antidote\LaravelCartStripe\Domain\PaymentIntent::class, function(\Mockery\MockInterface $mock) use ($order) {
         $mock->shouldReceive('retrieveStatus')
@@ -38,7 +41,7 @@ it('will state whether an order is completed', function () {
         'price' => 1000
     ])->create();
 
-    $order = TestStripeOrder::factory()
+    $order = Order::factory()
         ->withProduct($product, 1)
         ->forCustomer(Customer::factory()->create())
         ->create();
