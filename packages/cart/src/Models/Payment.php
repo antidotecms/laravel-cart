@@ -2,8 +2,14 @@
 
 namespace Antidote\LaravelCart\Models;
 
+use Antidote\LaravelCart\Contracts\PaymentManager;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @property string $payment_method_type
+ * @property Order $order
+ */
 
 class Payment extends Model
 {
@@ -18,6 +24,11 @@ class Payment extends Model
 
     public function isCompleted()
     {
-        return (new $this->payment_method_type)->isCompleted($this->order);
+        return $this->manager()->isCompleted($this->order);
+    }
+
+    public function manager(): PaymentManager
+    {
+        return new $this->payment_method_type();
     }
 }
