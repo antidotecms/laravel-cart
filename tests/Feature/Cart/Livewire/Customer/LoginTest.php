@@ -57,3 +57,18 @@ it('will redirect to customer dashboard if user logged in', function () {
     $this->get(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.customer').'/login')
         ->assertRedirect(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.customer').'/dashboard');
 });
+
+it('will redirect to an intended url after login', function () {
+
+    $this->withoutExceptionHandling();
+
+    \Illuminate\Support\Facades\Session::put('url.intended', \Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.cart'));
+
+    \Pest\Livewire\livewire(\Antidote\LaravelCart\Livewire\Customer\Login::class)
+        ->set('data.email', $this->customer->email)
+        ->set('data.password', 'password')
+        ->call('login')
+        ->assertHasNoFormErrors()
+        ->assertRedirect(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.cart'));
+})
+->covers(\Antidote\LaravelCart\Livewire\Customer\Login::class);

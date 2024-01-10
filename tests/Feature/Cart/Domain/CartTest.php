@@ -973,3 +973,12 @@ it('will filter the valid adjustments', function () {
             \Antidote\LaravelCart\Tests\Fixtures\App\Models\Adjustments\DiscountAdjustmentCalculation::class
         ])->count())->toBe(0);
 });
+
+it('will redirect a user back to the cart after logging in', function () {
+
+    \Pest\Livewire\livewire(\Antidote\LaravelCart\Livewire\Cart\Cart::class)
+        ->call('login')
+        ->assertRedirect(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.customer').'/login');
+
+
+});

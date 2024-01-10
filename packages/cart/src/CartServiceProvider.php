@@ -108,7 +108,7 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
 
                 $this->app['router']->get('/', function() {
                     return view(CartPanelPlugin::get('views.cart'));
-                });
+                })->middleware(['web']);
 
                 $this->app['router']->get('replace_cart/{order_id}', [OrderController::class, 'setOrderItemsAsCart'])
                     ->middleware(['web', 'auth:customer'])->name('laravel-cart.replace_cart');

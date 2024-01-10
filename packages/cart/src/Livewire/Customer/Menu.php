@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Livewire\Customer;
 
+use Antidote\LaravelCart\Domain\Cart;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -21,9 +22,16 @@ class Menu extends Component implements HasForms, HasActions
         return Action::make('logout')
             ->action(function() {
                 Auth::logout();
+
+                $cartItems = app(Cart::class)->items()->toArray();
+
+                session()->invalidate();
+                session()->regenerateToken();
                 redirect(CartPanelPlugin::get('urls.customer').'/login');
+
+                session()->put('cart_items', $cartItems);
             })
-            ->visible(fn() => Auth::check('customer'));
+            ->visible(fn() => Auth::guard('customer')->check());
     }
 
     public function loginAction()
@@ -32,7 +40,7 @@ class Menu extends Component implements HasForms, HasActions
             ->action(function() {
                     redirect(CartPanelPlugin::get('urls.customer').'/login');
             })
-            ->visible(fn() => !Auth::check('customer'));
+            ->visible(fn() => !Auth::guard('customer')->check());
     }
 
     public function homeAction()
@@ -41,7 +49,7 @@ class Menu extends Component implements HasForms, HasActions
             ->action(function() {
                 redirect(CartPanelPlugin::get('urls.customer').'/dashboard');
             })
-            ->visible(fn() => Auth::check('customer'));
+            ->visible(fn() => Auth::guard('customer')->check());
 
     }
 

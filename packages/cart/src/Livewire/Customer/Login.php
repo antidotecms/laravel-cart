@@ -51,7 +51,7 @@ class Login extends Component implements HasForms
             'email' => $this->form->getState()['email'],
             'password' => $this->form->getState()['password']
         ])) {
-            $this->redirect(CartPanelPlugin::get('urls.dashboard'));
+            $this->redirect(session()->pull('url.intended', CartPanelPlugin::get('urls.dashboard')));
         } else {
             $this->addError('fail', 'no such user');
         }

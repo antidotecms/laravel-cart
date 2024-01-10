@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Livewire\Cart;
 
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Livewire\Attributes\Computed;
@@ -48,5 +49,11 @@ class Cart extends Component implements HasForms
     public function total(): string
     {
         return format_money(app(\Antidote\LaravelCart\Domain\Cart::class)->getTotal(), 'GBP', 100);
+    }
+
+    public function login()
+    {
+        session()->put('url.intended', CartPanelPlugin::get('urls.cart'));
+        $this->redirect(CartPanelPlugin::get('urls.customer').'/login');
     }
 }
