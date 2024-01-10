@@ -47,3 +47,13 @@ it('will display an error if login was unsuccessful', function () {
     expect(\Illuminate\Support\Facades\Auth::guard('customer')->check())->toBeFalse();
 })
 ->covers(\Antidote\LaravelCart\Livewire\Customer\Login::class);
+
+it('will redirect to customer dashboard if user logged in', function () {
+
+    $this->withoutExceptionHandling();
+
+    $this->be(\Antidote\LaravelCart\Models\Customer::factory()->create(), 'customer');
+
+    $this->get(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.customer').'/login')
+        ->assertRedirect(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.customer').'/dashboard');
+});

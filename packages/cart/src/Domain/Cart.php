@@ -3,10 +3,12 @@
 namespace Antidote\LaravelCart\Domain;
 
 use Antidote\LaravelCart\DataTransferObjects\CartItem;
+use Antidote\LaravelCart\Enums\PaymentMethod;
 use Antidote\LaravelCart\Models\Adjustment;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderAdjustment;
+use Antidote\LaravelCart\Models\Payment;
 use Antidote\LaravelCart\Models\Product;
 use Antidote\LaravelCart\Types\ValidCartItem;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
@@ -172,7 +174,7 @@ class Cart
 
     public function getTax() : int
     {
-        return ceil(ceil(($this->getSubtotal() + $this->getAdjustmentsTotal(true)) * config('laravel-cart.tax_rate')) * 100)/100;
+        return ceil(ceil(($this->getSubtotal() + $this->getAdjustmentsTotal(true)) * CartPanelPlugin::get('tax_rate') * 100)/100);
     }
 
     public function getAdjustmentsTotal(bool $applied_to_subtotal, array $except = [])
@@ -274,6 +276,12 @@ class Cart
         $order = Cart::getActiveOrder() ?? $order_class::create([
             'customer_id' => $customer->id
         ]);
+
+        $payment = Payment::make([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
+        $order->payment()->save($payment);
 
         return $order;
     }

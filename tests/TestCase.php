@@ -3,8 +3,10 @@
 namespace Antidote\LaravelCart\Tests;
 
 use Antidote\LaravelCart\CartServiceProvider;
+use Antidote\LaravelCart\Http\Middleware\EnsureOrderBelongsToCustomer;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestPayment;
 use Antidote\LaravelCart\Tests\Fixtures\Filament\TestPanelProvider;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\StripeServiceProvider;
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
@@ -59,16 +61,17 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'prefix'   => '',
         ]);
 
-        $app->config->set('laravel-cart.tax_rate', 0.2);
-
-        $app->config->set('laravel-cart.stripe.secret_key', 'secret_key');
-
-        $app->config->set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');
+//        $app->config->set('laravel-cart.tax_rate', 0.2);
+//
+//        $app->config->set('laravel-cart.stripe.secret_key', 'secret_key');
+//
+//        $app->config->set('laravel-cart.views.order_complete', 'laravel-cart::order-complete');
     }
 
     protected function defineRoutes($router)
     {
         $router->get('/login', null)->name('login');
+        $router->get(CartPanelPlugin::get('urls.orderComplete'), function() {})->middleware(['web', 'auth:customer', EnsureOrderBelongsToCustomer::class]);
     }
 
 }

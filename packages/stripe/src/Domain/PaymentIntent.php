@@ -3,6 +3,7 @@
 namespace Antidote\LaravelCartStripe\Domain;
 
 use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
@@ -13,7 +14,7 @@ class PaymentIntent
     private function getClient() : StripeClient
     {
         return new StripeClient(
-            config('laravel-cart.stripe.secret_key')
+            CartPanelPlugin::get('stripe.secret_key')
         );
     }
 

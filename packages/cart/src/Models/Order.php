@@ -85,7 +85,7 @@ class Order extends Model
     {
         return Attribute::make(
             get: function ($value) : int {
-                return ceil(ceil(($this->subtotal + $this->getAdjustmentTotal(true)) * config('laravel-cart.tax_rate')) * 100)/100;
+                return ceil(ceil(($this->subtotal + $this->getAdjustmentTotal(true)) * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate')) * 100)/100;
             }
         );
     }

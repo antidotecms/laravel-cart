@@ -2,7 +2,7 @@
 
 it('will show potential discounts in the cart', function () {
 
-    \Illuminate\Support\Facades\Config::set('laravel-cart.tax_rate', 0);
+    \Antidote\LaravelCartFilament\CartPanelPlugin::set('tax_rate', 0);
 
     $customer = \Antidote\LaravelCart\Models\Customer::factory()->create();
 

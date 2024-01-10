@@ -39,7 +39,7 @@ it('will replace the contents of the cart with an incomplete order', function() 
     expect($this->cart->items()->first()->getProduct()->name)->toBe('cart product');
 
     $this->withoutExceptionHandling();
-    $response = get('/checkout/replace_cart/'.$order->id);
+    $response = get('/cart/replace_cart/'.$order->id);
 
     $response->assertRedirect('/cart');
 
@@ -68,7 +68,7 @@ it('will add the contents of the cart with an incomplete order', function() {
     expect($this->cart->items()->count())->toBe(1);
     expect($this->cart->items()->first()->getProduct()->name)->toBe('cart product');
 
-    $response = get('/checkout/add_to_cart/'.$order->id);
+    $response = get('/cart/add_to_cart/'.$order->id);
 
     $response->assertRedirect('/cart');
 

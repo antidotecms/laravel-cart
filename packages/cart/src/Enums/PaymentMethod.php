@@ -2,9 +2,17 @@
 
 namespace Antidote\LaravelCart\Enums;
 
+use Antidote\LaravelCart\Contracts\PaymentManager;
 use Antidote\LaravelCartStripe\PaymentManager\StripePaymentManager;
 
-enum PaymentMethod: string
+enum PaymentMethod
 {
-    case Stripe = StripePaymentManager::class;
+    case Stripe;
+
+    public function manager(): PaymentManager
+    {
+        return match($this) {
+            PaymentMethod::Stripe =>  new StripePaymentManager()
+        };
+    }
 }

@@ -3,6 +3,7 @@
 namespace Antidote\LaravelCartStripe\Http\Controllers;
 
 use Antidote\LaravelCart\Events\OrderCompleted;
+use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
@@ -20,9 +21,9 @@ class StripeWebhookController extends Controller
 
     public function __invoke(Request $request)
     {
-        Stripe::setApiKey(config('laravel-cart.stripe.secret_key'));
+        Stripe::setApiKey(CartPanelPlugin::get('stripe.secret_key'));
         $signature_header = $request->header('Stripe-Signature');
-        $stripe_payment_intent_webhook_secret = config('laravel-cart.stripe.webhook_secret');
+        $stripe_payment_intent_webhook_secret = CartPanelPlugin::get('stripe.webhook_secret');
         $payload = $request->getContent();
 
         try {
@@ -96,10 +97,11 @@ class StripeWebhookController extends Controller
 
     private function logStripeEvent(Event $event)
     {
-        if(config('laravel-cart.stripe.log') === true) {
+//        if(config('laravel-cart.stripe.log') === true) {
+        if(CartPanelPlugin::get('stripe.logging') === true) {
             Log::info($event->toJSON());
-        } else if(is_string(config('laravel-cart.stripe.log'))) {
-            Log::channel(config('laravel-cart.stripe.log'))->info($event->toJSON());
+        } else if(is_string(CartPanelPlugin::get('stripe.logging'))) {
+            Log::channel(CartPanelPlugin::get('stripe.logging'))->info($event->toJSON());
         }
     }
 }

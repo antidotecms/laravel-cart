@@ -50,10 +50,13 @@ class StripeServiceProvider extends \Illuminate\Support\ServiceProvider
 
     private function routes() : void
     {
-        $this->loadRoutesFrom(__DIR__.'../../routes/web.php');
+        //$this->loadRoutesFrom(__DIR__.'../../routes/web.php');
 
         $this->app->booting(function() {
-            $this->app['router']->post(CartPanelPlugin::get('urls.stripe.webhookHandler'), StripeWebhookController::class);
+
+            $this->app['router']->post(CartPanelPlugin::get('stripe.webhookHandler'), StripeWebhookController::class)->middleware(['web', 'auth:customer']);
+
+
         });
     }
 }

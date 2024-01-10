@@ -151,7 +151,7 @@ class ServiceProviderWithCustomResourcesTest extends TestCase //extends CustomRe
 
         setUpCartPlugin($cart_plugin);
 
-        expect(CartPanelPlugin::get('urls.orderComplete'))->toBe('order-complete');
+        expect(CartPanelPlugin::get('urls.orderComplete'))->toBe('/order-complete');
     }
 
     /**

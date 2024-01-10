@@ -764,7 +764,7 @@ it('can add a note to the order', function () {
 
 it('will add order adjustments to the order when creating an order', function () {
 
-    \Illuminate\Support\Facades\Config::set('laravel-cart.tax_rate', 0);
+    \Antidote\LaravelCartFilament\CartPanelPlugin::set('tax_rate', 0);
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000
@@ -813,7 +813,7 @@ it('will add order adjustments to the order when creating an order', function ()
 
 it('will clear the order_adjustments from order if cart is empty', function () {
 
-    \Illuminate\Support\Facades\Config::set('laravel-cart.tax_rate', 0);
+    \Antidote\LaravelCartFilament\CartPanelPlugin::set('tax_rate', 0);
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000
@@ -944,7 +944,7 @@ it('will clear the active order', function () {
 
 it('will filter the valid adjustments', function () {
 
-    \Illuminate\Support\Facades\Config::set('laravel-cart.tax_rate', 0);
+    \Antidote\LaravelCartFilament\CartPanelPlugin::set('tax_rate', 0);
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 1000

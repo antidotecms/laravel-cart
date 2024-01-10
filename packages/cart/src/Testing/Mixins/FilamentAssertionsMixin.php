@@ -183,4 +183,40 @@ class FilamentAssertionsMixin
             return $this;
         };
     }
+
+    public function assertFormExists2()
+    {
+        return function (string | \Closure $formName = 'form', ?\Closure $checkFormUsing = null): static {
+
+            if ($formName instanceof \Closure) {
+                $checkFormUsing = $formName;
+                $formName = 'form';
+            }
+
+            /** @var ComponentContainer $form */
+            $form = $this->instance()->{$formName};
+
+            $livewireClass = $this->instance()::class;
+
+            Assert::assertInstanceOf(
+                ComponentContainer::class,
+                $form,
+                "Failed asserting that a form with the name [{$formName}] exists on the [{$livewireClass}] component."
+            );
+
+            if($checkFormUsing) {
+                Assert::assertTrue(
+                    $checkFormUsing($form),
+                    "Failed asserting that the table exists with the given configuration"
+                );
+            }
+
+            return $this;
+        };
+    }
+
+    public function callFormAction()
+    {
+
+    }
 }

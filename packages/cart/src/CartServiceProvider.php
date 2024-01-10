@@ -3,9 +3,13 @@
 namespace Antidote\LaravelCart;
 
 use Antidote\LaravelCart\Domain\Cart;
-use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
+use Antidote\LaravelCart\Http\Controllers\CheckoutConfirmController;
 use Antidote\LaravelCart\Http\Controllers\OrderController;
+use Antidote\LaravelCart\Http\Controllers\PostCheckoutController;
+use Antidote\LaravelCart\Http\Middleware\EnsureOrderBelongsToCustomer;
 use Antidote\LaravelCart\Livewire\Cart\CartItem;
+use Antidote\LaravelCart\Livewire\Cart\Checkout;
+use Antidote\LaravelCart\Livewire\Cart\CheckoutOptions;
 use Antidote\LaravelCart\Livewire\Cart\Icon;
 use Antidote\LaravelCart\Livewire\Customer\Address;
 use Antidote\LaravelCart\Livewire\Customer\Dashboard;
@@ -14,6 +18,9 @@ use Antidote\LaravelCart\Livewire\Customer\Login;
 use Antidote\LaravelCart\Livewire\Product;
 use Antidote\LaravelCart\Livewire\TestComponent;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\View\Compilers\BladeCompiler;
 use Livewire\Livewire;
@@ -46,6 +53,8 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
             ]);
         });
 
+        Blade::componentNamespace('Antidote\\LaravelCart\\Components', 'laravel-cart');
+
         $this->callAfterResolving(BladeCompiler::class, function () {
             Livewire::component('laravel-cart::product', Product::class);
             Livewire::component('laravel-cart::cart', \Antidote\LaravelCart\Livewire\Cart\Cart::class);
@@ -55,6 +64,8 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
             Livewire::component('laravel-cart::customer.details', Details::class);
             Livewire::component('laravel-cart::customer.address', Address::class);
             Livewire::component('laravel-cart::cart.icon', Icon::class);
+            Livewire::component('laravel-cart::cart.checkout-options', CheckoutOptions::class);
+            Livewire::component('laravel-cart::cart.checkout', Checkout::class);
         });
 
     }
@@ -86,16 +97,57 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
     private function routes()
     {
         $this->app->booted(function() {
-            $this->app['router']
-                ->get(CartPanelPlugin::get('urls.orderComplete'), OrderCompleteController::class)
-                ->middleware(['web', 'auth:customer'])
-                ->name('laravel-cart.order_complete');
 
-            $this->app['router']->get('/checkout/replace_cart/{order_id}', [OrderController::class, 'setOrderItemsAsCart'])
-                ->middleware(['web', 'auth:customer'])->name('laravel-cart.replace_cart');;
+            $this->app['router']->get(CartPanelPlugin::get('urls.orderComplete'), function() {
+                return CartPanelPlugin::get('views.orderComplete');
+            })->middleware(['web', 'auth:customer', EnsureOrderBelongsToCustomer::class]);
 
-            $this->app['router']->get('/checkout/add_to_cart/{order_id}', [OrderController::class, 'addOrderItemsToCart'])
-                ->middleware(['web', 'auth:customer'])->name('laravel-cart.add_to_cart');
+            $this->app['router']->prefix(CartPanelPlugin::get('urls.cart'))->group(function() {
+
+                $this->app['router']->get('/', function() {
+                    return view(CartPanelPlugin::get('views.cart'));
+                });
+
+                $this->app['router']->get('replace_cart/{order_id}', [OrderController::class, 'setOrderItemsAsCart'])
+                    ->middleware(['web', 'auth:customer'])->name('laravel-cart.replace_cart');
+
+                $this->app['router']->get('add_to_cart/{order_id}', [OrderController::class, 'addOrderItemsToCart'])
+                    ->middleware(['web', 'auth:customer'])->name('laravel-cart.add_to_cart');
+            });
+
+            $this->app['router']->prefix(CartPanelPlugin::get('urls.customer'))->group(function() {
+
+                $this->app['router']->get('login', function() {
+                    //@todo would be nice to leverage the apps RouteServiceProvider use use the HOME constant but difficult to test
+                    if (Auth::guard('customer')->check()) {
+                        return redirect(CartPanelPlugin::get('urls.customer').'/dashboard');
+                    }
+                    return view('login');
+                })->middleware(['web'])->name('login');
+
+                $this->app['router']->get('dashboard', function() {
+                    return view('customer.dashboard');
+                })->middleware(['web', 'auth:customer']);
+
+            });
+
+            $this->app['router']->prefix(CartPanelPlugin::get('urls.shop'))->group(function() {
+
+                $this->app['router']->get('checkout', function () {
+                    return view('checkout');
+                })->middleware(['web', 'auth:customer']);
+
+            });
+
+//            $this->app['router']->get('/checkout/replace_cart/{order_id}', [OrderController::class, 'setOrderItemsAsCart'])
+//                ->middleware(['web', 'auth:customer'])->name('laravel-cart.replace_cart');
+
+//            $this->app['router']->get('/checkout/add_to_cart/{order_id}', [OrderController::class, 'addOrderItemsToCart'])
+//                ->middleware(['web', 'auth:customer'])->name('laravel-cart.add_to_cart');
+
+            $this->app['router']->get(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.checkoutConfirm'), CheckoutConfirmController::class);
+
+            $this->app['router']->get(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.postCheckout'), PostCheckoutController::class);
         });
 
     }

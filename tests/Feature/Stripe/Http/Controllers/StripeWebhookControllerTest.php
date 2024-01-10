@@ -44,8 +44,8 @@ class StripeWebhookControllerTest extends TestCase
 
     protected function defineEnv($app)
     {
-        $app->config->set('laravel-cart.stripe.log', true);
-        $app->config->set('laravel-cart.tax_rate', 0.2);
+//        $app->config->set('laravel-cart.stripe.log', true);
+//        $app->config->set('laravel-cart.tax_rate', 0.2);
     }
 
     protected function setUp(): void
@@ -70,10 +70,10 @@ class StripeWebhookControllerTest extends TestCase
         return \Stripe\Event::constructFrom($event);
     }
 
-    protected function defineRoutes($router)
-    {
-        $router->get('/order-complete', OrderCompleteController::class)->middleware('auth:customer');
-    }
+//    protected function defineRoutes($router)
+//    {
+//        $router->get('/order-complete', OrderCompleteController::class)->middleware('auth:customer');
+//    }
 
     /**
      * @test
@@ -90,7 +90,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => $order->id], 'id' => 'payment_intent_identifier']]]);
 
@@ -100,7 +100,7 @@ class StripeWebhookControllerTest extends TestCase
                 ->andReturnTrue();
         });
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
         $response->assertSuccessful();
 
         $order->refresh();
@@ -126,7 +126,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('payment_intent.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -136,7 +136,7 @@ class StripeWebhookControllerTest extends TestCase
                 ->andReturnTrue();
         });
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -158,7 +158,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -168,7 +168,7 @@ class StripeWebhookControllerTest extends TestCase
                 ->andReturnTrue();
         });
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -192,7 +192,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('payment_intent.cancelled', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -202,7 +202,7 @@ class StripeWebhookControllerTest extends TestCase
                 ->andReturnTrue();
         });
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -226,7 +226,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('payment_intent.payment_failed', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -236,7 +236,7 @@ class StripeWebhookControllerTest extends TestCase
                 ->andReturnTrue();
         });
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -260,7 +260,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('unknown_event', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -270,7 +270,7 @@ class StripeWebhookControllerTest extends TestCase
                 ->andReturnTrue();
         });
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 
@@ -292,9 +292,9 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => 1]]]]);
+        $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
-        $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) use ($event) {
+        $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) {
             $mock->shouldReceive('verifyHeader')
                 ->withAnyArgs()
                 ->andReturnTrue();
@@ -305,7 +305,9 @@ class StripeWebhookControllerTest extends TestCase
             ->once()
             ->andReturn();
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
+
+        $this->assertTrue(true);
     }
 
     /**
@@ -314,7 +316,9 @@ class StripeWebhookControllerTest extends TestCase
      */
     public function will_log_an_event_to_the_specified_channel()
     {
-        Config::set('laravel-cart.stripe.log', 'some_channel');
+        $this->withoutExceptionHandling();
+//        Config::set('laravel-cart.stripe.log', 'some_channel');
+        CartPanelPlugin::set('stripe.logging', 'some_channel');
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
@@ -331,7 +335,8 @@ class StripeWebhookControllerTest extends TestCase
                 ->andReturnTrue();
         });
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
+        $response->assertSuccessful();
 
         Log::channel('some_channel')->assertLogged(function(LogEntry $log) use ($event) {
             return $log->level == 'info' &&
@@ -347,7 +352,8 @@ class StripeWebhookControllerTest extends TestCase
      */
     public function will_not_log_items()
     {
-        Config::set('laravel-cart.stripe.log', false);
+        //Config::set('laravel-cart.stripe.log', false);
+        CartPanelPlugin::set('stripe.logging', false);
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();
@@ -371,7 +377,7 @@ class StripeWebhookControllerTest extends TestCase
         Log::shouldReceive('info')
             ->never();
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         $this->assertTrue(true);
     }
@@ -391,7 +397,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -403,7 +409,7 @@ class StripeWebhookControllerTest extends TestCase
 
         Event::fake();
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         Event::assertDispatched(OrderCompleted::class);
     }
@@ -422,7 +428,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -436,7 +442,7 @@ class StripeWebhookControllerTest extends TestCase
 
         Event::fake();
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         $response->assertStatus(400);
         $response->assertContent('');
@@ -457,7 +463,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -469,7 +475,7 @@ class StripeWebhookControllerTest extends TestCase
 
         Event::fake();
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         $response->assertStatus(400);
         $response->assertContent('');
@@ -490,7 +496,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('charge.succeeded', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -503,7 +509,7 @@ class StripeWebhookControllerTest extends TestCase
 
         Event::fake();
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         $response->assertStatus(400);
         $response->assertContent('');
@@ -522,7 +528,7 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
-        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * config('laravel-cart.tax_rate'))));
+        expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('unknown_event', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
@@ -532,7 +538,7 @@ class StripeWebhookControllerTest extends TestCase
                 ->andReturnTrue();
         });
 
-        $response = $this->postJson(CartPanelPlugin::get('urls.stripe.webhookHandler'), $event->toArray());
+        $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
         $order->refresh();
 

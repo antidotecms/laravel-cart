@@ -8,7 +8,7 @@ it('will prevent access to stripe webhook path if in maintenance', function() {
     //@todo how to fake "post" with specific client id?
     app()->maintenanceMode()->activate([]);
 
-    $response = $this->post(CartPanelPlugin::get('urls.stripe.webhookHandler'));
+    $response = $this->post(CartPanelPlugin::get('stripe.webhookHandler'));
 
     $response->assertStatus(503);
 

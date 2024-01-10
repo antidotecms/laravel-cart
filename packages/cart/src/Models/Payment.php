@@ -3,6 +3,7 @@
 namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Contracts\PaymentManager;
+use Antidote\LaravelCart\Enums\PaymentMethod;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,6 +18,10 @@ class Payment extends Model
         'payment_method_type'
     ];
 
+    protected $casts = [
+        'payment_method_type' =>  PaymentMethod::class
+    ];
+
     public function order()
     {
         return $this->belongsTo(CartPanelPlugin::get('models.order'));
@@ -29,6 +34,6 @@ class Payment extends Model
 
     public function manager(): PaymentManager
     {
-        return new $this->payment_method_type();
+        return $this->payment_method_type->manager();
     }
 }

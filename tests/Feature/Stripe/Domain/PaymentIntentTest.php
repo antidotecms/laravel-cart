@@ -184,8 +184,6 @@ class PaymentIntentTest extends TestCase
 
         $this->cart->add($simple_product);
 
-        Config::set('laravel-cart.tax_rate', 0.2);
-
         $order = $this->cart->createOrder($customer);
 
         $payment = Payment::make([
@@ -230,8 +228,6 @@ class PaymentIntentTest extends TestCase
         $customer = Customer::factory()->create();
 
         $this->cart->add($simple_product);
-
-        Config::set('laravel-cart.tax_rate', 0.2);
 
         $order = $this->cart->createOrder($customer);
 

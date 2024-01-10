@@ -34,6 +34,7 @@ class CartPanelPlugin implements Plugin
             'address' => Address::class,
             'payment_method' => Payment::class
         ],
+        'tax_rate' => 0.2,
         'resources' => [
             'order' => OrderResource::class,
             'customer' => CustomerResource::class,
@@ -41,18 +42,30 @@ class CartPanelPlugin implements Plugin
             'product' => ProductResource::class
         ],
         'urls' => [
-            'dashboard' => 'dashboard',
-            'cart' => 'cart',
+            'dashboard' => '/dashboard',
+            'login' => '/login',
+            'cart' => '/cart',
+            'orderComplete' => '/order-complete',
+            'checkout' => '/checkout',
+            'checkoutConfirm' => '/checkout-confirm',
+            'postCheckout' => '/post-checkout',
+            'customer' => '/customer'
+        ],
+        'views' => [
             'orderComplete' => 'order-complete',
-            'checkoutConfirm' => 'checkout-confirm',
-            'stripe' => [
-                'webhookHandler' => 'checkout/stripe'
-            ]
+            'cart' => 'cart'
         ],
         'productTypes' => [
             SimpleProductType::class => 'Simple'
         ],
         'paymentMethods' => [
+        ],
+        'stripe' => [
+            'webhookHandler' => '/checkout/stripe',
+            'api_key' => 'api_key',
+            'secret_key' => 'secret_key',
+            'logging' => true,
+            'webhook_secret' => 'webhook_secret'
         ]
     ];
 

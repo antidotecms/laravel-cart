@@ -8,6 +8,11 @@ use Antidote\LaravelCartStripe\Domain\PaymentIntent;
 
 class StripePaymentManager extends PaymentManager
 {
+    public function getCheckoutComponent(): string
+    {
+        return 'laravel-cart-stripe::checkout';
+    }
+
     public function updateStatus(Order $order): void
     {
         $payment_intent = app(PaymentIntent::class);

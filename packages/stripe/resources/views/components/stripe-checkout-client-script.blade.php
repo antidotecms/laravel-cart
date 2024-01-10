@@ -2,6 +2,7 @@
 
     @push('laravel-cart-header-scripts')
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <script src="https://js.stripe.com/v3/"></script>
     @endpush
 {{--        {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->payment->client_secret }}--}}
 {{--        {{ \Antidote\LaravelCart\Facades\Cart::getActiveOrder()->total }}--}}

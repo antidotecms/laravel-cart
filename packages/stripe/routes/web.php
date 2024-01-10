@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web', 'auth:customer'])->group(function() {
 
-    Route::get(config('laravel-cart.urls.checkout_confirm'), function () {
+    //@todo allow overriding with custom invokable controller to allow custom logic to determine if a sale can go through
+    Route::get(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.checkoutConfirm'), function () {
 
         $check = true;
 

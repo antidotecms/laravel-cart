@@ -118,7 +118,7 @@ it('will add a notification when an item is added to the cart', function () {
             Notification::make()
                 ->success()
                 ->title('Item added to cart')
-                ->body("<a href='cart'>View your cart</a>")
+                ->body("<a href='/cart'>View your cart</a>")
         );
 })
 ->covers(\Antidote\LaravelCart\Livewire\Product::class);;
