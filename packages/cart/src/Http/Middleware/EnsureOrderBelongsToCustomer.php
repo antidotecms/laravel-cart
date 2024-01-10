@@ -12,8 +12,8 @@ class EnsureOrderBelongsToCustomer
     {
         $order = Order::findOrFail($request->get('order_id'));
 
-        if(!$order->customer->id == auth()->user()->id) {
-            abort(404);
+        if($order->customer->id != auth('customer')->user()->id) {
+            return abort(404);
         }
 
         return $next($request);
