@@ -60,6 +60,10 @@
             "Composer\\Config::disableProcessTimeout",
             "XDEBUG_MODE=coverage php ./vendor/bin/pest --parallel --processes=4 --coverage-html ./coverage -c ./phpunit.xml"
         ],
+        "coverage-text" : [
+            "Composer\\Config::disableProcessTimeout",
+            "XDEBUG_MODE=coverage php ./vendor/bin/pest --parallel --processes=4 --coverage-text coverage-text.txt -c ./phpunit.xml"
+        ],
         "phpstan": "./vendor/bin/phpstan analyse",
         "test-coverage" : "php ./vendor/bin/phpunit --coverage-html ./coverage -c ./phpunit.xml",
         "test" : [
