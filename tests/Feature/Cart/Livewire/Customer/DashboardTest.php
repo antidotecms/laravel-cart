@@ -15,6 +15,8 @@ beforeEach(function() {
 
 it('will display the customers name', function() {
 
+    $this->markTestSkipped('No longer provided');
+
     livewire(\Antidote\LaravelCart\Livewire\Customer\Dashboard::class)
         ->assertSet('name', $this->customer->name)
         ->assertSee("Welcome {$this->customer->name}");

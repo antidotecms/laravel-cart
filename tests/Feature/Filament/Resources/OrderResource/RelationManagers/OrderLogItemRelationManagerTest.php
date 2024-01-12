@@ -39,15 +39,15 @@ beforeEach(function() {
     ]);
 
     //@todo make factory
-    $order_log_item = TestStripeOrderLogItem::create([
+    $order_log_item = OrderLogItem::create([
         'message' => 'This is an order log item',
         'order_id' => $this->orders->first()->id
     ]);
 
-    $order_log_item->event = [
-        'field_one' => 'value_one',
-        'field_two' => 'value-two'
-    ];
+//    $order_log_item->event = [
+//        'field_one' => 'value_one',
+//        'field_two' => 'value-two'
+//    ];
 
     $order_log_item->save();
 
@@ -94,6 +94,8 @@ it('will provide an action to view stripe event if stripe order log item is used
 });
 
 it('will display the stripe event', function () {
+
+    $this->markTestSkipped('event no longer logged');
 
     livewire(OrderLogItemRelationManager::class, [
         'pageClass' => EditOrder::class,

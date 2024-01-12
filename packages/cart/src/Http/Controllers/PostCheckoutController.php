@@ -15,5 +15,7 @@ class PostCheckoutController
         $order->payment->manager()->updateStatus($order);
 
         $cart->setActiveOrder(null);
+
+        $cart->clear();
     }
 }

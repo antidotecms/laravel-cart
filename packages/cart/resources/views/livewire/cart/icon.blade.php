@@ -1,8 +1,8 @@
 <a href='{{ $this->cartUrl }}'>
     <x-filament::icon-button
         icon="heroicon-m-shopping-cart"
-        label="Mark notifications as read"
         color="black"
+        tooltip="View cart"
     >
         <x-slot name="badge">
             {{ count(app(\Antidote\LaravelCart\Domain\Cart::class)->items()) }}

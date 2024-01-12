@@ -48,6 +48,8 @@ class CheckoutOptions extends Component implements HasForms
 
         $order->payment()->save($payment);
 
+        app(\Antidote\LaravelCart\Domain\Cart::class)->setActiveOrder($order);
+
         return redirect(CartPanelPlugin::get('urls.checkout'));
     }
 

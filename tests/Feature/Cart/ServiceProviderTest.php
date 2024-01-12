@@ -81,7 +81,7 @@ class ServiceProviderTest extends TestCase
                 'table' => 'order_log_items',
                 'included' => [
                     'id',
-                    'event',
+                    //'event',
                     'message',
                     'order_id',
                     'created_at',

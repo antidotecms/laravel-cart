@@ -3,16 +3,15 @@
 namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Database\Factories\CustomerFactory;
-use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class Customer extends Authenticatable
+class Customer extends Authenticatable implements \Illuminate\Contracts\Auth\MustVerifyEmail
 {
     use HasFactory;
-    use Notifiable, MustVerifyEmail;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

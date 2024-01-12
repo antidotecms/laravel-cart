@@ -4,6 +4,7 @@ namespace Antidote\LaravelCart;
 
 use Antidote\LaravelCart\Domain\Cart;
 use Antidote\LaravelCart\Http\Controllers\CheckoutConfirmController;
+use Antidote\LaravelCart\Http\Controllers\EmailVerificationController;
 use Antidote\LaravelCart\Http\Controllers\OrderController;
 use Antidote\LaravelCart\Http\Controllers\PostCheckoutController;
 use Antidote\LaravelCart\Http\Middleware\EnsureOrderBelongsToCustomer;
@@ -16,6 +17,7 @@ use Antidote\LaravelCart\Livewire\Customer\Dashboard;
 use Antidote\LaravelCart\Livewire\Customer\Details;
 use Antidote\LaravelCart\Livewire\Customer\Login;
 use Antidote\LaravelCart\Livewire\Customer\Menu;
+use Antidote\LaravelCart\Livewire\Customer\Registration;
 use Antidote\LaravelCart\Livewire\Product;
 use Antidote\LaravelCart\Livewire\TestComponent;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
@@ -68,6 +70,7 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
             Livewire::component('laravel-cart::cart.checkout-options', CheckoutOptions::class);
             Livewire::component('laravel-cart::cart.checkout', Checkout::class);
             Livewire::component('laravel-cart::customer.menu', Menu::class);
+            Livewire::component('laravel-cart::customer.registration', Registration::class);
         });
 
     }
@@ -100,8 +103,12 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         $this->app->booted(function() {
 
+            $this->app['router']->get(CartPanelPlugin::get('urls.registration'), function() {
+                return view(CartPanelPlugin::get('views.registration'));
+            })->middleware(['web']);
+
             $this->app['router']->get(CartPanelPlugin::get('urls.orderComplete'), function() {
-                return CartPanelPlugin::get('views.orderComplete');
+                return view(CartPanelPlugin::get('views.orderComplete'));
             })->middleware(['web', 'auth:customer', EnsureOrderBelongsToCustomer::class]);
 
             $this->app['router']->prefix(CartPanelPlugin::get('urls.cart'))->group(function() {
@@ -129,7 +136,7 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
 
                 $this->app['router']->get('dashboard', function() {
                     return view('customer.dashboard');
-                })->middleware(['web', 'auth:customer']);
+                })->middleware(['web', 'auth:customer', 'verified']);
 
             });
 
@@ -147,9 +154,26 @@ class CartServiceProvider extends \Illuminate\Support\ServiceProvider
 //            $this->app['router']->get('/checkout/add_to_cart/{order_id}', [OrderController::class, 'addOrderItemsToCart'])
 //                ->middleware(['web', 'auth:customer'])->name('laravel-cart.add_to_cart');
 
-            $this->app['router']->get(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.checkoutConfirm'), CheckoutConfirmController::class);
+            $this->app['router']->get(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.checkoutConfirm'), CheckoutConfirmController::class)
+                ->middleware(['web']);
 
-            $this->app['router']->get(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.postCheckout'), PostCheckoutController::class);
+            $this->app['router']->get(\Antidote\LaravelCartFilament\CartPanelPlugin::get('urls.postCheckout'), PostCheckoutController::class)
+                ->middleware(['web']);
+
+            $this->app['router']->middleware(['web', 'auth:customer'])->prefix('auth')->group(function() {
+
+                $this->app['router']->get('email-verification/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+                    ->middleware(['signed'])
+                    ->name('verification.verify');
+
+                $this->app['router']->get('verify', [EmailVerificationController::class, 'notice'])
+                    ->name('verification.notice');
+
+                $this->app['router']->get('verification-notification', [EmailVerificationController::class, 'send'])
+                    ->middleware(['throttle:6,1'])
+                    ->name('verification.send');
+            });
+
         });
 
     }

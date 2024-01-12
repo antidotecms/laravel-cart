@@ -16,7 +16,7 @@ class StripeWebhookController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(\Antidote\LaravelCartStripe\Http\Middleware\WhitelistStripeIPAddresses::class);
+        //$this->middleware(\Antidote\LaravelCartStripe\Http\Middleware\WhitelistStripeIPAddresses::class);
     }
 
     public function __invoke(Request $request)
@@ -84,9 +84,12 @@ class StripeWebhookController extends Controller
 
     private function createOrderLogItem($event_name, $event, $order)
     {
-        $order_log_item = $order->log($event_name);
-        $order_log_item->event  = $event;
-        $order_log_item->save();
+//        $order_log_item = $order->log($event_name);
+//        $order_log_item->event  = $event;
+//        $order_log_item->save();
+        $order->log($event_name);
+        //@todo log event or leave in Stripe?
+        //$order->log($event);
     }
 
     private function updateOrderStatus($event, $order)

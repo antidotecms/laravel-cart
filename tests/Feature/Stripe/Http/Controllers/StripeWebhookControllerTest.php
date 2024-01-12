@@ -37,10 +37,10 @@ class StripeWebhookControllerTest extends TestCase
     use RefreshDatabase;
     use WithoutMiddleware;
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadMigrationsFrom(__DIR__.'/../../../../Fixtures/Cart/migrations');
-    }
+//    protected function defineDatabaseMigrations()
+//    {
+//        $this->loadMigrationsFrom(__DIR__.'/../../../../Fixtures/Cart/migrations');
+//    }
 
     protected function defineEnv($app)
     {
@@ -81,7 +81,8 @@ class StripeWebhookControllerTest extends TestCase
      */
     public function will_record_that_a_payment_intent_has_been_created()
     {
-        Config::set('laravel-cart.stripe.log', true);
+        //Config::set('laravel-cart.stripe.log', true);
+        CartPanelPlugin::set('stripe.logging', true);
 
         $product = TestProduct::factory()->asSimpleProduct()->create();
         $customer = Customer::factory()->create();

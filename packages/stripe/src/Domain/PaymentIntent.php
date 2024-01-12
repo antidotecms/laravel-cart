@@ -53,9 +53,13 @@ class PaymentIntent
     private function logMessage(Order $order, string $message, \stdClass $event) : void
     {
         $order->logItems()->create([
-            'message' => $message,
-            'event' => $event
+            'message' => $message
         ]);
+
+        //@todo store event data or just leave data in Stripe?
+//        $order->logItems()->create([
+//            'message' => json_encode($event)
+//        ]);
     }
 
     private function createPaymentIntent(Order $order) : \stdClass

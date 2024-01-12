@@ -44,7 +44,16 @@
                             const messageContainer = document.querySelector("#error-message");
                             messageContainer.textContent = response.error.message;
                         } else {
-                            location.href = "{{ $order_complete_url }}"
+                            fetch("{{ $post_checkout_url }}", {
+                                method: "get",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-TOKEN": document.querySelector("meta[name=\"csrf-token\"]").getAttribute("content")
+                                }
+                            })
+                            .then(function(response) {
+                                location.href = "{{ $order_complete_url }}"
+                            })
                         }
                     })
                 } else {

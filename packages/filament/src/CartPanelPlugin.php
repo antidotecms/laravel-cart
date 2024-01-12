@@ -49,11 +49,14 @@ class CartPanelPlugin implements Plugin
             'checkout' => '/checkout',
             'checkoutConfirm' => '/checkout-confirm',
             'postCheckout' => '/post-checkout',
-            'customer' => '/customer'
+            'customer' => '/customer',
+            'registration' => '/registration'
         ],
         'views' => [
             'orderComplete' => 'order-complete',
-            'cart' => 'cart'
+            'cart' => 'cart',
+            'registration' => 'laravel-cart::registration',
+            'emailVerification' => 'laravel-cart::email-verification'
         ],
         'productTypes' => [
             SimpleProductType::class => 'Simple'

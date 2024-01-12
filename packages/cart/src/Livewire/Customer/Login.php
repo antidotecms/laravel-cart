@@ -24,7 +24,7 @@ class Login extends Component implements HasForms
         return $form
             ->statePath('data')
             ->schema([
-                Section::make('Login')
+                Section::make()
                     ->schema([
                         ViewField::make('laravel-cart::components.error')
                             ->view('laravel-cart::errors')

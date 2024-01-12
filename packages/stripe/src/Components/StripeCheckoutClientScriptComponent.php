@@ -15,6 +15,8 @@ class StripeCheckoutClientScriptComponent extends Component
     public string $checkout_confirm_url;
     public string $order_complete_url;
 
+    public string $post_checkout_url;
+
     public function __construct(PaymentIntent $payment_intent, \Antidote\LaravelCart\Domain\Cart $cart)
     {
         $payment_intent = app(PaymentIntent::class);
@@ -24,6 +26,7 @@ class StripeCheckoutClientScriptComponent extends Component
 
         $this->checkout_confirm_url = CartPanelPlugin::get('urls.checkoutConfirm');
         $this->order_complete_url = CartPanelPlugin::get('urls.orderComplete') .'?order_id='.$cart->getActiveOrder()->id;
+        $this->post_checkout_url = CartPanelPlugin::get('urls.postCheckout');
 
         $this->stripe_api_key = CartPanelPlugin::get('stripe.api_key');
     }

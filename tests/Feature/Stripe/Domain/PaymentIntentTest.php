@@ -11,11 +11,12 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
 use Antidote\LaravelCart\Tests\TestCase;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
-use Antidote\LaravelCartStripe\Models\StripeOrderLogItem;
 use Antidote\LaravelCartStripe\Testing\MockStripeHttpClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use TiMacDonald\Log\LogFake;
+
+//use Antidote\LaravelCartStripe\Models\StripeOrderLogItem;
 
 /**
  * @covers \Antidote\LaravelCartStripe\Domain\PaymentIntent
@@ -166,12 +167,12 @@ class PaymentIntentTest extends TestCase
     {
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-        CartPanelPlugin::make()->config([
-            'models' => [
-                'order' => Order::class,
-                'order_log_item' => StripeOrderLogItem::class
-            ]
-        ]);
+//        CartPanelPlugin::make()->config([
+//            'models' => [
+//                'order' => Order::class,
+//                'order_log_item' => StripeOrderLogItem::class
+//            ]
+//        ]);
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->fake()->throwException($exception_class);
@@ -211,12 +212,12 @@ class PaymentIntentTest extends TestCase
     {
         Config::set('laravel-cart.stripe.secret_key', 'dummy_key');
 
-        CartPanelPlugin::make()->config([
-            'models' => [
-                'order' => Order::class,
-                'order_log_item' => StripeOrderLogItem::class
-            ]
-        ]);
+//        CartPanelPlugin::make()->config([
+//            'models' => [
+//                'order' => Order::class,
+//                'order_log_item' => StripeOrderLogItem::class
+//            ]
+//        ]);
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->fake()->throwException($exception_class);
@@ -250,12 +251,12 @@ class PaymentIntentTest extends TestCase
      */
     public function it_will_not_generate_a_new_payment_intent_if_one_already_exists()
     {
-        CartPanelPlugin::make()->config([
-            'models' => [
-                'order' => Order::class,
-                'order_log_item' => StripeOrderLogItem::class
-            ]
-        ]);
+//        CartPanelPlugin::make()->config([
+//            'models' => [
+//                'order' => Order::class,
+//                'order_log_item' => StripeOrderLogItem::class
+//            ]
+//        ]);
 
         LogFake::bind();
 
@@ -295,12 +296,12 @@ class PaymentIntentTest extends TestCase
      */
     public function it_will_generate_a_new_payment_intent_if_the_old_one_has_been_cancelled()
     {;
-        CartPanelPlugin::make()->config([
-            'models' => [
-                'order' => Order::class,
-                'order_log_item' => StripeOrderLogItem::class
-            ]
-        ]);
+//        CartPanelPlugin::make()->config([
+//            'models' => [
+//                'order' => Order::class,
+//                'order_log_item' => StripeOrderLogItem::class
+//            ]
+//        ]);
 
         LogFake::bind();
 
@@ -341,12 +342,12 @@ class PaymentIntentTest extends TestCase
      */
     public function it_will_update_a_payment_intent_if_the_order_amount_has_changed()
     {
-        CartPanelPlugin::make()->config([
-            'models' => [
-                'order' => Order::class,
-                'order_log_item' => StripeOrderLogItem::class
-            ]
-        ]);
+//        CartPanelPlugin::make()->config([
+//            'models' => [
+//                'order' => Order::class,
+//                'order_log_item' => StripeOrderLogItem::class
+//            ]
+//        ]);
 
         LogFake::bind();
 
@@ -444,12 +445,12 @@ class PaymentIntentTest extends TestCase
             ]
         ]);
 
-        CartPanelPlugin::make()->config([
-            'models' => [
-                'order' => Order::class,
-                'order_log_item' => StripeOrderLogItem::class
-            ]
-        ]);
+//        CartPanelPlugin::make()->config([
+//            'models' => [
+//                'order' => Order::class,
+//                'order_log_item' => StripeOrderLogItem::class
+//            ]
+//        ]);
 
         LogFake::bind();
 
