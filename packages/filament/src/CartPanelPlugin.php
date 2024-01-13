@@ -69,7 +69,8 @@ class CartPanelPlugin implements Plugin
             'secret_key' => 'secret_key',
             'logging' => true,
             'webhook_secret' => 'webhook_secret'
-        ]
+        ],
+        'email' => 'manager@shop.co.uk'
     ];
 
     /** @codeCoverageIgnore */

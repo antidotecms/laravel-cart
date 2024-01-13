@@ -5,7 +5,6 @@ namespace Antidote\LaravelCart\Listeners;
 use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Mail\OrderComplete;
 use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class SendOrderConfirmation
@@ -23,9 +22,11 @@ class SendOrderConfirmation
             $order_complete_recipient_email = null;
         }
 
-        Mail::to($event->order->customer)
-            ->bcc($order_complete_recipient_email)
-            ->send(new $order_complete_mail($event->order));
+//        Mail::to($event->order->customer)
+//            ->bcc($order_complete_recipient_email)
+//            ->send(new $order_complete_mail($event->order));
+
+        $event->order->customer->notify(new \Antidote\LaravelCart\Notifications\OrderComplete($event->order));
 
         $event->order->log('Order complete mail sent to '.$event->order->customer->email);
 

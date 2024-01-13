@@ -4,6 +4,8 @@ use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
 
 it('will display the order details', function() {
 
+    $this->markTestSkipped('not needed - to be removed');
+
     $product = TestProduct::factory()->asSimpleProduct([
         'price' => 123
     ])

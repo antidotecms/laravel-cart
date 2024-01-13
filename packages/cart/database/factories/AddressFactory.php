@@ -13,8 +13,8 @@ class AddressFactory extends Factory
     public function definition(): array
     {
         return [
-            'line_1' => $this->faker->address(),
-            'line_2' => $this->faker->address(),
+            'line_1' => $this->faker->streetAddress(),
+            'line_2' => $this->faker->streetAddress(),
             'town_city' => $this->faker->city(),
             'county' => $this->faker->word(),
             'postcode' => $this->faker->postcode(),

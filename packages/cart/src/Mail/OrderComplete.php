@@ -6,6 +6,7 @@ use Antidote\LaravelCart\Models\Order;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
+/** @deprecated */
 class OrderComplete extends \Illuminate\Mail\Mailable
 {
     public Order $order;
