@@ -10,7 +10,16 @@ it('will_update_the_order_status', function() {
         'customer_id' => $customer->id
     ]);
 
-    $order->setData('payment_intent_id', 'a payment intent id');
+    $payment = \Antidote\LaravelCart\Models\Payment::make([
+        'payment_method_type' => \Antidote\LaravelCart\Enums\PaymentMethod::Stripe
+    ]);
+
+    $order->payment()->save($payment);
+
+    $order->payment->data()->create([
+        'key' => 'payment_intent_id',
+        'value' => 'a payment intent id'
+    ]);
 
     \Antidote\LaravelCart\Models\OrderItem::factory()
         ->withProduct(\Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct::factory()->asSimpleProduct([

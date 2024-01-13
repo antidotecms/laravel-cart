@@ -139,11 +139,13 @@ class Order extends Model
 //        (new $this->payment->payment_method_type)->isCompleted();
 //    }
 
+    /** @deprecated */
     public function data()
     {
         return $this->hasMany(OrderData::class, 'order_id');
     }
 
+    /** @deprecated */
     public function setData($key, $value)
     {
         $this->data()->updateOrCreate(
@@ -152,6 +154,7 @@ class Order extends Model
         );
     }
 
+    /** @deprecated */
     public function getData($key): null | string | array
     {
         if($data = $this->data()->where('key', $key)->first()) {

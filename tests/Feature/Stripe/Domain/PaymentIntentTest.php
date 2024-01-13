@@ -5,9 +5,10 @@ namespace Antidote\LaravelCart\Tests\Feature\Stripe\Domain;
 use Antidote\LaravelCart\Enums\PaymentMethod;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
+use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\Models\Payment;
+use Antidote\LaravelCart\Models\PaymentData;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
 use Antidote\LaravelCart\Tests\TestCase;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
@@ -50,7 +51,15 @@ class PaymentIntentTest extends TestCase
             ->forCustomer(Customer::factory()->create())
             ->create();
 
-        $order->setData('payment_intent_id', 'a_payment_intent_id');
+        $order->payment()->save(Payment::make([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]));
+
+        //$order->setData('payment_intent_id', 'a_payment_intent_id');
+        $order->payment->data()->create([
+            'key' => 'payment_intent_id',
+            'value' => 'a_payment_intent_id'
+        ]);
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->retrieveStatus($order);
@@ -77,7 +86,15 @@ class PaymentIntentTest extends TestCase
             ->forCustomer(Customer::factory()->create())
             ->create();
 
-        $order->setData('payment_intent_id', '');
+        $order->payment()->save(Payment::make([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]));
+
+        //$order->setData('payment_intent_id', '');
+        $order->payment->data()->save(PaymentData::make([
+            'key' => 'payment_intent_id',
+            'value' => ''
+        ]));
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('No payment intent id set on order');
@@ -185,7 +202,7 @@ class PaymentIntentTest extends TestCase
 
         $this->cart->add($simple_product);
 
-        $order = $this->cart->createOrder($customer);
+        $order = $this->cart->createOrder($customer, PaymentMethod::Stripe);
 
         $payment = Payment::make([
             'payment_method_type' => PaymentMethod::Stripe
@@ -230,7 +247,7 @@ class PaymentIntentTest extends TestCase
 
         $this->cart->add($simple_product);
 
-        $order = $this->cart->createOrder($customer);
+        $order = $this->cart->createOrder($customer, PaymentMethod::Stripe);
 
         $payment = Payment::make([
             'payment_method_type' => PaymentMethod::Stripe
@@ -282,11 +299,12 @@ class PaymentIntentTest extends TestCase
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->create($order);
 
-        $payment_intent_id = Order::first()->getData('payment_intent_id');
+        //$payment_intent_id = Order::first()->getData('payment_intent_id');
+        $payment_intent_id = Order::first()->payment->data()->where('key', 'payment_intent_id')->first()->value;
 
         $payment_intent->create($order);
 
-        expect(Order::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
+        expect(Order::first()->payment->data()->where('key', 'payment_intent_id')->first()->value)->toBe($payment_intent_id);
 
     }
 
@@ -327,12 +345,13 @@ class PaymentIntentTest extends TestCase
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->create($order);
 
-        $payment_intent_id = Order::first()->getData('payment_intent_id');
+        //$payment_intent_id = Order::first()->getData('payment_intent_id');
+        $payment_intent_id = Order::first()->payment->data()->where('key', 'payment_intent_id')->first()->value;
 
         (new MockStripeHttpClient())->with('canceled_at', 'hello')->with('amount', $order->total);
         $payment_intent->create($order);
 
-        expect(Order::first()->getData('payment_intent_id'))->not()->toBe($payment_intent_id);
+        expect(Order::first()->payment->data()->where('key', 'payment_intent_id')->first()->value)->not()->toBe($payment_intent_id);
 
     }
 
@@ -374,12 +393,13 @@ class PaymentIntentTest extends TestCase
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->create($order);
 
-        $payment_intent_id = Order::first()->getData('payment_intent_id');;
+        //$payment_intent_id = Order::first()->getData('payment_intent_id');;
+        $payment_intent_id = Order::first()->payment->data()->where('key', 'payment_intent_id')->first()->value;
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->create($order);
 
-        expect(Order::first()->getData('payment_intent_id'))->toBe($payment_intent_id);
+        expect(Order::first()->payment->data()->where('key', 'payment_intent_id')->first()->value)->toBe($payment_intent_id);
     }
 
     /**
@@ -401,12 +421,20 @@ class PaymentIntentTest extends TestCase
             ->forCustomer(Customer::factory()->create())
             ->create();
 
-        $order->setData('payment_intent_id', 'a payment io');
+        $order->payment()->create([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
+        //$order->setData('payment_intent_id', 'a payment io');
+        $order->payment->data()->create([
+            'key' => 'payment_intent_id',
+            'value' => 'a payment id'
+        ]);
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->getClientSecret($order);
 
-        expect($order->getData('client_secret'))->toBe('the client secret');
+        expect($order->payment->data()->firstWhere('key', 'client_secret')->value)->toBe('the client secret');
     }
 
     /**
@@ -424,12 +452,21 @@ class PaymentIntentTest extends TestCase
             ->forCustomer(Customer::factory()->create())
             ->create();
 
-        $order->setData('client_secret', 'the client secret');
+        $order->payment()->create([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
+        //$order->setData('client_secret', 'the client secret');
+        $order->payment->data()->updateOrCreate([
+            'key' => 'client_secret',
+            'value' => 'the_client_secret'
+        ]);
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->getClientSecret($order);
 
-        expect($order->getData('client_secret'))->toBe('the client secret');
+        //expect($order->getData('client_secret'))->toBe('the client secret');
+        expect($order->payment->data()->firstWhere('key', 'client_secret')->value)->toBe('the_client_secret');
     }
 
     /**
@@ -441,16 +478,9 @@ class PaymentIntentTest extends TestCase
         CartPanelPlugin::make()->config([
             'models' => [
                 'order' => Order::class,
-                'order_log_item' => TestStripeOrderLogItem::class
+                'order_log_item' => OrderLogItem::class
             ]
         ]);
-
-//        CartPanelPlugin::make()->config([
-//            'models' => [
-//                'order' => Order::class,
-//                'order_log_item' => StripeOrderLogItem::class
-//            ]
-//        ]);
 
         LogFake::bind();
 
@@ -467,11 +497,9 @@ class PaymentIntentTest extends TestCase
             ->forCustomer(Customer::factory()->create())
             ->create();
 
-        $payment = Payment::make([
+        $order->payment()->create([
             'payment_method_type' => PaymentMethod::Stripe
         ]);
-
-        $order->payment()->save($payment);
 
         $payment_intent = app(PaymentIntent::class);
         $payment_intent->create($order);

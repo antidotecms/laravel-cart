@@ -2,12 +2,12 @@
 
 namespace Antidote\LaravelCart\Database\Factories;
 
-use Antidote\LaravelCart\Models\OrderData;
+use Antidote\LaravelCart\Models\PaymentData;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class OrderDataFactory extends Factory
+class PaymentDataFactory extends Factory
 {
-    protected $model = OrderData::class;
+    protected $model = PaymentData::class;
 
     public function definition(): array
     {

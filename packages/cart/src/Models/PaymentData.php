@@ -3,11 +3,11 @@
 namespace Antidote\LaravelCart\Models;
 
 use Antidote\LaravelCart\Database\Factories\OrderDataFactory;
+use Antidote\LaravelCart\Database\Factories\PaymentDataFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/** @deprecated */
-class OrderData extends Model
+class PaymentData extends Model
 {
     use HasFactory;
 
@@ -18,7 +18,7 @@ class OrderData extends Model
 
     protected static function newFactory()
     {
-        return OrderDataFactory::new();
+        return PaymentDataFactory::new();
     }
 
     public function order()

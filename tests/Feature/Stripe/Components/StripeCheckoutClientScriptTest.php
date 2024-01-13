@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Stripe\Components;
 
+use Antidote\LaravelCart\Enums\PaymentMethod;
 use Antidote\LaravelCart\Facades\Cart;
 use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
@@ -51,13 +52,16 @@ class StripeCheckoutClientScriptTest extends TestCase
 
         $this->be(Customer::first());
 
-        $order = $this->cart->createOrder(Customer::first());
-        $order->setData('payment_intent_id', 'some_id');
+        $order = $this->cart->createOrder(Customer::first(), PaymentMethod::Stripe);
+        $order->payment->data()->create([
+            'key' => 'payment_intent_id',
+            'value' => 'some_id'
+        ]);
 
         $component = $this->actingAs(Customer::first(), 'customer')->component(StripeCheckoutClientScriptComponent::class);
 
         expect($component->stripe_api_key)->toBe(CartPanelPlugin::get('stripe.api_key'));
-        expect($component->client_secret)->toBe($this->cart->getActiveOrder()->getData('client_secret'));
+        expect($component->client_secret)->toBe($this->cart->getActiveOrder()->payment->data()->where('key', 'client_secret')->first()->value);
         expect($component->checkout_confirm_url)->toBe(CartPanelPlugin::get('urls.checkoutConfirm'));
         expect($component->order_complete_url)->toBe("/order-complete?order_id=".Order::first()->id);
     }

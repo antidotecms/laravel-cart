@@ -3,7 +3,6 @@
 namespace Antidote\LaravelCart\Livewire\Cart;
 
 use Antidote\LaravelCart\Enums\PaymentMethod;
-use Antidote\LaravelCart\Models\Payment;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -40,13 +39,7 @@ class CheckoutOptions extends Component implements HasForms
             throw new \Exception('must be logged in as customer');
         }
 
-        $order = app(\Antidote\LaravelCart\Domain\Cart::class)->createOrder(auth('customer')->user());
-
-        $payment = Payment::make([
-            'payment_method_type' => $type
-        ]);
-
-        $order->payment()->save($payment);
+        $order = app(\Antidote\LaravelCart\Domain\Cart::class)->createOrder(auth('customer')->user(), $type);
 
         app(\Antidote\LaravelCart\Domain\Cart::class)->setActiveOrder($order);
 

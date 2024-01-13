@@ -8,7 +8,8 @@ use Illuminate\Queue\SerializesModels;
 
 class OrderCompleted
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     public Order $order;
 

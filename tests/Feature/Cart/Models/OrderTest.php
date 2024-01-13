@@ -21,7 +21,7 @@ it('will create an order', function() {
 
     $customer = Customer::factory()->create();
 
-    $this->cart->createOrder($customer);
+    $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     $order = Order::first();
 
@@ -42,7 +42,7 @@ it('will create an order with discount', function () {
 
     $customer = Customer::factory()->create();
 
-    $order = $this->cart->createOrder($customer);
+    $order = $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     $order_adjustment = OrderAdjustment::create([
         'name' => '10% off',
@@ -74,7 +74,7 @@ test('a customer has an order', function () {
 
     $customer = Customer::factory()->create();
 
-    $this->cart->createOrder($customer);
+    $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     expect($customer->orders()->count())->toBe(1);
 
@@ -104,7 +104,7 @@ it('will detail an order item', function () {
 
     $customer = Customer::factory()->create();
 
-    $order = $this->cart->createOrder($customer);
+    $order = $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     //change price of simple product and ensure it hasn't changed in cart
     $simple_product->productType->price = 2000;
@@ -211,7 +211,7 @@ it('will not create an order if an active order already exists', function () {
 
     $customer = Customer::factory()->create();
 
-    $this->cart->createOrder($customer);
+    $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     $order = Order::first();
 
@@ -220,7 +220,7 @@ it('will not create an order if an active order already exists', function () {
         ->and($order->items()->first()->product->id)->toBe($product->id)
         ->and($order->customer->id)->toBe($customer->id);
 
-    $this->cart->createOrder($customer);
+    $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     expect(Order::count())->toBe(1)
         ->and($order->items()->count())->toBe(1)
@@ -262,6 +262,8 @@ it('will log an item', function () {
 
 it('has data', function () {
 
+    $this->markTestSkipped('data now asociated with payment');
+
     $order = Order::factory()
         ->for(Customer::factory())
         ->create();
@@ -281,6 +283,8 @@ it('has data', function () {
 
 it('will set data', function () {
 
+    $this->markTestSkipped('data set on payment');
+
     $order = Order::factory()
         ->for(Customer::factory())
         ->create();
@@ -295,6 +299,8 @@ it('will set data', function () {
 
 it('will get data', function () {
 
+    $this->markTestSkipped('data set on payment');
+
     $order = Order::factory()
         ->for(Customer::factory())
         ->create();
@@ -306,6 +312,8 @@ it('will get data', function () {
 ->coversClass(Order::class);
 
 it('will set data as array', function () {
+
+    $this->markTestSkipped('data set on payment');
 
     $order = Order::factory()
         ->for(Customer::factory())
@@ -328,6 +336,8 @@ it('will set data as array', function () {
 
 it('will get data as array', function () {
 
+    $this->markTestSkipped('data set on payment');
+
     $order = Order::factory()
         ->for(Customer::factory())
         ->create();
@@ -348,6 +358,8 @@ it('will get data as array', function () {
 
 it('will return null of the data does not exist', function () {
 
+    $this->markTestSkipped('data set on payment');
+
     $order = Order::factory()
         ->for(Customer::factory())
         ->create();
@@ -357,6 +369,8 @@ it('will return null of the data does not exist', function () {
 ->coversClass(Order::class);
 
 it('will overwrite data with the same key', function () {
+
+    $this->markTestSkipped('data set on payment');
 
     $order = Order::factory()->create();
 

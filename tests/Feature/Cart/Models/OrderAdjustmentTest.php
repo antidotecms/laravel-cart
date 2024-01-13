@@ -75,7 +75,7 @@ it('will add a discount to the order', function () {
     //@todo valid adjustments are only shown in the cart if added to the order - mayeb look at automatically applying these?
     //expect($this->cart->getTotal())->toBe(1000);
 
-    $order = $this->cart->createOrder($customer);
+    $order = $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     expect($order->subtotal)->toBe(1000);
 
@@ -119,7 +119,7 @@ it('will remove a discount if there are no order items', function () {
 
     $this->cart->add($product);
 
-    $order = $this->cart->createOrder($customer);
+    $order = $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::create([
         'name' => '10% off',
@@ -153,7 +153,7 @@ it('belongs to an order', function () {
 
     $this->cart->add($product);
 
-    $order = $this->cart->createOrder($customer);
+    $order = $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     $order_adjustment = \Antidote\LaravelCart\Models\OrderAdjustment::create([
         'name' => '10% off',

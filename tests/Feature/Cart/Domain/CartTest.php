@@ -679,7 +679,7 @@ it('will throw an exception if the amount is too low', function () {
 
     $this->cart->add($simple_product);
 
-    $result = $this->cart->createOrder($customer);
+    $result = $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     //expect($result)->toBeFalse();
     //below doesnt get fired as exception hit first
@@ -698,7 +698,7 @@ it('will throw an exception if the amount is too high', function () {
 
     $this->cart->add($simple_product);
 
-    $result = $this->cart->createOrder($customer);
+    $result = $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     //expect($result)->toBeFalse();
     //below doesnt get fired as exception hit first
@@ -742,7 +742,7 @@ it('can return all data', function () {
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
 
-it('can add a note to the order', function () {
+it('can add a note to the payment', function () {
 
     $simple_product = TestProduct::factory()->asSimpleProduct([
         'price' => 100
@@ -754,10 +754,10 @@ it('can add a note to the order', function () {
 
     $this->cart->addData('additional_field', 'this is a note');
 
-    $this->cart->createOrder($customer);
+    $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
-    expect(\Antidote\LaravelCart\Models\Order::first()->getData('additional_field'))->toBe('this is a note');
+    expect(\Antidote\LaravelCart\Models\Order::first()->payment->data()->where('key', 'additional_field')->first()->value)->toBe('this is a note');
 
 })
 ->coversClass(\Antidote\LaravelCart\Domain\Cart::class);
@@ -789,7 +789,7 @@ it('will add order adjustments to the order when creating an order', function ()
     expect($this->cart->getValidAdjustments(true)->count())->toBe(1);
     expect($this->cart->getValidAdjustments(false)->count())->toBe(0);
 
-    $order = $this->cart->createOrder($customer);
+    $order = $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
 
@@ -838,7 +838,7 @@ it('will clear the order_adjustments from order if cart is empty', function () {
     expect($this->cart->getValidAdjustments(true)->count())->toBe(1);
     expect($this->cart->getValidAdjustments(false)->count())->toBe(0);
 
-    $order = $this->cart->createOrder($customer);
+    $order = $this->cart->createOrder($customer, \Antidote\LaravelCart\Enums\PaymentMethod::Stripe);
 
     expect(\Antidote\LaravelCart\Models\Order::count())->toBe(1);
 

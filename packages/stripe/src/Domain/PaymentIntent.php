@@ -76,8 +76,22 @@ class PaymentIntent
             'receipt_email' => $order->customer->email
         ]);
 
-        $order->setData('payment_intent_id', json_decode($payment_intent->getLastResponse()->body)->id);
-        $order->setData('client_secret', json_decode($payment_intent->getLastResponse()->body)->client_secret);
+        //$order->setData('payment_intent_id', json_decode($payment_intent->getLastResponse()->body)->id);
+        $order->payment->data()->updateOrCreate(
+            ['key' => 'payment_intent_id'],
+            ['value' => json_decode($payment_intent->getLastResponse()->body)->id]
+        );
+
+        //$order->setData('client_secret', json_decode($payment_intent->getLastResponse()->body)->client_secret);
+//        $order->payment->data()->save(PaymentData::make([
+//            'key' => 'client_secret',
+//            'value' => json_decode($payment_intent->getLastResponse()->body)->client_secret
+//        ]));
+        $order->payment->data()->updateOrCreate(
+            ['key' => 'client_secret'],
+            ['value' => json_decode($payment_intent->getLastResponse()->body)->client_secret]
+        );
+
         $order->save();
 
         $order->refresh();
@@ -89,7 +103,7 @@ class PaymentIntent
 
     private function updatePaymentIntent(Order $order) : \stdClass
     {
-        $payment_intent_response = $this->getClient()->paymentIntents->update($order->getData('payment_intent_id'), [
+        $payment_intent_response = $this->getClient()->paymentIntents->update($order->payment->data()->where('key', 'payment_intent_id')->first()->value, [
             'amount' => $order->total
         ]);
 
@@ -97,12 +111,17 @@ class PaymentIntent
 //            'amount' => $order->total
 //        ]);
 
-        $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'));
+        $payment_intent_response = $this->queryPaymentIntent($order->payment->data()->where('key', 'payment_intent_id')->first()->value);
 
         //not amended payment intent id as it will be the same
         //$order->payment_intent_id = json_decode($payment_intent_response->getLastResponse()->body)->id;
         //$order->save();
-        $order->setData('client_secret', $payment_intent_response->client_secret);
+        //$order->setData('client_secret', $payment_intent_response->client_secret);
+        $order->payment->data()->updateOrCreate([
+            'key' => 'client_secret',
+            'value' => $payment_intent_response->client_secret
+        ]);
+
         $order->save();
         //$event = json_decode($payment_intent_response->getLastResponse()->body);
         $this->logMessage($order, 'Payment Intent Updated: '.$payment_intent_response->id, $payment_intent_response);
@@ -111,10 +130,10 @@ class PaymentIntent
 
     public function retrieveStatus(Order $order) : void
     {
-        if($order->getData('payment_intent_id')) {
+        if($payment_intent_id = $order->payment->data()->where('key', 'payment_intent_id')->first()->value) {
 
             //@todo may throw Stripe\Exception\ApiErrorException
-            $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'));
+            $payment_intent_response = $this->queryPaymentIntent($payment_intent_id);
 
             $order->status = $payment_intent_response->status;
             $order->save();
@@ -128,13 +147,18 @@ class PaymentIntent
     {
         $client_secret = '';
 
-        if(!$client_secret = $order->getData('client_secret')) {
+        if(!$client_secret = $order->payment->data()->where('key', 'client_secret')->first()?->value) {
             //@todo may throw Stripe\Exception\ApiErrorException
-            $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'));
+            $payment_intent_response = $this->queryPaymentIntent($order->payment->data()->where('key', 'payment_intent_id')->first()->value);
 
-            $order->setData('client_secret', $payment_intent_response->client_secret);
+            //$order->setData('client_secret', $payment_intent_response->client_secret);
+            $order->payment->data()->updateOrCreate(
+                ['key' => 'client_secret'],
+                ['value' => $payment_intent_response->client_secret]
+            );
             $order->save();
-            $client_secret = $order->getData('client_secret');
+            //$client_secret = $order->getData('client_secret');
+            $client_secret = $payment_intent_response->client_secret;
         }
 
         return $client_secret;
@@ -149,7 +173,7 @@ class PaymentIntent
         });
 
         Log::info('retrieving payment intent');
-        $payment_intent_response = $this->queryPaymentIntent($order->getData('payment_intent_id'));
+        $payment_intent_response = $this->queryPaymentIntent($order->payment->data()->where('key', 'payment_intent_id')->first()->value);
 
         $payment_intent_response = $this->paymentIntentCancelled($payment_intent_response, function() use ($order) {
             Log::info('payment intent cancelled, deleting old one - creating a new one');
@@ -167,7 +191,7 @@ class PaymentIntent
     {
         $event = null;
 
-        if(!$order->payment->isCompleted() & !$order->getData('payment_intent_id')) {
+        if(!$order->payment->isCompleted() & !$order->payment->data()->where('key', 'payment_intent_id')->first()) {
             $event = $callback();
         }
 

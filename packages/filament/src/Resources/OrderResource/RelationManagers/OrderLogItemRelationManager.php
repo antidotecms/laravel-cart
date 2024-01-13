@@ -2,9 +2,7 @@
 
 namespace Antidote\LaravelCartFilament\Resources\OrderResource\RelationManagers;
 
-use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\Contracts\StripeOrderLogItem;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -22,30 +20,6 @@ class OrderLogItemRelationManager extends \Filament\Resources\RelationManagers\R
             ->columns([
                 TextColumn::make('created_at'),
                 TextColumn::make('message')
-            ])
-            ->actions(self::getActions());
+            ]);
     }
-
-    // @codeCoverageIgnoreStart
-    // Test fails to due to error in `callTableAction`
-    // @link https://github.com/filamentphp/filament/discussions/8048
-    // @todo write test to confirm action exists and is set correctly - @see OrderLogItemRelationManagerTest.php:L74 and expand to test configuration
-    private static function getActions() : array
-    {
-        //@todo better way to determine payment provider needed?
-        if(is_subclass_of(CartPanelPlugin::get('models.order_log_item'), StripeOrderLogItem::class)) {
-            return [
-                Action::make('event')
-                    //@todo need action to trigger the modal
-                    ->action(fn($record) => $record)
-                    ->modalContent(function($record) {
-                        return view('laravel-cart-filament::stripe-event', [
-                            'event_data' => \Illuminate\Support\Arr::dot($record->event)]);
-                    })
-            ];
-        };
-
-        return [];
-    }
-    // @codeCoverageIgnoreEnd
 }

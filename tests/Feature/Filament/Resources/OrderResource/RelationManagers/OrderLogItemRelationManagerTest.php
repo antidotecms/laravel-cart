@@ -4,7 +4,6 @@ use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\Products\TestProduct;
-use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestStripeOrderLogItem;
 use Antidote\LaravelCart\Tests\Fixtures\App\Models\TestUser;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartFilament\Resources\OrderResource\Pages\EditOrder;
@@ -16,7 +15,7 @@ beforeEach(function() {
     CartPanelPlugin::make()->config([
         'models' => [
             'product' => TestProduct::class,
-            'order_log_item' => TestStripeOrderLogItem::class
+            'order_log_item' => OrderLogItem::class
         ]
     ]);
 
@@ -75,23 +74,6 @@ it('will display the order log items columns', function() {
     ->assertTableColumnStateSet('message', $first_order_log_item->message, $first_order_log_item);
 })
 ->covers(OrderLogItemRelationManager::class);
-
-it('will provide an action to view stripe event if stripe order log item is used', function () {
-
-    livewire(OrderLogItemRelationManager::class, [
-        'pageClass' => EditOrder::class,
-        'ownerRecord' => $this->orders->first()
-    ])
-    ->assertTableActionExists('event');
-
-    CartPanelPlugin::set('models.order_log_item', OrderLogItem::class);
-
-    livewire(OrderLogItemRelationManager::class, [
-        'pageClass' => EditOrder::class,
-        'ownerRecord' => $this->orders->first()
-    ])
-    ->assertTableActionDoesNotExist('event');
-});
 
 it('will display the stripe event', function () {
 

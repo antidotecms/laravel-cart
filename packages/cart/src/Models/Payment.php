@@ -36,4 +36,9 @@ class Payment extends Model
     {
         return $this->payment_method_type->manager();
     }
+
+    public function data()
+    {
+        return $this->hasMany(PaymentData::class, 'payment_id');
+    }
 }

@@ -9,6 +9,7 @@ use Antidote\LaravelCart\Models\Customer;
 use Antidote\LaravelCart\Models\Order;
 use Antidote\LaravelCart\Models\OrderAdjustment;
 use Antidote\LaravelCart\Models\Payment;
+use Antidote\LaravelCart\Models\PaymentData;
 use Antidote\LaravelCart\Models\Product;
 use Antidote\LaravelCart\Types\ValidCartItem;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
@@ -220,13 +221,13 @@ class Cart
      * @return Order|bool a created or false if no order created
      * @throws \Exception
      */
-    public function createOrder(Customer $customer) : Order | bool
+    public function createOrder(Customer $customer, PaymentMethod $paymentMethod) : Order | bool
     {
         if(Cart::getTotal() < 30 | Cart::getTotal() > 99999999) {
             throw new \Exception('The order total must be greater than £0.30 and less that £999,999.99');
         }
 
-        $order = $this->getOrder($customer);
+        $order = $this->getOrder($customer, $paymentMethod);
 
         $this->setOrderData($order);
 
@@ -257,7 +258,10 @@ class Cart
     {
         $data = $this->getData();
         foreach($data as $key => $value) {
-            $order->setData($key, $value);
+            $order->payment->data()->updateOrCreate([
+                'key' => $key,
+                'value' => $value
+            ]);
         }
         $order->save();
     }
@@ -269,7 +273,7 @@ class Cart
         $this->syncDataWithOrder($order);
     }
 
-    private function getOrder($customer)
+    private function getOrder(Customer $customer, PaymentMethod $paymentMethod)
     {
         $order_class = CartPanelPlugin::get('models.order');
 
@@ -278,7 +282,7 @@ class Cart
         ]);
 
         $payment = Payment::make([
-            'payment_method_type' => PaymentMethod::Stripe
+            'payment_method_type' => $paymentMethod
         ]);
 
         $order->payment()->save($payment);
@@ -301,13 +305,22 @@ class Cart
         });
     }
 
-    private function setOrderData($order)
+    private function setOrderData(Order $order)
     {
         //saving additional cart/order data
         //@todo possibly expand to allow "hooks" or events to trigger methods depending on keys/values set?
 
+       $order->load('payment');
+       //dump($order->payment);
+
         collect($this->getData())->each(function($value, $key) use ($order) {
-            $order->setData($key, $value);
+            //$order->setData($key, $value);
+            $data = PaymentData::make([
+                'key' => $key,
+                'value' => $value
+            ]);
+
+            $order->payment->data()->save($data);
         });
 
     }
