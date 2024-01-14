@@ -2,6 +2,7 @@
 
 namespace Antidote\LaravelCart\Tests\Feature\Stripe\Http\Controllers;
 
+use Antidote\LaravelCart\Enums\PaymentMethod;
 use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCart\Http\Controllers\OrderCompleteController;
 use Antidote\LaravelCart\Models\Customer;
@@ -91,6 +92,10 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
+        $order->payment()->create([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
         expect($order->total)->toBe($product->getPrice() + (int)(ceil($product->getPrice() * \Antidote\LaravelCartFilament\CartPanelPlugin::get('tax_rate'))));
 
         $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => $order->id], 'id' => 'payment_intent_identifier']]]);
@@ -101,6 +106,8 @@ class StripeWebhookControllerTest extends TestCase
                 ->andReturnTrue();
         });
 
+        $this->withoutExceptionHandling();
+
         $response = $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
         $response->assertSuccessful();
 
@@ -109,7 +116,7 @@ class StripeWebhookControllerTest extends TestCase
         expect($order->logItems()->count())->toBe(1);
 
         expect($order->status)->toBe('requires_payment_method');
-        expect($order->getData('payment_intent_id'))->toBe('payment_intent_identifier');
+        expect($order->payment->data()->firstWhere('key', 'payment_intent_id')->value)->toBe('payment_intent_identifier');
 
         $this->forgetMock('alias:Stripe\Webhook');
     }
@@ -293,6 +300,10 @@ class StripeWebhookControllerTest extends TestCase
             ->forCustomer($customer)
             ->create();
 
+        $order->payment()->create([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
+
         $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => $order->id]]]]);
 
         $this->mock('alias:\Stripe\WebhookSignature', function(\Mockery\MockInterface $mock) {
@@ -305,6 +316,8 @@ class StripeWebhookControllerTest extends TestCase
             ->with($event->toJSON())
             ->once()
             ->andReturn();
+
+        $this->withoutExceptionHandling();
 
         $this->postJson(CartPanelPlugin::get('stripe.webhookHandler'), $event->toArray());
 
@@ -327,6 +340,10 @@ class StripeWebhookControllerTest extends TestCase
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
+
+        $order->payment()->create([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
 
         $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => Order::first()->id]]]]);
 
@@ -362,6 +379,10 @@ class StripeWebhookControllerTest extends TestCase
             ->withProduct($product)
             ->forCustomer($customer)
             ->create();
+
+        $order->payment()->create([
+            'payment_method_type' => PaymentMethod::Stripe
+        ]);
 
         $event = $this->createStripeEvent('payment_intent.created', ['data' => ['object' => ['metadata' => ['order_id' => 1]]]]);
 

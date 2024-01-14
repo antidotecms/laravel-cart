@@ -58,7 +58,10 @@ class StripeWebhookController extends Controller
         match($event->type) {
             'payment_intent.created' => call_user_func(function() use ($event, $order) {
                 $this->createOrderLogItem('Stripe Payment Intent Created', $event, $order);
-                $order->setData('payment_intent_id', $event->data->object->id);
+                $order->payment->data()->updateOrCreate([
+                    'key' => 'payment_intent_id',
+                    'value' => $event->data->object->id
+                ]);
                 $this->updateOrderStatus($event, $order);
             }),
             'payment_intent.succeeded' => call_user_func(function() use ($event, $order) {
