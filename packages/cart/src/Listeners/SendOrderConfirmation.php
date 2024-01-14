@@ -3,7 +3,6 @@
 namespace Antidote\LaravelCart\Listeners;
 
 use Antidote\LaravelCart\Events\OrderCompleted;
-use Antidote\LaravelCart\Mail\OrderComplete;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Validator;
 
