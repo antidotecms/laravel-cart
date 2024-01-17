@@ -13,7 +13,7 @@ class AllowStripeWebhooksDuringMaintenance extends Middleware
     public function getExcludedPaths(): array
     {
         return [
-            CartPanelPlugin::get('urls.stripe.webhookHandler')
+            CartPanelPlugin::get('stripe.webhookHandler')
         ];
     }
 }
