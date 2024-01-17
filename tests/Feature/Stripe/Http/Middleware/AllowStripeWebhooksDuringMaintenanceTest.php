@@ -24,7 +24,7 @@ it('will allow access to the stripe webhook path if in maintenance', function ()
     $mockedRequest = $this->partialMock(\Illuminate\Http\Request::class, function(\Mockery\MockInterface $mock) {
 
         $mock->shouldReceive('fullUrlIs')
-            ->with(trim(CartPanelPlugin::get('urls.stripe.webhookHandler'), '/'))
+            ->with(trim(CartPanelPlugin::get('stripe.webhookHandler'), '/'))
             ->andReturnTrue();
 
     });

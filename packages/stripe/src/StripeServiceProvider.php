@@ -9,6 +9,8 @@ use Antidote\LaravelCartFilament\CartPanelPlugin;
 use Antidote\LaravelCartStripe\Components\StripeCheckoutClientScriptComponent;
 use Antidote\LaravelCartStripe\Domain\PaymentIntent;
 use Antidote\LaravelCartStripe\Http\Controllers\StripeWebhookController;
+use Antidote\LaravelCartStripe\Http\Middleware\AllowStripeWebhooksDuringMaintenance;
+use Antidote\LaravelCartStripe\Http\Middleware\WhitelistStripeIPAddresses;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 
@@ -54,7 +56,8 @@ class StripeServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->booted(function() {
 
-            $this->app['router']->post(CartPanelPlugin::get('stripe.webhookHandler'), StripeWebhookController::class);
+            $this->app['router']->post(CartPanelPlugin::get('stripe.webhookHandler'), StripeWebhookController::class)
+                ->middleware([AllowStripeWebhooksDuringMaintenance::class, WhitelistStripeIPAddresses::class]);
 
 
         });
