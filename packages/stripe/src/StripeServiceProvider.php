@@ -57,7 +57,7 @@ class StripeServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->booted(function() {
 
             $this->app['router']->post(CartPanelPlugin::get('stripe.webhookHandler'), StripeWebhookController::class)
-                ->middleware([AllowStripeWebhooksDuringMaintenance::class, WhitelistStripeIPAddresses::class]);
+                ->middleware(['web', AllowStripeWebhooksDuringMaintenance::class, WhitelistStripeIPAddresses::class]);
 
 
         });
