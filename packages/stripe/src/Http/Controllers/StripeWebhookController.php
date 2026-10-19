@@ -4,19 +4,21 @@ namespace Antidote\LaravelCartStripe\Http\Controllers;
 
 use Antidote\LaravelCart\Events\OrderCompleted;
 use Antidote\LaravelCartFilament\CartPanelPlugin;
+use Antidote\LaravelCartStripe\Service\StripeWebhookService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Stripe\Event;
 use Stripe\Exception\UnexpectedValueException;
 use Stripe\Stripe;
-use Stripe\Webhook;
 
 class StripeWebhookController extends Controller
 {
-    public function __construct()
+    private StripeWebhookService $stripeWebhookService;
+    public function __construct(StripeWebhookService $stripeWebhookService)
     {
         //$this->middleware(\Antidote\LaravelCartStripe\Http\Middleware\WhitelistStripeIPAddresses::class);
+        $this->stripeWebhookService = $stripeWebhookService;
     }
 
     public function __invoke(Request $request)
@@ -27,7 +29,7 @@ class StripeWebhookController extends Controller
         $payload = $request->getContent();
 
         try {
-            $event =  Webhook::constructEvent($payload, $signature_header, $stripe_payment_intent_webhook_secret);
+            $event = $this->stripeWebhookService->constructEvent($payload, $signature_header, $stripe_payment_intent_webhook_secret);
         }
         catch(\Stripe\Exception\SignatureVerificationException $e)
         {

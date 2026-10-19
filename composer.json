@@ -40,11 +40,10 @@
         }
     },
     "require-dev": {
-        "orchestra/testbench": "^8.0",
+        "orchestra/testbench": "^9.0",
         "phpunit/phpunit": "^10.4",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
-        "laravel/framework": "^10.0",
         "pestphp/pest-plugin-livewire": "^2.0",
         "laravel/sail": "^1.21",
         "phpstan/phpstan": "^1.10",
@@ -74,13 +73,17 @@
     "require": {
         "spatie/data-transfer-object": "^3.8",
         "stripe/stripe-php": "^9.6",
-        "filament/filament": "^3.0-stable",
+        "filament/filament": "^3.0",
         "livewire/livewire": "^3.0.0",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "laravel/framework": "^11.0"
     },
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true
+        },
+        "audit": {
+            "block-insecure": false
         }
     }
 }

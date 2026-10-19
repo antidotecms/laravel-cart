@@ -12,6 +12,7 @@
     <testsuites>
         <testsuite name="Feature">
             <directory suffix="Test.php">./tests/Feature</directory>
+            <exclude>./tests/Feature/Stripe/Http/Controllers/StripeWebhookControllerTest.php</exclude>
         </testsuite>
         <testsuite name="Webhook">
             <file>tests/Feature/Stripe/Http/Controllers/StripeWebhookControllerTest.php</file>

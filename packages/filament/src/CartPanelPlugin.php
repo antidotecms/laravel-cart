@@ -53,7 +53,7 @@ class CartPanelPlugin implements Plugin
             'registration' => '/registration'
         ],
         'views' => [
-            'orderComplete' => 'order-complete',
+            'orderComplete' => 'laravel-cart::order-complete',
             'cart' => 'cart',
             'registration' => 'laravel-cart::registration',
             'emailVerification' => 'laravel-cart::email-verification'
